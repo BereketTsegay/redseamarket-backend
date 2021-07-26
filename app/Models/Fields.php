@@ -16,11 +16,14 @@ class Fields extends Model
     }
 
     public function FieldOption(){
-        return $this->hasMany(FieldOptions::class, 'field_id', 'id');
+        return $this->hasMany(FieldOptions::class, 'field_id', 'id')
+        ->where('status', Status::ACTIVE)
+        ->where('delete_status', '!=', Status::DELETE);
     }
 
     public function Dependency(){
         return $this->hasMany(CustomFieldDependancy::class, 'field_id', 'id')
-        ->where('delete_status', '!=', Status::DELETE);
+        ->where('delete_status', '!=', Status::DELETE)
+        ->orderBy('order');
     }
 }

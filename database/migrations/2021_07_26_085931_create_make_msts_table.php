@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDependenciesTable extends Migration
+class CreateMakeMstsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateDependenciesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dependencies', function (Blueprint $table) {
+        Schema::create('make_msts', function (Blueprint $table) {
             $table->id();
-            $table->string('master_name');
-            $table->string('dependency_table')->nullable()->default(null);
+            $table->string('name');
+            $table->integer('status');
+            $table->integer('sort_order');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateDependenciesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dependencies');
+        Schema::dropIfExists('make_msts');
     }
 }

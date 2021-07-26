@@ -43,7 +43,7 @@
                                             <option value="url">URL</option>
                                             <option value="number">Number</option>
                                             <option value="date">Date</option>
-                                            <option value="dependency">Dependency</option>
+                                            <option value="dependency-2">Dependency</option>
                                             {{-- <option value="date_time">Date Time</option>
                                             <option value="date_range">Date Range</option>
                                             <option value="video">Video (Youtube, Vimeo)</option> --}}
@@ -149,7 +149,7 @@
             let value = $(this).val();
             let option = '<option value="">Select</option>';
             
-            if(value == 'dependency'){
+            if(value == 'dependency-2'){
                 $.ajax({
                     url : '/dependency/get',
                     type : 'get',

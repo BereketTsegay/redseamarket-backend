@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Common\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,5 +44,10 @@ class Ads extends Model
 
     public function SellerInformation(){
         return $this->hasOne(SellerInformation::class);
+    }
+
+    public function AdsFieldDependency(){
+        return $this->hasMany(AdsFieldDependency::class, 'ads_id', 'id')
+        ->where('delete_status', '!=', Status::DELETE);
     }
 }

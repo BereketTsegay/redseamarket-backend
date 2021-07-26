@@ -6,6 +6,7 @@ use App\Common\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Ads;
 use App\Models\Category;
+use App\Models\CategoryField;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +126,82 @@ class DashboardController extends Controller
                 'loged_user_status' => $user,
                 'categories'        => $category,
             ],
+        ], 200);
+    }
+
+    public function getFieldAndDependency(Request $request){
+
+        $rules = [
+            'category'      => 'required|numeric',
+            'subcategory'   => 'required|numeric',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 401);
+        }
+
+        $field = CategoryField::where('category_id', $request->category)
+        ->with(['Field' => function($a){
+            $a->where('delete_status', '!=', Status::DELETE)
+            ->where(function($b){
+                $b->orwhere(function($c){
+                    $c->where('option', 1)
+                    ->whereHas('FieldOption', function($e){
+                        $e->where('delete_status', '!=', Status::DELETE)
+                        ->where('status', Status::ACTIVE);
+                    });
+                })
+                ->orwhere(function($d){
+                    $d->where('option', 2)
+                    ->wherehas('Dependency', function($f){
+                        $f->where('delete_status', '!=', Status::DELETE);
+                    });
+                })
+                ->orwhere(function($d){
+                    $d->where('option', 0);
+                });
+            });
+        }])
+        ->get()
+        ->map(function($p){
+            
+            if($p->Field){
+                
+                if($p->Field->option == 1){
+                    $p->Field->FieldOption;
+                }
+                elseif($p->Field->option == 2){
+                    $p->Field->Dependency;
+                }
+                else{
+                    $p->Field;
+                }
+
+                if($p->Field->description_area_flag == 0){
+                    $p->Field->position = 'top';
+                }
+                elseif($p->Field->description_area_flag == 1){
+                    $p->Field->position = 'details_page';
+                }
+                else{
+                    $p->Field->position = 'none';
+                }
+            }
+
+            unset($p->field_id, $p->disabled_in_sub_category, $p->delete_status, $p->Field->status, $p->Field->option, $p->Field->delete_status, $p->Field->description_area_flag);
+            return $p;
+        });
+        
+        return response()->json([
+            'status'    => 'success',
+            'fields'    => $field,
         ], 200);
     }
 }

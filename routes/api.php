@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/user/login', [\App\Http\Controllers\Api\LoginController::class, 'login']);
-Route::get('/customer/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'dashboard']);
+Route::post('/user/register', [\App\Http\Controllers\Api\LoginController::class, 'register']);
+Route::post('/customer/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'dashboard']);
+Route::post('/customer/ads/custom_field_and_dependency', [\App\Http\Controllers\Api\AdsController::class, 'customFieldsAndDependency']);
+Route::post('/customer/get/field/dependency', [\App\Http\Controllers\Api\DashboardController::class, 'getFieldAndDependency']);
 
 Route::middleware('auth:api')->group( function () {
     

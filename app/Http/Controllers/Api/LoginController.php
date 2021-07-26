@@ -70,4 +70,24 @@ class LoginController extends Controller
             ], 401);
         }
     }
+
+    public function register(Request $request){
+
+        $rules = [
+            'name'      => 'required',
+            'email'     => 'required|email',
+            'password'  => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+    }
 }

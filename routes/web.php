@@ -40,6 +40,8 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         Route::get('/global/state/get', [App\Http\Controllers\CategoryController::class, 'getState']);
         Route::get('/global/city/get', [App\Http\Controllers\CategoryController::class, 'getCity']);
+        Route::get('/global/vehicle/model/get', [App\Http\Controllers\CategoryController::class, 'getVehicleModel']);
+        Route::get('/global/vehicle/varient/get', [App\Http\Controllers\CategoryController::class, 'getVehicleVarient']);
 
         Route::post('/admin/change/password', [App\Http\Controllers\LoginController::class, 'changePassword'])->name('admin.change.password');
         Route::get('/admin/profile', [App\Http\Controllers\LoginController::class, 'profile'])->name('admin.profile');
@@ -117,6 +119,7 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::get('/ad/view/{id}', [App\Http\Controllers\AdsController::class, 'view'])->name('ads.view');
 
         Route::get('/get/custom/field', [App\Http\Controllers\AdsController::class, 'getCustomField'])->name('ad.get.custom_field');
+        Route::get('/get/master/dependency', [App\Http\Controllers\AdsController::class, 'getMasterDependency'])->name('ad.get.master.dependency');
 
         Route::get('/admin/logout', function(){
             Auth::logout();

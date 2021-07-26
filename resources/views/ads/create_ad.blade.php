@@ -203,6 +203,8 @@
             let id = $(this).val();
             let option = '';
             let custom_field = '';
+            let select_id = '';
+            let dependencyOption = '';
 
             $.ajax({
                 url : '/change/subcategory',
@@ -266,7 +268,7 @@
                                     
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <select type="checkbox" class="form-control" name="${data[i].field.name}" id="${identity}">
+                                            <select class="form-control" name="${data[i].field.name}" id="${identity}">
                                             </select>
                                         </div>`;
                                         
@@ -309,13 +311,39 @@
                                             <input type="date" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
                                         </div>`;
                                     break;
-                                // case 'date_time':
-                                //     break;
-                                // case 'date_range':
-                                //     break;
-                                // case 'video':
-                                //     break;
 
+                                case 'dependency':
+                                    for(let l = 0; l < data[i].field.dependency.length; l++){
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                            <label for="${data[i].field.dependency[l].master}">${data[i].field.dependency[l].master} </label>
+                                            <select class="form-control" onChange="masterChange('${data[i].field.dependency[l].master}')" name="${data[i].field.dependency[l].master}" id="select_dependency_${data[i].field.dependency[l].master}">
+                                                <option value="">Select</option>
+                                            </select>
+                                        </div>`;
+
+                                        if(l == 0){
+
+                                            select_id = `select_dependency_${data[i].field.dependency[l].master}`;
+                                            
+                                            $.ajax({
+                                                url : '/get/master/dependency',
+                                                async : false,
+                                                type : 'get',
+                                                data : {master:data[i].field.dependency[l].master},
+                                                success:function(result){
+                                                    
+                                                    
+                                                    dependencyOption += '<option value="">Select</option>';
+                                                    
+                                                    for(let i = 0; i < result.length; i++){
+                                                        dependencyOption += `<option value="${result[i].id}">${result[i].name}</option>`;
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                    
+                                    break;
                             }
                         // }
                     }
@@ -323,8 +351,99 @@
                     $('#custom_fields').html(custom_field);
                     
                     $('#select_identity').html(selectoption);
+                    
+                    $(`#${select_id}`).html(dependencyOption);
                 }
             });
+
+            masterChange = (master_type) => {
+                
+                if(master_type == 'Country'){
+
+                    let value = $('#select_dependency_Country').val();
+                    let option = '';
+
+                    $.ajax({
+                        url : '/global/state/get',
+                        type : 'get',
+                        data : {id:value},
+                        success:function(data){
+
+                            option += `<option value="">Select</option>`;
+
+                            for(let i = 0; i < data.length; i++){
+                                option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+
+                            $('#select_dependency_State').html(option);
+                        }
+                    });
+
+                }
+                else if(master_type == 'State'){
+                    
+                    let value = $('#select_dependency_State').val();
+                    let option = '';
+
+                    $.ajax({
+                        url : '/global/city/get',
+                        type : 'get',
+                        data : {id:value},
+                        success:function(data){
+
+                            option += `<option value="">Select</option>`;
+
+                            for(let i = 0; i < data.length; i++){
+                                option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+
+                            $('#select_dependency_City').html(option);
+                        }
+                    });
+                }
+                else if(master_type == 'Make'){
+
+                    let value = $('#select_dependency_Make').val();
+                    let option = '';
+
+                    $.ajax({
+                        url : '/global/vehicle/model/get',
+                        type : 'get',
+                        data : {id:value},
+                        success:function(data){
+
+                            option += `<option value="">Select</option>`;
+
+                            for(let i = 0; i < data.length; i++){
+                                option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+
+                            $('#select_dependency_Model').html(option);
+                        }
+                    });
+                }
+                else if(master_type == 'Model'){
+                    
+                    let value = $('#select_dependency_Model').val();
+                    let option = '';
+                    
+                    $.ajax({
+                        url : '/global/vehicle/varient/get',
+                        type : 'get',
+                        data : {id:value},
+                        success:function(data){
+                            
+                            option += `<option value="">Select</option>`;
+
+                            for(let i = 0; i < data.length; i++){
+                                option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            
+                            $('#select_dependency_Variant').html(option);
+                        }
+                    });
+                }
+            }
 
         });
 

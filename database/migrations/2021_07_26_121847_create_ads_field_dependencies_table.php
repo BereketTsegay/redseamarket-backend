@@ -1,10 +1,11 @@
 <?php
 
+use App\Common\Status;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDependenciesTable extends Migration
+class CreateAdsFieldDependenciesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +14,12 @@ class CreateDependenciesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dependencies', function (Blueprint $table) {
+        Schema::create('ads_field_dependencies', function (Blueprint $table) {
             $table->id();
-            $table->string('master_name');
-            $table->string('dependency_table')->nullable()->default(null);
+            $table->string('ads_id');
+            $table->string('master_type');
+            $table->integer('master_id');
+            $table->boolean('delete_status')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateDependenciesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dependencies');
+        Schema::dropIfExists('ads_field_dependencies');
     }
 }

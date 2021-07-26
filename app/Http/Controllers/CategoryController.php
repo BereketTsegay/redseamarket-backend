@@ -7,7 +7,9 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\IconClass;
+use App\Models\ModelMst;
 use App\Models\State;
+use App\Models\VarientMst;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -202,5 +204,33 @@ class CategoryController extends Controller
         ->get();
 
         return response()->json($city);
+    }
+
+    public function getVehicleModel(Request $request){
+
+        $request->validate([
+            'id'    => 'required|numeric',
+        ]);
+
+        $model = ModelMst::where('make_id', $request->id)
+        ->where('status', Status::ACTIVE)
+        ->orderBy('sort_order')
+        ->get();
+
+        return response()->json($model);
+    }
+
+    public function getVehicleVarient(Request $request){
+
+        $request->validate([
+            'id'    => 'required|numeric',
+        ]);
+
+        $varient = VarientMst::where('model_id', $request->id)
+        ->where('status', Status::ACTIVE)
+        ->orderBy('order')
+        ->get();
+
+        return response()->json($varient);        
     }
 }

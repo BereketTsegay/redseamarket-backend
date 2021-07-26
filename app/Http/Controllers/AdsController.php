@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Common\Status;
 use App\Models\Ads;
 use App\Models\AdsCustomValue;
+use App\Models\AdsFieldDependency;
 use App\Models\AdsImage;
 use App\Models\Category;
 use App\Models\CategoryField;
 use App\Models\Country;
 use App\Models\FieldOptions;
+use App\Models\MakeMst;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -213,6 +215,9 @@ class AdsController extends Controller
                 $customValue->value     = $file;
                 $customValue->save();
             }
+            elseif($catRow->Field->type == 'dependency'){
+
+            }
             else{
                 $field_name = $catRow->Field->name;
 
@@ -225,6 +230,61 @@ class AdsController extends Controller
             }
         }
 
+        if($request->Make){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'make';
+            $adsDependency->master_id   = $request->Make;
+            $adsDependency->save();
+        }
+
+        if($request->Model){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'model';
+            $adsDependency->master_id   = $request->Model;
+            $adsDependency->save();
+        }
+
+        if($request->Variant){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'variant';
+            $adsDependency->master_id   = $request->Variant;
+            $adsDependency->save();
+        }
+
+        if($request->Country){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'country';
+            $adsDependency->master_id   = $request->Country;
+            $adsDependency->save();
+        }
+
+        if($request->State){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'state';
+            $adsDependency->master_id   = $request->State;
+            $adsDependency->save();
+        }
+
+        if($request->City){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'city';
+            $adsDependency->master_id   = $request->City;
+            $adsDependency->save();
+        }
+
+        session()->flash('success', 'Ad has been created');
         return redirect()->route('ads.index');
     }
 
@@ -233,12 +293,51 @@ class AdsController extends Controller
         $field = CategoryField::where('category_id', $request->id)
         ->with(['Field' => function($a){
             $a->where('delete_status', '!=', Status::DELETE)
-            ->with(['FieldOption' => function($q){
-                $q->where('delete_status', '!=', Status::DELETE);
-            }]);
+            ->where(function($b){
+                $b->orwhere(function($c){
+                    $c->where('option', 1)
+                    ->whereHas('FieldOption', function($e){
+                        $e->where('delete_status', '!=', Status::DELETE)
+                        ->where('status', Status::ACTIVE);
+                    });
+                })
+                ->orwhere(function($d){
+                    $d->where('option', 2)
+                    ->wherehas('Dependency', function($f){
+                        $f->where('delete_status', '!=', Status::DELETE);
+                    });
+                })
+                ->orwhere(function($d){
+                    $d->where('option', 0);
+                });
+            });
+            // ->with(['FieldOption' => function($q){
+            //     $q->where('delete_status', '!=', Status::DELETE);
+            // }])
+            // ->with(['Dependency' => function($r){
+            //     $r->where('delete_status', '!=', Status::DELETE)
+            //     ->orderBy('order')
+            //     ->groupBy('field_id');
+            // }]);
         }])
-        ->get();
+        ->get()
+        ->map(function($p){
+            
+            if($p->Field){
+                if($p->Field->option == 1){
+                    $p->Field->FieldOption;
+                }
+                elseif($p->Field->option == 2){
+                    $p->Field->Dependency;
+                }
+                else{
+                    $p->Field;
+                }
+            }
 
+            return $p;
+        });
+        
         return response()->json($field);
     }
 
@@ -248,5 +347,22 @@ class AdsController extends Controller
         ->first();
         
         return view('ads.ad_details', compact('ad'));
+    }
+
+    public function getMasterDependency(Request $request){
+
+        if($request->master == 'Make'){
+
+            $dependency = MakeMst::where('status', Status::ACTIVE)
+            ->orderBy('sort_order')
+            ->get();
+        }
+        elseif($request->master == 'Country'){
+
+            $dependency = Country::orderBy('name')
+            ->get();
+        }
+
+        return response()->json($dependency);
     }
 }

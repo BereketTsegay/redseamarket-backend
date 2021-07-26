@@ -81,28 +81,65 @@
                                         <p class="col-md-6">{{ $item->value }}</p>
                                     </div>
                                 @endforeach
-                                <hr>
-                                <h5>Seller Details</h5>
-                                <hr>
-                                <div class="row">
-                                    <p class="col-md-6">Name :</p>
-                                    <p class="col-md-6">{{ $ad->description }}</p>
-                                </div>
-                                <div class="row">
-                                    <p class="col-md-6">Email :</p>
-                                    <p class="col-md-6">{{ $ad->description }}</p>
-                                </div>
-                                <div class="row">
-                                    <p class="col-md-6">Phone :</p>
-                                    <p class="col-md-6">{{ $ad->description }}</p>
-                                </div>
-                                @if($ad->customer_id != 0)
-                                    
+
+                                @foreach ($ad->AdsFieldDependency as $row1)
+                                    @if($row1->master_type == 'make')
+                                        <div class="row">
+                                            <p class="col-md-6">Make :</p>
+                                            <p class="col-md-6">{{ $row1->Make->name }}</p>
+                                        </div>
+                                    @elseif($row1->master_type == 'model')
+                                        <div class="row">
+                                            <p class="col-md-6">Model :</p>
+                                            <p class="col-md-6">{{ $row1->Model->name }}</p>
+                                        </div>
+                                    @elseif($row1->master_type == 'variant')
+                                        <div class="row">
+                                            <p class="col-md-6">Variant :</p>
+                                            <p class="col-md-6">{{ $row1->Variant->name }}</p>
+                                        </div>
+                                    @elseif($row1->master_type == 'country')
+                                        <div class="row">
+                                            <p class="col-md-6">Country :</p>
+                                            <p class="col-md-6">{{ $row1->Country->name }}</p>
+                                        </div>
+                                    @elseif($row1->master_type == 'state')
+                                        <div class="row">
+                                            <p class="col-md-6">State :</p>
+                                            <p class="col-md-6">{{ $row1->State->name }}</p>
+                                        </div>
+                                    @elseif($row1->master_type == 'city')
+                                        <div class="row">
+                                            <p class="col-md-6">City :</p>
+                                            <p class="col-md-6">{{ $row1->City->name }}</p>
+                                        </div>
+                                    @endif
+                                @endforeach
+
+                                @if($ad->sellerinformation_id != 0)
+                                    <hr>
+                                    <h5>Seller Details</h5>
+                                    <hr>
+                                    <div class="row">
+                                        <p class="col-md-6">Name :</p>
+                                        <p class="col-md-6">{{ $ad->SellerInformation->name }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Email :</p>
+                                        <p class="col-md-6">{{ $ad->SellerInformation->email }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Phone :</p>
+                                        <p class="col-md-6">{{ $ad->SellerInformation->phone }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Address :</p>
+                                        <p class="col-md-6">{{ $ad->SellerInformation->address }}</p>
+                                    </div>
                                 @endif
                             </div>
                             <div class="col-md-6">
                                 <h5 class="my-4">Image</h5>
-                                <hr>
                                 <div class="row">
                                     @foreach ($ad->Image as $row) 
                                         <a href="{{ asset($row->image) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($row->image) }}" alt="image"></a>

@@ -23,7 +23,7 @@
                                     <div class="form-group my-2">
                                         <label for="Name">Category</label>
                                         <select name="category" id="" class="form-control @error('category') is-invalid @enderror" autocomplete="off">
-                                            <option value="1">Select</option>
+                                            <option value="">Select</option>
                                             @foreach ($category as $row)
                                                 <option value="category_{{ $row->id }}">{{ $row->name }}</option>
                                                 @foreach ($row->Subcategory as $item)
