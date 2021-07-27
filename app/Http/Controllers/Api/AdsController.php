@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Api;
 use App\Common\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Ads;
+use App\Models\AdsCustomValue;
+use App\Models\AdsFieldDependency;
 use App\Models\AdsImage;
 use App\Models\CategoryField;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\FieldOptions;
 use App\Models\MakeMst;
 use App\Models\ModelMst;
 use App\Models\SellerInformation;
 use App\Models\State;
 use App\Models\VarientMst;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -53,6 +57,15 @@ class AdsController extends Controller
         }
 
         // try{
+
+            $categoryField = CategoryField::where('category_id', $request->category)
+            ->with(['Field' => function($a){
+                $a->where('delete_status', '!=', Status::DELETE)
+                ->with(['FieldOption' => function($q){
+                    $q->where('delete_status', '!=', Status::DELETE);
+                }]);
+            }])
+            ->get();
 
             if($request->phone_hide == true){
                 $phone_hide = Status::ACTIVE;
@@ -118,6 +131,171 @@ class AdsController extends Controller
                     $adImage->image     = $image;
                     $adImage->save();
                 }
+            }
+
+            foreach($categoryField as $catRow){
+            
+                if($catRow->Field->type == 'select'){
+                    $option_id = $request->select;
+                    
+                    $fieldOption = FieldOptions::where('id', $option_id)
+                    ->where('field_id', $catRow->field_id)
+                    ->first();
+                    
+                    $optionValue = $fieldOption->value;
+                    
+                    $customValue            = new AdsCustomValue();
+                    $customValue->ads_id    = $ads->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = $option_id;
+                    $customValue->value     = $optionValue;
+                    $customValue->save();
+                }
+                elseif($catRow->Field->type == 'radio'){
+                    $optionValue = $request->radio;
+    
+                    $fieldOption = FieldOptions::where('id', $optionValue)
+                    ->where('field_id', $catRow->field_id)
+                    ->first();
+    
+                    $option_id = $fieldOption->id;
+    
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ads->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = $option_id;
+                    $customValue->value     = $optionValue;
+                    $customValue->save();
+    
+                }
+                elseif($catRow->Field->type == 'checkbox_multiple'){
+    
+                    foreach($catRow->Field->FieldOption as $fieldOptionRow){
+    
+                        $optionRow1 = $fieldOptionRow->value;
+                        
+                        if($request->$optionRow1 == true){
+    
+                            $customValue = new AdsCustomValue();
+                            $customValue->ads_id    = $ads->id;
+                            $customValue->field_id  = $catRow->field_id;
+                            $customValue->option_id = $fieldOptionRow->id;
+                            $customValue->value     = $fieldOptionRow->value;
+                            $customValue->save();
+                        }
+                    }
+                }
+                elseif($catRow->Field->type == 'checkbox'){
+    
+                    $field_name = $catRow->Field->name;
+    
+                    if($request->$field_name == true){
+    
+                        $customValue = new AdsCustomValue();
+                        $customValue->ads_id    = $ads->id;
+                        $customValue->field_id  = $catRow->field_id;
+                        $customValue->option_id = 0;
+                        $customValue->value     = $catRow->Field->default_value;
+                        $customValue->save();
+                    }
+                }
+                elseif($catRow->Field->type == 'date'){
+    
+                    $field_name = $catRow->Field->name;
+    
+                    $date = Carbon::createFromFormat('d/m/Y', $request->$field_name)->format('Y-m-d');
+    
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ads->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $date;
+                    $customValue->save();
+                }
+                elseif($catRow->Field->type == 'file'){
+    
+                    $field_name = $catRow->Field->name;
+    
+                    $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
+                
+                    $request->$field_name->storeAs('public/custom_file', $file);
+    
+                    $file = 'storage/custom_file/'.$file;
+    
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ads->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $file;
+                    $customValue->save();
+                }
+                elseif($catRow->Field->type == 'dependency'){
+    
+                }
+                else{
+                    $field_name = $catRow->Field->name;
+    
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ads->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $request->$field_name;
+                    $customValue->save();
+                }
+            }
+    
+            if($request->Make){
+    
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'make';
+                $adsDependency->master_id   = $request->Make;
+                $adsDependency->save();
+            }
+    
+            if($request->Model){
+    
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'model';
+                $adsDependency->master_id   = $request->Model;
+                $adsDependency->save();
+            }
+    
+            if($request->Variant){
+    
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'variant';
+                $adsDependency->master_id   = $request->Variant;
+                $adsDependency->save();
+            }
+    
+            if($request->Country){
+    
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'country';
+                $adsDependency->master_id   = $request->Country;
+                $adsDependency->save();
+            }
+    
+            if($request->State){
+    
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'state';
+                $adsDependency->master_id   = $request->State;
+                $adsDependency->save();
+            }
+    
+            if($request->City){
+    
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'city';
+                $adsDependency->master_id   = $request->City;
+                $adsDependency->save();
             }
 
             return response()->json([

@@ -47,7 +47,7 @@ class Ads extends Model
     }
 
     public function AdsFieldDependency(){
-        return $this->hasMany(AdsFieldDependency::class, 'ads_id', 'id')
+        return $this->hasMany(AdsFieldDependency::class, 'id', 'ads_id')
         ->where('delete_status', '!=', Status::DELETE);
     }
 }

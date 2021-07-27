@@ -48,10 +48,10 @@ class AdsController extends Controller
             'price'             => 'required|numeric',
             'state'             => 'required|numeric',
             'sort_order'        => 'required',
-            'subcategory'       => 'numeric',
+            // 'subcategory'       => 'numeric',
             'canonical_name'    => 'required',
             'country'           => 'required|numeric',
-            'city'              => 'required|numeric',
+            // 'city'              => 'required|numeric',
             'description'       => 'required',
             'image.*'           => 'required|mimes:png,jpg,jpeg',
         ]);
@@ -76,6 +76,13 @@ class AdsController extends Controller
         else{
             $featured_flag = 0;
         }
+
+        if($request->city){
+            $city = $request->city;
+        }
+        else{
+            $city = $request->state;
+        }
         
         $categoryField = CategoryField::where('category_id', $request->category)
         ->with(['Field' => function($a){
@@ -96,7 +103,7 @@ class AdsController extends Controller
         $ad->negotiable_flag        = $negotiable_flag;
         $ad->country_id             = $request->country;
         $ad->state_id               = $request->state;
-        $ad->city_id                = $request->city;
+        $ad->city_id                = $city;
         $ad->sellerinformation_id   = 0; //Admin
         $ad->customer_id            = Auth()->user()->id;
         $ad->featured_flag          = $featured_flag;
@@ -125,7 +132,8 @@ class AdsController extends Controller
         foreach($categoryField as $catRow){
             
             if($catRow->Field->type == 'select'){
-                $option_id = $request->select;
+                $select = $catRow->Field->name;
+                $option_id = $request->$select;
                 
                 $fieldOption = FieldOptions::where('id', $option_id)
                 ->where('field_id', $catRow->field_id)
@@ -141,7 +149,8 @@ class AdsController extends Controller
                 $customValue->save();
             }
             elseif($catRow->Field->type == 'radio'){
-                $optionValue = $request->radio;
+                $radio = $catRow->Field->name;
+                $optionValue = $request->$radio;
 
                 $fieldOption = FieldOptions::where('id', $optionValue)
                 ->where('field_id', $catRow->field_id)
@@ -177,12 +186,18 @@ class AdsController extends Controller
                 $field_name = $catRow->Field->name;
 
                 if($request->$field_name == 'checked'){
+                    if($catRow->Field->default_value){
+                        $val = $catRow->Field->default_value;
+                    }
+                    else{
+                        $val = 1;
+                    }
 
                     $customValue = new AdsCustomValue();
                     $customValue->ads_id    = $ad->id;
                     $customValue->field_id  = $catRow->field_id;
                     $customValue->option_id = 0;
-                    $customValue->value     = $catRow->Field->default_value;
+                    $customValue->value     = $val;
                     $customValue->save();
                 }
             }

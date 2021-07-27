@@ -5,11 +5,11 @@
     <main>
         <div class="container-fluid px-4">
 
-            <h1 class="mt-4">Category Details</h1>
+            <h1 class="mt-4">Ad Details</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('category.index') }}">Category</a></li>
-                <li class="breadcrumb-item active">Category Details</li>
+                <li class="breadcrumb-item"><a href="{{ route('category.index') }}">Ads</a></li>
+                <li class="breadcrumb-item active">Ad Details</li>
             </ol>
             
             <div class="card mb-4">

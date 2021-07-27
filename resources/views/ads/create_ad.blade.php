@@ -23,7 +23,7 @@
                                     <div class="form-group my-2">
                                         <label for="category">Category</label>
                                         <select name="category" id="category" class="form-control @error('category') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select</option>
+                                            <option >Select</option>
                                             @foreach ($category as $row)
                                                 <option value="{{ $row->id }}">{{ $row->name }}</option>
                                             @endforeach
@@ -37,7 +37,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Title">Title</label>
-                                        <input type="text" name="title" value="{{ old('title') }}" class="form-control @error('title') is-invalid @enderror" placeholder="Title" autocomplete="off">
+                                        <input type="text" name="title" value="{{ old('title') }}" class="slug form-control @error('title') is-invalid @enderror" placeholder="Title" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('title')
                                                 {{ $message }}
@@ -108,7 +108,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="CanonicalName">Canonical Name</label>
-                                        <input type="text" name="canonical_name" value="{{ old('canonical_name') }}" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" autocomplete="off">
+                                        <input type="text" id="canonical_name" name="canonical_name" value="{{ old('canonical_name') }}" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" autocomplete="off" readonly>
                                         <div class="invalid-feedback">
                                             @error('canonical_name')
                                                 {{ $message }}
@@ -132,7 +132,7 @@
                                     <div class="form-group my-2">
                                         <label for="city">City</label>
                                         <select name="city" id="city" class="select2  form-control @error('city') is-invalid @enderror" autocomplete="off">
-                                            <option value="1">Select</option>
+                                            <option value="">Select</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('city')
@@ -195,6 +195,16 @@
 @push('script')
 
     <script>
+
+        $('.slug').keyup(function() {
+            $('#canonical_name').val(getSlug($(this).val()));
+        });
+
+        function getSlug(str) {
+            return str.toLowerCase().replace(/ +/g, '-').replace(/[^-\w]/g, '');
+        }
+
+
         $(document).ready(function() {
             $('.select2').select2();
         });
@@ -228,8 +238,8 @@
                 data : {id:id},
                 success:function(data){
                     
-                    let selectoption = '<option value="">Select</option>';
-                    let identity = 'select_identity';
+                    // let selectoption  = '<option value="">Select</option>';
+                    // let identity = 'select_identity';
 
                     for(let i = 0; i < data.length; i++){
                         
@@ -266,15 +276,21 @@
                                     break;
                                 case 'select':
                                     
-                                    custom_field += `<div class="col-md-6 form-group my-2">
-                                            <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <select class="form-control" name="${data[i].field.name}" id="${identity}">
-                                            </select>
+                                    let preSelect = `<div class="col-md-6 form-group my-2">
+                                        <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                        <select class="form-control" name="${data[i].field.name}" >
+                                        <option>Select</option>`;
+
+                                    let preOption = '';
+
+                                    for(let l = 0; l < data[i].field.field_option.length; l++){
+                                        preOption += `<option value="${data[i].field.field_option[l].id}">${data[i].field.field_option[l].value}</option>`;
+                                    }
+
+                                    let postSelect = `</select>
                                         </div>`;
-                                        
-                                        for(let l = 0; l < data[i].field.field_option.length; l++){
-                                            selectoption += `<option value="${data[i].field.field_option[l].id}">${data[i].field.field_option[l].value}</option>`;
-                                        }
+
+                                    custom_field += preSelect + preOption + postSelect;
                                         
                                     break;
                                 case 'radio':
@@ -349,8 +365,8 @@
                     }
 
                     $('#custom_fields').html(custom_field);
-                    
-                    $('#select_identity').html(selectoption);
+                       
+                    // $('#select_identity').html(selectoption);
                     
                     $(`#${select_id}`).html(dependencyOption);
                 }

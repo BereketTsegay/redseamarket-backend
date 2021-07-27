@@ -34,7 +34,9 @@ class DashboardController extends Controller
 
         try{
 
-            if(Auth::user()){
+            $header = $request->header('Authorization');
+            
+            if($header){
                 $user = true;
             }
             else{
@@ -93,12 +95,15 @@ class DashboardController extends Controller
                         
                         if($c->Field->description_area_flag == 0){
                             $c->position = 'top';
+                            $c->name = $c->Field->name;
                         }
                         elseif($c->Field->description_area_flag == 1){
                             $c->position = 'details_page';
+                            $c->name = $c->Field->name;
                         }
                         else{
                             $c->position = 'none';
+                            $c->name = $c->Field->name;
                         }
 
                         unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
