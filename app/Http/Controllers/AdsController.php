@@ -12,6 +12,7 @@ use App\Models\CategoryField;
 use App\Models\Country;
 use App\Models\FieldOptions;
 use App\Models\MakeMst;
+use App\Models\RejectReason;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -364,5 +365,49 @@ class AdsController extends Controller
         }
 
         return response()->json($dependency);
+    }
+
+    public function adAccept($id){
+        
+        Ads::where('id', $id)
+        ->update([
+            'status'    => Status::ACTIVE,
+        ]);
+
+        session()->flash('success', 'Ad has been accepted');
+        return redirect()->route('ads.index');
+    }
+
+    public function getRejectReson(Request $request){
+
+        $reason = RejectReason::where('id', $request->id)
+        ->first();
+
+        return response()->json($reason);
+    }
+
+    public function adRequestIndex(){
+
+        $adsRequest = Ads::where('status', Status::REQUEST)
+        ->orderBy('created_at', 'desc')
+        ->paginate(1);
+
+        $reason = RejectReason::where('status', Status::ACTIVE)
+        ->orderBy('reson')
+        ->get();
+
+        return view('ads.request.ad_request', compact('adsRequest', 'reason'));
+    }
+
+    public function adRequestDetails($id){
+
+        $ad = Ads::where('id', $id)
+        ->first();
+
+        $reason = RejectReason::where('status', Status::ACTIVE)
+        ->orderBy('reson')
+        ->get();
+
+        return view('ads.request.request_details', compact('ad', 'reason'));
     }
 }

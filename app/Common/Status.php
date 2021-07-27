@@ -6,11 +6,13 @@ class Status{
 
     const DELETE = 1;
 
+
     // Ads
 
+    const REQUEST = 0;
     const ACTIVE = 1;
     const REJECTED = 2;
-    const INACTIVE = 0;
+    const INACTIVE = 3;
 
     // Image
     

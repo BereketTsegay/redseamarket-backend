@@ -14,7 +14,7 @@
             <div class="card mb-4">
                 <div class="card-header" id="myTab">
                     <ul class="nav nav-justified">
-                        <li class="nav-item"><a data-toggle="tab" href="#tab-pending" class="nav-link">Pending</a></li>
+                        <li class="nav-item"><a data-toggle="tab" href="#tab-pending" class="nav-link active">Pending</a></li>
                         <li class="nav-item"><a data-toggle="tab" href="#tab-reject" class="nav-link">Rejected</a></li>
                     </ul>
                 </div>
@@ -36,52 +36,40 @@
                             </div>
                     <table class="table table-striped table-bordered">
                         <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Date</th>
-                                <th>Category</th>
-                                <th>Title</th>
-                                <th>User</th>
-                                <th>Active</th>
-                                <th>View</th>
-                                <th>Accept</th>
-                                <th>Reject</th>
-                            </tr>
+                            @if(count($adsRequest) == 0)
+                            <p class="text-center">No data found !</p>
+                            @else
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Title</th>
+                                    <th>User</th>
+                                    <th>View</th>
+                                    <th>Accept</th>
+                                    <th>Reject</th>
+                                </tr>
+                            @endif
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>61</td>
-                                <td>fdsaf</td>
-                                <td>dsafasf</td>
-                                <td><a href="{{ route('ad_request.details') }}"><button class="btn btn-secondary">View</button></a></td>
-                                <td><a href="#"><button class="btn btn-primary">Accept</button></a></td>
-                                <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>61</td>
-                                <td>fdsaf</td>
-                                <td>dasffds</td>
-                                <td><a href="#"><button class="btn btn-secondary">View</button></a></td>
-                                <td><a href="#"><button class="btn btn-primary">Accept</button></a></td>
-                                <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>61</td>
-                                <td>fdsaf</td>
-                                <td>asdfdsaf</td>
-                                <td><a href="#"><button class="btn btn-secondary">View</button></a></td>
-                                <td><a href="#"><button class="btn btn-primary">Accept</button></a></td>
-                                <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button></td>
-                            </tr>
+                            @php
+                                $i= ($adsRequest->currentpage() - 1 ) * $adsRequest->perpage() + 1;
+                            @endphp
+                            @foreach ($adsRequest as $row)
+                                <tr>
+                                    <th scope="row">{{ $i }}</th>
+                                    <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
+                                    <td>{{ $row->Category->name }}</td>
+                                    <td>{{ $row->title }}</td>
+                                    <td>{{ $row->User->name }}</td>
+                                    <td><a href="{{ route('ad_request.details', $row->id) }}"><button class="btn btn-secondary">View</button></a></td>
+                                    <td><form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form></td>
+                                    <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button></td>
+                                </tr>
+                            @php
+                                $i++;
+                            @endphp
+                            @endforeach
                         </tbody>
                     </table>
                         </div>
@@ -158,7 +146,20 @@
           </button>
             </div>
             <div class="modal-body">
-                
+                <div class="container">
+                    <div class="form-group">
+                        <label for="Reason">Reason</label>
+                        <select name="reason" class="form-control" id="Reason">
+                            <option value="">Select</option>
+                            @foreach ($reason as $row3)
+                                <option value="{{ $row3->id }}">{{ $row3->reason }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" id="reson_description">
+                        
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -239,4 +240,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('#Reason').on('change', function(){
+        let id = $(this).val();
+        $.ajax({
+            url: '/get/reject/reson',
+            method: 'get',
+            data:{id:id},
+            success:function(data){
+                let description = `<p class="my-2">${data.description}</p>`;
+
+                $('#reson_description').html(description);
+            }
+        })
+    });
+</script>
 @endpush

@@ -113,10 +113,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-icons"></i></div>
                                 Icons
                             </a>
-                            <a class="nav-link" href="tables.html">
+                            {{-- <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Tables
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                 </nav>

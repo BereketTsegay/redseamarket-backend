@@ -89,5 +89,34 @@ class LoginController extends Controller
                 'errors'    => $validate->errors(),
             ], 400);
         }
+
+        $user = User::where('email', $request->email)
+        ->first();
+
+        if($user){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Email already taken',
+            ], 400);
+        }
+
+        $user               = new User();
+        $user->name         = $request->name;
+        $user->email        = $request->email;
+        $user->password     = Hash::make($request->password);
+        $user->type         = UserType::USER;
+        $user->save();
+
+        if(Auth::loginUsingId($user->id)){
+
+            $token = Auth::user()->createToken('TutsForWeb')->accessToken;
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Registration Successful',
+                'token'     => $token,
+            ], 200);
+        }
     }
 }

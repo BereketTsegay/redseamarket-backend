@@ -11258,3 +11258,7 @@ body {
 .badge-primary{
   background-color: #292a2b;
 }
+
+#myTab .active{
+  border-bottom: 3px solid #000;
+}

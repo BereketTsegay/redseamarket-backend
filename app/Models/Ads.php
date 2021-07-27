@@ -43,7 +43,7 @@ class Ads extends Model
     }
 
     public function SellerInformation(){
-        return $this->hasOne(SellerInformation::class);
+        return $this->hasOne(SellerInformation::class, 'id', 'sellerinformation_id');
     }
 
     public function AdsFieldDependency(){

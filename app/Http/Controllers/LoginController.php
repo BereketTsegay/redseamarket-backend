@@ -162,4 +162,9 @@ class LoginController extends Controller
 
         return view('dashboard');
     }
+
+    public function userIndex(){
+
+        return view('user.user_list');
+    }
 }

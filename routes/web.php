@@ -15,10 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::view('users', 'user.user_list')->name('user.index');
-
-Route::view('/ad_request', 'ads.request.ad_request')->name('ad_request.index');
-Route::view('/ad_request/details', 'ads.request.request_details')->name('ad_request.details');
 
 Route::get('/', function(){
     return redirect()->route('login.index');
@@ -50,6 +46,10 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         Route::get('dashboard', [App\Http\Controllers\LoginController::class, 'dashboard'])->name('dashboard');
 
+
+        // Users
+
+        Route::get('users', [App\Http\Controllers\LoginController::class, 'userIndex'])->name('user.index');
 
         /* ========== Ads ========== */
 
@@ -120,6 +120,14 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         Route::get('/get/custom/field', [App\Http\Controllers\AdsController::class, 'getCustomField'])->name('ad.get.custom_field');
         Route::get('/get/master/dependency', [App\Http\Controllers\AdsController::class, 'getMasterDependency'])->name('ad.get.master.dependency');
+
+                // Ads Request
+
+        Route::get('/ad_request', [App\Http\Controllers\AdsController::class, 'adRequestIndex'])->name('ad_request.index');
+        Route::get('/ad_request/details/{id}', [App\Http\Controllers\AdsController::class, 'adRequestDetails'])->name('ad_request.details');
+        Route::post('/ad/accept/{id}', [App\Http\Controllers\AdsController::class, 'adAccept'])->name('ad.accept');
+
+        Route::get('/get/reject/reson', [App\Http\Controllers\AdsController::class, 'getRejectReson']);
 
         Route::get('/admin/logout', function(){
             Auth::logout();
