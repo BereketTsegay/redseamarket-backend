@@ -364,7 +364,14 @@ class AdsController extends Controller
                     }
                     elseif($a->Field->option == 2){
                         $a->Field->Dependency->map(function($c){
-                            
+
+                            if($c->master == 'Make'){
+                                $c->option = $this->RetriveMaster('Make');
+                            }
+                            elseif($c->master == 'Country'){
+                                $c->option = $this->RetriveMaster('Country');
+                            }
+
                             unset($c->delete_status, $c->field_id);
                             return $c;
                         });
@@ -417,6 +424,7 @@ class AdsController extends Controller
                 $dependency = MakeMst::where('status', Status::ACTIVE)
                 ->orderBy('sort_order')
                 ->get();
+                
             }
             elseif($request->master == 'Model'){
 
@@ -425,7 +433,7 @@ class AdsController extends Controller
                 ->orderBy('sort_order')
                 ->get();
             }
-            elseif($request->master == 'Varient'){
+            elseif($request->master == 'Variant'){
 
                 $dependency = VarientMst::where('status', Status::ACTIVE)
                 ->where('model_id', $request->master_id)
@@ -464,5 +472,19 @@ class AdsController extends Controller
                 'message'   => 'Something went wrong',
             ], 301);
         }
+    }
+
+    public function RetriveMaster($master){
+        if($master == "Make"){
+
+            $masterMst = MakeMst::orderBy('sort_order')
+            ->get();
+        }
+        elseif($master == 'Country'){
+            $masterMst = Country::orderBy('name')
+            ->get();
+        }
+
+        return $masterMst;
     }
 }

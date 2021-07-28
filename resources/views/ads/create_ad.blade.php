@@ -463,48 +463,52 @@
 
         });
 
-        $(document).on('change', '#country', function(){
-        
-            let id = $(this).val();
-            let option = '';
+        $(document).ready(function(){
 
-            $.ajax({
-                url : '/global/state/get',
-                type : 'get',
-                data : {id:id},
-                success:function(data){
+            $(document).on('change', '#country', function(){
+            
+                let id = $(this).val();
+                let option = '';
 
-                    option += `<option value="">Select</option>`;
+                $.ajax({
+                    url : '/global/state/get',
+                    type : 'get',
+                    data : {id:id},
+                    success:function(data){
 
-                    for(let i = 0; i < data.length; i++){
-                        option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                        option += `<option value="">Select</option>`;
+
+                        for(let i = 0; i < data.length; i++){
+                            option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                        }
+
+                        $('#state').html(option);
                     }
-
-                    $('#state').html(option);
-                }
+                });
             });
-        });
 
-        $(document).on('change', '#state', function(){
+            $(document).on('change', '#state', function(){
 
-            let id = $(this).val();
-            let option = '';
+                let id = $(this).val();
+                let option = '';
 
-            $.ajax({
-                url : '/global/city/get',
-                type : 'get',
-                data : {id:id},
-                success:function(data){
+                $.ajax({
+                    url : '/global/city/get',
+                    type : 'get',
+                    data : {id:id},
+                    success:function(data){
 
-                    option += `<option value="">Select</option>`;
+                        option += `<option value="">Select</option>`;
 
-                    for(let i = 0; i < data.length; i++){
-                        option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                        for(let i = 0; i < data.length; i++){
+                            option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                        }
+
+                        $('#city').html(option);
                     }
-
-                    $('#city').html(option);
-                }
+                });
             });
+            
         });
 
     </script>
