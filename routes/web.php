@@ -129,6 +129,32 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         Route::get('/get/reject/reson', [App\Http\Controllers\AdsController::class, 'getRejectReson']);
 
+            // Banner
+
+        Route::get('/banner', [App\Http\Controllers\BannerController::class, 'index'])->name('banner.index');
+        Route::post('/banner/store', [App\Http\Controllers\BannerController::class, 'store'])->name('banner.store');
+        Route::get('/banner/view/{id}', [App\Http\Controllers\BannerController::class, 'view'])->name('banner.view');
+        Route::post('/banner/update', [App\Http\Controllers\BannerController::class, 'update'])->name('banner.update');
+        Route::post('/banner/delete/{id}', [App\Http\Controllers\BannerController::class, 'delete'])->name('banner.delete');
+
+            // Social
+        
+        Route::get('/social', [App\Http\Controllers\SocialLinkController::class, 'index'])->name('social.index');
+        Route::post('/social/store', [App\Http\Controllers\SocialLinkController::class, 'store'])->name('social.store');
+
+            // Testimonial
+        
+        Route::get('/testimonial', [App\Http\Controllers\TestimonialController::class, 'index'])->name('testimonial.index');
+        Route::post('/testimonial/store', [App\Http\Controllers\TestimonialController::class, 'store'])->name('testimonial.store');
+        Route::get('/testimonial/view/{id}', [App\Http\Controllers\TestimonialController::class, 'view'])->name('testimonial.view');
+        Route::get('/testimonial/edit/{id}', [App\Http\Controllers\TestimonialController::class, 'edit'])->name('testimonial.edit');
+        Route::post('/testimonial/update/{id}', [App\Http\Controllers\TestimonialController::class, 'update'])->name('testimonial.update');
+
+            // Payment
+
+        Route::view('payment/aproved', 'other.payment.aproved_payment')->name('payment.aproved');
+        Route::view('payment/declined', 'other.payment.declined_payment')->name('payment.declined');
+
         Route::get('/admin/logout', function(){
             Auth::logout();
     

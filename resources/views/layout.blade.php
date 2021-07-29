@@ -59,24 +59,51 @@
                                     <a class="nav-link" href="{{ route('user.index') }}">Users</a>
                                 </nav>
                             </div>
+                            <a class="nav-link" href="{{ route('banner.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
+                                Banners
+                            </a>
+                            <a class="nav-link" href="{{ route('testimonial.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
+                                Testimonials
+                            </a>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseAds">
+                                <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                                Category
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseCategory" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ route('category.index') }}">Category</a>
+                                    <a class="nav-link" href="{{ route('custom_field.index') }}">Custom Field</a>
+                                </nav>
+                            </div>
+                            <a class="nav-link" href="{{ route('subcategory.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                                Subcategory
+                            </a>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAds" aria-expanded="false" aria-controls="collapseAds">
-                                <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-ad"></i></div>
                                 Ads
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapseAds" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('category.index') }}">Category</a>
-                                    <a class="nav-link" href="{{ route('subcategory.index') }}">Subcategory</a>
                                     <a class="nav-link" href="{{ route('ads.index') }}">Ads</a>
                                     <a class="nav-link" href="{{ route('ad_request.index') }}">Ad Request</a>
-                                    <a class="nav-link" href="{{ route('custom_field.index') }}">Custom Field</a>
                                 </nav>
                             </div>
-                            <a class="nav-link" href="#">
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePayment" aria-expanded="false" aria-controls="collapseAds">
                                 <div class="sb-nav-link-icon"><i class="fas fa-dollar-sign"></i></div>
                                 Payment
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
+                            <div class="collapse" id="collapsePayment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ route('payment.aproved') }}">Approved</a>
+                                    <a class="nav-link" href="{{ route('payment.declined') }}">Declined</a>
+                                </nav>
+                            </div>
                             {{-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                                 Pages
@@ -113,6 +140,22 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-icons"></i></div>
                                 Icons
                             </a>
+                            <a class="nav-link" href="{{ route('social.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-thumbs-up"></i></div>
+                                Social Links
+                            </a>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="false" aria-controls="collapseAds">
+                                <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
+                                Settings
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseSettings" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ route('admin.profile') }}">Porfile</a>
+                                    <a class="nav-link" href="#" onclick="changePassword()">Change Password</a>
+                                    <a class="nav-link" href="{{ route('logout') }}">Logout</a>
+                                </nav>
+                            </div>
                             {{-- <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Tables

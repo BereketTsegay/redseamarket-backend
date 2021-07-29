@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Ads;
 use App\Models\Category;
 use App\Models\CategoryField;
+use App\Models\Subcategory;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -164,6 +165,111 @@ class DashboardController extends Controller
                 ],
             ], 200);
 
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getCategory(Request $request){
+        
+        $rules = [
+            'latitude'      => 'required|numeric',
+            'longitude'     => 'required|numeric',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+
+        try{
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
+
+            $category = Category::where('delete_status', '!=', Status::DELETE)
+            ->where('status', Status::ACTIVE)
+            ->orderBy('sort_order')
+            ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                $b->where('status', Status::ACTIVE)
+                ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+            })
+            ->take(5)
+            ->get()
+            ->map(function($a){
+
+                unset($a->country_id, $a->state_id, $a->city_id, $a->delete_status, $a->sort_order, $a->status, $a->icon_class_id, $a->ads);
+                return $a;
+            });
+
+            return response()->json([
+
+                'status'        => 'success',
+                'message'       => 'Category found',
+                'categories'    => $category,
+            ], 200);
+
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getSubcategory(Request $request){
+
+        $rules = [
+            'category'   => 'required|numeric',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+
+        try{
+
+            $subcategory = Subcategory::where('category_id', $request->category)
+            ->where('status', Status::ACTIVE)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->orderBy('sort_order')
+            ->get()
+            ->map(function($a){
+                
+                unset($a->delete_status, $a->status, $a->parent_id, $a->category_id, $a->type, $a->sort_order, $a->percentage);
+                return $a;
+            });
+
+            return response()->json([
+
+                'status'        => 'success',
+                'message'       => 'Category found',
+                'subcategories' => $subcategory,
+            ], 200);
         }
         catch (\Exception $e) {
             

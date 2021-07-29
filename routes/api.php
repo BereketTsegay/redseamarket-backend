@@ -23,6 +23,8 @@ Route::post('/customer/dashboard', [\App\Http\Controllers\Api\DashboardControlle
 Route::post('/customer/ads/custom_field_and_dependency', [\App\Http\Controllers\Api\AdsController::class, 'customFieldsAndDependency']);
 Route::post('/customer/get/master/dependency', [\App\Http\Controllers\Api\AdsController::class, 'getMasterDependency']);
 Route::post('/customer/ads/store', [\App\Http\Controllers\Api\AdsController::class, 'adStore']);
+Route::post('/customer/get/category', [\App\Http\Controllers\Api\DashboardController::class, 'getCategory']);
+Route::post('/customer/get/subcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubcategory']);
 
 Route::middleware('auth:api')->group( function () {
     

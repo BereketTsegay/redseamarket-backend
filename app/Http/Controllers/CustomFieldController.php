@@ -70,8 +70,24 @@ class CustomFieldController extends Controller
             $option = 0;
         }
 
+        if($request->name){
+            $subName = explode(' ', $request->name);
+
+            if(count($subName) > 0){
+                $name = '';
+
+                foreach($subName as $nameRow){
+
+                    $name = $name.'_'.$nameRow;
+                }
+            }
+            else{
+                $name = $request->name;
+            }
+        }
+
         $field                          = new Fields();
-        $field->name                    = $request->name;
+        $field->name                    = $name;
         $field->type                    = $type;
         $field->max                     = $request->field_length;
         $field->default_value           = $request->default_value;
@@ -191,9 +207,25 @@ class CustomFieldController extends Controller
             $option = 0;
         }
 
+        if($request->name){
+            $subName = explode(' ', $request->name);
+
+            if(count($subName) > 0){
+                $name = '';
+
+                foreach($subName as $nameRow){
+
+                    $name = $name.'_'.$nameRow;
+                }
+            }
+            else{
+                $name = $request->name;
+            }
+        }
+
         Fields::where('id', $id)
         ->update([
-            'name'                  => $request->name,
+            'name'                  => $name,
             'type'                  => $type,
             'description_area_flag' => $request->description_area,
             'max'                   => $request->field_length,

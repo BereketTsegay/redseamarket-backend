@@ -11262,3 +11262,9 @@ body {
 #myTab .active{
   border-bottom: 3px solid #000;
 }
+
+.login-body{
+  background-image: url('../background.jpg');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
