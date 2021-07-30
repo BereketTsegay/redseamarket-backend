@@ -25,7 +25,7 @@ class SocialLinkController extends Controller
 
         $request->validate([
             'name'      => 'required',
-            'icon'      => 'required',
+            'url'      => 'required',
             'image'     => 'mimes:png,jpg,jpeg',
         ]);
 
@@ -65,6 +65,77 @@ class SocialLinkController extends Controller
         $social->save();
 
         session()->flash('success', 'Social Link has been stored');
+        return redirect()->route('social.index');
+    }
+
+    public function edit($id){
+
+        $social = SocialLink::where('id', $id)
+        ->first();
+
+        $icon = IconClass::where('status', Status::ACTIVE)
+        ->where('delete_status', '!=', Status::DELETE)
+        ->get();
+
+        return view('other.social.edit_social', compact('social', 'icon'));
+    }
+
+    public function update(Request $request, $id){
+        
+        $request->validate([
+            'name'      => 'required',
+            'url'      => 'required',
+            'image'     => 'mimes:png,jpg,jpeg',
+        ]);
+
+        if($request->hasFile('image') || $request->icon){
+
+            if($request->hasFile('image')){
+
+                $file = uniqid().'.'.$request->image->getClientOriginalExtension();
+
+                $request->image->storeAs('public/social/', $file);
+
+                $image = 'storage/social'.$file;
+            }
+            else{
+                $social = SocialLink::where('id', $id)
+                ->first();
+
+                $image = $social->image;
+            }
+        }
+        else{
+            $request->validate([
+                'icon'      => 'required',
+            ]);
+        }
+
+        if($request->status == 'on'){
+            $status = Status::ACTIVE;
+        }
+        else{
+            $status = Status::INACTIVE;
+        }
+
+        SocialLink::where('id', $id)
+        ->update([
+            'name'      => $request->name,
+            'url'       => $request->url,
+            'icon'      => $request->icon,
+            'image'     => $image,
+            'status'    => $status,
+        ]);
+
+        session()->flash('success', 'Social Link has been updated');
+        return redirect()->route('social.index');
+    }
+
+    public function delete($id){
+
+        SocialLink::destroy($id);
+
+        session()->flash('success', 'Social Link has been deleted');
         return redirect()->route('social.index');
     }
 }

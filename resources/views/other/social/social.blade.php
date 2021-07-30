@@ -49,9 +49,9 @@
                                     @else
                                     <td class="text-secondary">Disabled</td>
                                     @endif
-                                    <td><a href="#"><button class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
-                                    <form id="delete_banner_form{{$row->id}}" action="#" method="POST">
+                                    <td><a href="{{ route('social.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
+                                    <td><button type="button" onclick="socialDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteSocialModal">Delete</button>
+                                    <form id="delete_social_form{{$row->id}}" action="{{ route('social.delete', $row->id) }}" method="POST">
                                         @csrf
                                     </form>
                                     </td>
@@ -67,11 +67,11 @@
 
 @push('script')
     
-<div class="modal fade" id="deleteBannerModal" tabindex="-1" role="dialog" aria-labelledby="deleteBannerModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteSocialModal" tabindex="-1" role="dialog" aria-labelledby="deleteSocialModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-          {{-- <h5 class="modal-title" id="deleteBannerModalLabel">Modal title</h5>
+          {{-- <h5 class="modal-title" id="deleteSocialModalLabel">Modal title</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span> --}}
           {{-- </button> --}}
@@ -81,7 +81,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" onclick="deteteBanner()" class="btn btn-primary">Delete</button>
+                <button type="button" onclick="deteteSocial()" class="btn btn-primary">Delete</button>
             </div>
         </div>
     </div>
@@ -139,13 +139,13 @@
         
         let ids = '';
 
-        bannerDelete = id => {
+        socialDelete = id => {
             ids = id
         }
 
-        deteteBanner = () => {
+        deteteSocial = () => {
             
-            $('#delete_Banner_form'+ids).submit();
+            $('#delete_social_form'+ids).submit();
         }
   </script>
 @endpush

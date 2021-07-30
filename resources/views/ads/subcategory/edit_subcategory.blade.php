@@ -48,7 +48,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Name">Canonical Name</label>
-                                        <input type="text" name="canonical_name" value="{{ $subcategory->canonical_name }}" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" autocomplete="off">
+                                        <input type="text" name="canonical_name" value="{{ $subcategory->canonical_name }}" id="canonical_name" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" readonly autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('canonical_name')
                                                 {{ $message }}
@@ -89,7 +89,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group my-2">
                                         <label for="Name">Subcategory Name</label>
-                                        <input type="text" name="subcategory_name" value="{{ $subcategory->name }}" class="form-control @error('subcategory_name') is-invalid @enderror" placeholder="Subategory Name" autocomplete="off">
+                                        <input type="text" name="subcategory_name" value="{{ $subcategory->name }}" class="slug form-control @error('subcategory_name') is-invalid @enderror" placeholder="Subategory Name" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('subcategory_name')
                                                 {{ $message }}
@@ -135,5 +135,13 @@
 @endsection
 
 @push('script')
- 
+<script>
+    $('.slug').keyup(function() {
+        $('#canonical_name').val(getSlug($(this).val()));
+    });
+
+    function getSlug(str) {
+        return str.toLowerCase().replace(/ +/g, '-').replace(/[^-\w]/g, '');
+    }
+</script>
 @endpush

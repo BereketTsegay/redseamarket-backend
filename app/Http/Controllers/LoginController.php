@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Status;
 use App\Common\UserType;
 use App\Mail\PasswordReset;
+use App\Models\Ads;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -160,11 +162,73 @@ class LoginController extends Controller
 
     public function dashboard(){
 
-        return view('dashboard');
+        $inActiveAd = Ads::where('status', Status::INACTIVE)
+        ->count();
+
+        $activeAd = Ads::where('status', Status::ACTIVE)
+        ->count();
+
+        $user = User::where('type', UserType::USER)
+        ->where('delete_status', '!=', Status::DELETE)
+        ->count();
+
+        return view('dashboard', compact('inActiveAd', 'activeAd', 'user'));
     }
 
     public function userIndex(){
 
-        return view('user.user_list');
+        $user = User::where('status', Status::ACTIVE)
+        ->where('type', UserType::USER)
+        ->paginate(10);
+
+        return view('user.user_list', compact('user'));
+    }
+
+    public function userEdit($id){
+
+        $user = User::where('id', $id)
+        ->first();
+
+        return view('user.edit_user', compact('user'));
+    }
+
+    public function userUpdate(Request $request, $id){
+        
+        $request->validate([
+            'name'  => 'required',
+            'email' => 'required|email|unique:users,email,'.$id.',id',
+        ]);
+
+        if($request->status == 'on'){
+            $status = Status::ACTIVE;
+        }
+        else{
+            $status = 0;
+        }
+
+        User::where('id', $id)
+        ->update([
+            'email'     => $request->email,
+            'name'  => $request->name,
+            'status'    => $status,
+        ]);
+
+        session()->flash('success', 'User details has been changed');
+        return redirect()->route('user.index');
+    }
+
+    public function userChangePassword(Request $request, $id){
+        
+        $request->validate([
+            'password'  => 'required|confirmed',
+        ]);
+
+        User::where('id', $id)
+        ->update([
+            'password'  => Hash::make($request->password),
+        ]);
+
+        session()->flash('success', 'Password has been changed');
+        return redirect()->route('user.index');
     }
 }

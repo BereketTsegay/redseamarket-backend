@@ -53,6 +53,7 @@ class DashboardController extends Controller
 
             $category = Category::where('delete_status', '!=', Status::DELETE)
             ->where('status', Status::ACTIVE)
+            ->where('display_flag', Status::ACTIVE)
             ->orderBy('sort_order')
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
@@ -129,6 +130,7 @@ class DashboardController extends Controller
 
             $categoryDefault = Category::where('delete_status', '!=', Status::DELETE)
             ->where('status', Status::ACTIVE)
+            ->where('display_flag', Status::ACTIVE)
             ->orderBy('sort_order')
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)

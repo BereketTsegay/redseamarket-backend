@@ -1,5 +1,6 @@
 <?php
 
+use App\Common\Status;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->integer('type');
             $table->integer('status')->default(1);
+            $table->boolean('delete_status')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

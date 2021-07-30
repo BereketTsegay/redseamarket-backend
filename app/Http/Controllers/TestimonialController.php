@@ -76,7 +76,7 @@ class TestimonialController extends Controller
             $request->image->storeAs('public/testimonial', $file);
 
             $image = 'storage/testimonial/'.$file;
-            
+
         }
         else{
             $testimonial = Testimonial::where('id', $id)
@@ -84,6 +84,7 @@ class TestimonialController extends Controller
 
             $image = $testimonial->image;
         }
+
         Testimonial::where('id', $id)
         ->update([
             'name' => $request->name,
@@ -91,5 +92,8 @@ class TestimonialController extends Controller
             'description'   => $request->description,
             'image'         => $image,
         ]);
+
+        session()->flash('success', 'Testimonial has been updated');
+        return redirect()->route('testimonial.index');
     }
 }

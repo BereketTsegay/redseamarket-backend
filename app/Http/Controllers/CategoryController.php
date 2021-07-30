@@ -45,10 +45,10 @@ class CategoryController extends Controller
         $request->validate([
             'category_name'     => 'required',
             'icon_class'        => 'required|numeric',
-            'city'              => 'required|numeric',
-            'state'             => 'required|numeric',
+            // 'city'              => 'required|numeric',
+            // 'state'             => 'required|numeric',
             'canonical_name'    => 'required',
-            'country'           => 'required|numeric',
+            // 'country'           => 'required|numeric',
             'sort_order'        => 'required|numeric',
             'description'       => 'required',
             'image'             => 'required|mimes:jpeg,jpg,png',
@@ -71,17 +71,35 @@ class CategoryController extends Controller
             $status = 0;
         }
 
+        if($request->display_flag == 'on'){
+            
+            $count = Category::where('display_flag', Status::ACTIVE)
+            ->count();
+            
+            if($count <= 5){
+                $display_flag = Status::ACTIVE;
+            }
+            else{
+                session()->flash('status_error', 'Display Count is exceeded');
+                return redirect()->back();
+            }
+        }
+        else{
+            $display_flag = 0;
+        }
+
         $category                   = new Category();
         $category->name             = $request->category_name;
         $category->canonical_name   = $request->canonical_name;
         $category->description      = $request->description;
         $category->image            = $image;
         $category->icon_class_id    = $request->icon_class;
-        $category->country_id       = $request->country;
-        $category->state_id         = $request->state;
-        $category->city_id          = $request->city;
+        // $category->country_id       = $request->country;
+        // $category->state_id         = $request->state;
+        // $category->city_id          = $request->city;
         $category->sort_order       = $request->sort_order;
         $category->status           = $status;
+        $category->display_flag     = $display_flag;
         $category->save();
 
         session()->flash('success', 'Category has been created');
@@ -118,10 +136,10 @@ class CategoryController extends Controller
         $request->validate([
             'category_name'     => 'required',
             'icon_class'        => 'required|numeric',
-            'city'              => 'required|numeric',
+            // 'city'              => 'required|numeric',
             'canonical_name'    => 'required',
-            'country'           => 'required|numeric',
-            'state'             => 'required|numeric',
+            // 'country'           => 'required|numeric',
+            // 'state'             => 'required|numeric',
             'sort_order'        => 'required|numeric',
             'description'       => 'required',
             'image'             => 'mimes:jpeg,jpg,png',
@@ -151,6 +169,23 @@ class CategoryController extends Controller
             $status = 0;
         }
 
+        if($request->display_flag == 'on'){
+
+            $count = Category::where('display_flag', Status::ACTIVE)
+            ->count();
+            
+            if($count <= 5){
+                $display_flag = Status::ACTIVE;
+            }
+            else{
+                session()->flash('status_error', 'Display Count is exceeded');
+                return redirect()->back();
+            }
+        }
+        else{
+            $display_flag = 0;
+        }
+
         Category::where('id', $id)
         ->update([
             'name'              => $request->category_name,
@@ -158,11 +193,12 @@ class CategoryController extends Controller
             'description'       => $request->description,
             'image'             => $image,
             'icon_class_id'     => $request->icon_class,
-            'country_id'        => $request->country,
-            'state_id'          => $request->state,
-            'city_id'           => $request->city,
+            // 'country_id'        => $request->country,
+            // 'state_id'          => $request->state,
+            // 'city_id'           => $request->city,
             'sort_order'        => $request->sort_order,
             'status'            => $status,
+            'display_flag'      => $display_flag,
         ]);
 
         session()->flash('success', 'Category has been updated');

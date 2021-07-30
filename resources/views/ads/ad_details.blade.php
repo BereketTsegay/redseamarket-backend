@@ -8,7 +8,7 @@
             <h1 class="mt-4">Ad Details</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('category.index') }}">Ads</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('ads.index') }}">Ads</a></li>
                 <li class="breadcrumb-item active">Ad Details</li>
             </ol>
             

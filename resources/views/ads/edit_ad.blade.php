@@ -6,11 +6,11 @@
         <div class="container-fluid px-4">
             
             
-            <h2 class="mt-4">Create Ads</h2>
+            <h2 class="mt-4">Edit Ads</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('ads.index') }}">Ads</a></li>
-                <li class="breadcrumb-item active">Create Ads</li>
+                <li class="breadcrumb-item active">Edit Ads</li>
             </ol>
             
             <div class="card mb-4">
@@ -23,9 +23,12 @@
                                     <div class="form-group my-2">
                                         <label for="category">Category</label>
                                         <select name="category" id="category" class="form-control @error('category') is-invalid @enderror" autocomplete="off">
-                                            <option >Select</option>
                                             @foreach ($category as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                                @if ($row->id == $ad->category_id)
+                                                    <option selected value="{{ $row->id }}">{{ $row->name }}</option>
+                                                @else
+                                                    <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                                @endif
                                             @endforeach
                                            
                                         </select>
@@ -37,7 +40,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Title">Title</label>
-                                        <input type="text" name="title" value="{{ old('title') }}" class="slug form-control @error('title') is-invalid @enderror" placeholder="Title" autocomplete="off">
+                                        <input type="text" name="title" value="{{ $ad->title }}" class="slug form-control @error('title') is-invalid @enderror" placeholder="Title" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('title')
                                                 {{ $message }}
@@ -46,7 +49,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Price">Price</label>
-                                        <input type="text" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
+                                        <input type="text" name="price" value="{{ $ad->price }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('price')
                                                 {{ $message }}
@@ -56,7 +59,7 @@
                                     <div class="form-group my-2">
                                         <label for="state">State</label>
                                         <select name="state" id="state" class="select2 form-control @error('state') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select State</option>
+                                            <option value="{{ $ad->state_id }}">Select State</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('state')
@@ -83,13 +86,13 @@
                                         <div class="col-md-4">
                                             <div class="form-group my-2">
                                                 <label for="Status">Price Negotiable</label>
-                                                <input type="checkbox" name="negotiable" value="checked" autocomplete="off">
+                                                <input type="checkbox" name="negotiable" {{ $ad->negotiable_flag == 1 ? 'checked' : '' }} value="checked" autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group my-2">
                                                 <label for="Status">Featured</label>
-                                                <input type="checkbox" name="featured" value="checked" autocomplete="off">
+                                                <input type="checkbox" name="featured" {{ $ad->featured_flag == 1 ? 'checked' : '' }} value="checked" autocomplete="off">
                                             </div>
                                         </div>
                                     </div>
@@ -98,7 +101,7 @@
                                     <div class="form-group my-2">
                                         <label for="subcategory">Subcategory (Optional)</label>
                                         <select name="subcategory" id="subcategory" class="form-control @error('subcategory') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select</option>
+                                            <option value="{{ $ad->subcategory_id }}">Select</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('subcategory')
@@ -108,7 +111,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="CanonicalName">Canonical Name</label>
-                                        <input type="text" id="canonical_name" name="canonical_name" value="{{ old('canonical_name') }}" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" autocomplete="off" readonly>
+                                        <input type="text" id="canonical_name" name="canonical_name" value="{{ $ad->canonical_name }}" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" autocomplete="off" readonly>
                                         <div class="invalid-feedback">
                                             @error('canonical_name')
                                                 {{ $message }}
@@ -118,9 +121,12 @@
                                     <div class="form-group my-2">
                                         <label for="country">Country</label>
                                         <select name="country" id="country" class="select2 form-control @error('country') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select</option>
                                             @foreach ($country as $row1)
-                                                <option value="{{ $row1->id }}">{{ $row1->name }}</option>
+                                                @if ($ad->country_id == $row1->id)
+                                                    <option selected value="{{ $row1->id }}">{{ $row1->name }}</option>
+                                                @else
+                                                    <option value="{{ $row1->id }}">{{ $row1->name }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback">
@@ -132,7 +138,7 @@
                                     <div class="form-group my-2">
                                         <label for="city">City</label>
                                         <select name="city" id="city" class="select2  form-control @error('city') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select</option>
+                                            <option value="{{ $ad->city_id }}">Select</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('city')
@@ -142,7 +148,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="Description">Description</label>
-                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ old('description') }}</textarea>
+                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ $ad->description }}</textarea>
                                         <div class="invalid-feedback">
                                             @error('description')
                                                 {{ $message }}
@@ -661,6 +667,328 @@
                     window.location.href = window.location;
                 }
                 
+    </script>
+
+    <script>
+        $(document).ready(function(){
+
+            let category = $("#category :selected").val();
+            let subcategory = $("#subcategory :selected").val();
+            let country = $("#country :selected").val();
+            let state = $("#state :selected").val();
+            let city = $("#city :selected").val();
+            let id = '';
+            let custom_field = '';
+            let select_id = '';
+            let dependencyOption = '';
+            
+
+                let option = '';
+                id = category;
+
+                $.ajax({
+                    url : '/change/subcategory',
+                    type : 'get',
+                    data : {id:id},
+                    success:function(data){
+
+                        for(let i = 0; i < data.length; i++){
+                            
+                            if(data[i].id == subcategory){
+                                option += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            else{
+                                option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                        }
+
+                        $('#subcategory').html(option);
+                    }
+                });
+
+
+            
+                id = country;
+                let option1 = '';
+
+                $.ajax({
+                    url : '/global/state/get',
+                    type : 'get',
+                    data : {id:id},
+                    success:function(data){
+
+                        for(let i = 0; i < data.length; i++){
+                            
+                            if(data[i].id == state){
+                                option1 += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            else{
+                                option1 += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                        }
+
+                        $('#state').html(option1);
+                    }
+                });
+
+            
+                id = state;
+                let option2 = '';
+
+                $.ajax({
+                    url : '/global/city/get',
+                    type : 'get',
+                    data : {id:id},
+                    success:function(data){
+
+                        for(let i = 0; i < data.length; i++){
+                            if(data[i].id == state){
+                                option2 += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            else{
+                                option2 += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            
+                        }
+
+                        $('#city').html(option2);
+                    }
+                });
+
+
+                id = category;
+
+                $.ajax({
+                    url : '/get/custom/field',
+                    type : 'get',
+                    data : {id:id},
+                    success:function(data){
+                        
+                        // let selectoption  = '<option value="">Select</option>';
+                        // let identity = 'select_identity';
+
+                        for(let i = 0; i < data.length; i++){
+                            
+                            // for(let j = 0; j < data[i].field.length; j++){
+                                
+                                switch (data[i].field.type){
+                                    case 'text':
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            </div>`;
+                                        break;
+                                    case 'textarea':
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                <textarea type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}"></textarea>
+                                            </div>`;
+                                        break;
+                                    case 'checkbox':
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                <input type="checkbox" class="" name="${data[i].field.name}" value="checked" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            </div>`;
+                                        break;
+                                    case 'checkbox_multiple':
+                                        for(let k = 0; k < data[i].field.field_option.length; k++){
+                                            custom_field += `<div class="form-group col-md-6 my-2">
+                                                                <div class="col-md-6">
+                                                                    <label for="">${data[i].field.field_option[k].value} </label>
+                                                                    <input type="checkbox" name="${data[i].field.field_option[k].value}" value="checked" id="${data[i].field.field_option[k].value}">
+                                                                </div>
+                                                            </div>`;
+                                        }
+                                        break;
+                                    case 'select':
+                                        
+                                        let preSelect = `<div class="col-md-6 form-group my-2">
+                                            <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                            <select class="form-control" name="${data[i].field.name}" >
+                                            <option>Select</option>`;
+
+                                        let preOption = '';
+
+                                        for(let l = 0; l < data[i].field.field_option.length; l++){
+                                            preOption += `<option value="${data[i].field.field_option[l].id}">${data[i].field.field_option[l].value}</option>`;
+                                        }
+
+                                        let postSelect = `</select>
+                                            </div>`;
+
+                                        custom_field += preSelect + preOption + postSelect;
+                                            
+                                        break;
+                                    case 'radio':
+                                        for(let k = 0; k < data[i].field.field_option.length; k++){
+                                            custom_field += `<div class="form-group col-md-6 my-2">
+                                                                <div class="col-md-6">
+                                                                    <label for="">${data[i].field.field_option[k].value} </label>
+                                                                    <input type="radio" name="${data[i].field.name}" value="${data[i].field.field_option[k].value}" id="${data[i].field.field_option[k].value}">
+                                                                </div>
+                                                            </div>`;
+                                        }
+                                        break;
+                                    case 'file':
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                <input type="file" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}">
+                                            </div>`;
+                                        break;
+                                    case 'url':
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            </div>`;
+                                        break;
+                                    case 'number':
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                <input type="number" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            </div>`;
+                                        break;
+                                    case 'date':
+                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                <input type="date" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            </div>`;
+                                        break;
+
+                                    case 'dependency':
+                                        for(let l = 0; l < data[i].field.dependency.length; l++){
+                                            custom_field += `<div class="col-md-6 form-group my-2">
+                                                <label for="${data[i].field.dependency[l].master}">${data[i].field.dependency[l].master} </label>
+                                                <select class="form-control" onChange="masterChange('${data[i].field.dependency[l].master}')" name="${data[i].field.dependency[l].master}" id="select_dependency_${data[i].field.dependency[l].master}">
+                                                    <option value="">Select</option>
+                                                </select>
+                                            </div>`;
+
+                                            if(l == 0){
+
+                                                select_id = `select_dependency_${data[i].field.dependency[l].master}`;
+                                                
+                                                $.ajax({
+                                                    url : '/get/master/dependency',
+                                                    async : false,
+                                                    type : 'get',
+                                                    data : {master:data[i].field.dependency[l].master},
+                                                    success:function(result){
+                                                        
+                                                        
+                                                        dependencyOption += '<option value="">Select</option>';
+                                                        
+                                                        for(let i = 0; i < result.length; i++){
+                                                            dependencyOption += `<option value="${result[i].id}">${result[i].name}</option>`;
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        
+                                        break;
+                                }
+                            // }
+                        }
+
+                        $('#custom_fields').html(custom_field);
+                        
+                        // $('#select_identity').html(selectoption);
+                        
+                        $(`#${select_id}`).html(dependencyOption);
+                    }
+                });
+
+
+                masterChange = (master_type) => {
+                
+                    if(master_type == 'Country'){
+
+                        let value = $('#select_dependency_Country').val();
+                        let option = '';
+
+                        $.ajax({
+                            url : '/global/state/get',
+                            type : 'get',
+                            data : {id:value},
+                            success:function(data){
+
+                                option += `<option value="">Select</option>`;
+
+                                for(let i = 0; i < data.length; i++){
+                                    option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                                }
+
+                                $('#select_dependency_State').html(option);
+                            }
+                        });
+
+                    }
+                    else if(master_type == 'State'){
+                        
+                        let value = $('#select_dependency_State').val();
+                        let option = '';
+
+                        $.ajax({
+                            url : '/global/city/get',
+                            type : 'get',
+                            data : {id:value},
+                            success:function(data){
+
+                                option += `<option value="">Select</option>`;
+
+                                for(let i = 0; i < data.length; i++){
+                                    option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                                }
+
+                                $('#select_dependency_City').html(option);
+                            }
+                        });
+                    }
+                    else if(master_type == 'Make'){
+
+                        let value = $('#select_dependency_Make').val();
+                        let option = '';
+
+                        $.ajax({
+                            url : '/global/vehicle/model/get',
+                            type : 'get',
+                            data : {id:value},
+                            success:function(data){
+
+                                option += `<option value="">Select</option>`;
+
+                                for(let i = 0; i < data.length; i++){
+                                    option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                                }
+
+                                $('#select_dependency_Model').html(option);
+                            }
+                        });
+                    }
+                    else if(master_type == 'Model'){
+                        
+                        let value = $('#select_dependency_Model').val();
+                        let option = '';
+                        
+                        $.ajax({
+                            url : '/global/vehicle/varient/get',
+                            type : 'get',
+                            data : {id:value},
+                            success:function(data){
+                                
+                                option += `<option value="">Select</option>`;
+
+                                for(let i = 0; i < data.length; i++){
+                                    option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                                }
+                                
+                                $('#select_dependency_Variant').html(option);
+                            }
+                        });
+                    }
+                }
+
+        });
     </script>
 
 @endpush

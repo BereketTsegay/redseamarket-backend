@@ -47,7 +47,6 @@ class AdsController extends Controller
             'title'             => 'required',
             'price'             => 'required|numeric',
             'state'             => 'required|numeric',
-            'sort_order'        => 'required',
             // 'subcategory'       => 'numeric',
             'canonical_name'    => 'required',
             'country'           => 'required|numeric',
@@ -363,6 +362,32 @@ class AdsController extends Controller
         ->first();
         
         return view('ads.ad_details', compact('ad'));
+    }
+
+    public function edit($id){
+
+        $ad = Ads::where('id', $id)
+        ->first();
+
+        $category = Category::where('delete_status', '!=', Status::DELETE)
+        ->where('status', Status::ACTIVE)
+        ->get();
+
+        $country = Country::orderBy('name')
+        ->get();
+
+        return view('ads.edit_ad', compact('ad', 'category', 'country'));
+    }
+
+    public function delete($id){
+
+        Ads::where('id', $id)
+        ->update([
+            'delete_status' => Status::DELETE,
+        ]);
+
+        session()->flash('success', 'Ad has been deleted');
+        return redirect()->route('ads.index');
     }
 
     public function getMasterDependency(Request $request){

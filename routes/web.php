@@ -49,7 +49,10 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         // Users
 
-        Route::get('users', [App\Http\Controllers\LoginController::class, 'userIndex'])->name('user.index');
+        Route::get('/users', [App\Http\Controllers\LoginController::class, 'userIndex'])->name('user.index');
+        Route::get('/users/edit/{id}', [App\Http\Controllers\LoginController::class, 'userEdit'])->name('user.edit');
+        Route::post('/users/update/{id}', [App\Http\Controllers\LoginController::class, 'userUpdate'])->name('user.update');
+        Route::post('/users/change/password/{id}', [App\Http\Controllers\LoginController::class, 'userChangePassword'])->name('user.change.password');
 
         /* ========== Ads ========== */
 
@@ -117,6 +120,8 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::get('/ad/create', [App\Http\Controllers\AdsController::class, 'create'])->name('ads.create');
         Route::post('/ad/store', [App\Http\Controllers\AdsController::class, 'store'])->name('ads.store');
         Route::get('/ad/view/{id}', [App\Http\Controllers\AdsController::class, 'view'])->name('ads.view');
+        Route::get('/ad/edit/{id}', [App\Http\Controllers\AdsController::class, 'edit'])->name('ads.edit');
+        Route::post('/ad/delete/{id}', [App\Http\Controllers\AdsController::class, 'delete'])->name('ads.delete');
 
         Route::get('/get/custom/field', [App\Http\Controllers\AdsController::class, 'getCustomField'])->name('ad.get.custom_field');
         Route::get('/get/master/dependency', [App\Http\Controllers\AdsController::class, 'getMasterDependency'])->name('ad.get.master.dependency');
@@ -141,6 +146,9 @@ Route::group(['middleware' => ['revalidate']], function(){
         
         Route::get('/social', [App\Http\Controllers\SocialLinkController::class, 'index'])->name('social.index');
         Route::post('/social/store', [App\Http\Controllers\SocialLinkController::class, 'store'])->name('social.store');
+        Route::get('/social/edit/{id}', [App\Http\Controllers\SocialLinkController::class, 'edit'])->name('social.edit');
+        Route::post('/social/update/{id}', [App\Http\Controllers\SocialLinkController::class, 'update'])->name('social.update');
+        Route::post('/social/delete/{id}', [App\Http\Controllers\SocialLinkController::class, 'delete'])->name('social.delete');
 
             // Testimonial
         

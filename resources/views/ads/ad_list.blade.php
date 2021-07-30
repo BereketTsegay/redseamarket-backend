@@ -56,8 +56,10 @@
                                     @endif
                                 </td>
                                 <td><a href="{{ route('ads.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
-                                <td><a href="#"><button class="btn btn-secondary">Edit</button></a></td>
-                                <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button></td>
+                                <td><a href="{{ route('ads.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
+                                <td><button onclick="adDelete({{$row->id}})" type="button" class="btn btn-danger" data-toggle="modal" data-target="#adDeleteModal">Delete</button>
+                                <form id="ad_delete_form{{$row->id}}" action="{{ route('ads.delete', $row->id) }}" method="POST">@csrf</form>
+                                </td>
                             </tr>
                             @php
                                 $i++;
@@ -74,7 +76,7 @@
 
 @push('script')
     
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="adDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -88,9 +90,22 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Delete</button>
+                <button type="button" onclick="deleteAds()" class="btn btn-primary">Delete</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+    let ids = '';
+    adDelete = (id) => {
+        ids = id;
+    }
+
+    deleteAds = () => {
+
+        $('#ad_delete_form'+ids).submit();
+    }
+</script>
 @endpush

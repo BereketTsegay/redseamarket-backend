@@ -11255,16 +11255,16 @@ body {
   color: #000;
 }
 
+.login-body{
+  background-image: url('../background.jpg');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
 .badge-primary{
   background-color: #292a2b;
 }
 
 #myTab .active{
   border-bottom: 3px solid #000;
-}
-
-.login-body{
-  background-image: url('../background.jpg');
-  background-repeat: no-repeat;
-  background-size: 100%;
 }
