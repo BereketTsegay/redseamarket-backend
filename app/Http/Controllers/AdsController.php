@@ -150,14 +150,14 @@ class AdsController extends Controller
             elseif($catRow->Field->type == 'radio'){
                 $radio = $catRow->Field->name;
                 $optionValue = $request->$radio;
-
-                $fieldOption = FieldOptions::where('id', $optionValue)
+                
+                $fieldOption = FieldOptions::where('value', $optionValue)
                 ->where('field_id', $catRow->field_id)
                 ->first();
 
                 $option_id = $fieldOption->id;
 
-                $customValue = new AdsCustomValue();
+                $customValue            = new AdsCustomValue();
                 $customValue->ads_id    = $ad->id;
                 $customValue->field_id  = $catRow->field_id;
                 $customValue->option_id = $option_id;
@@ -169,7 +169,9 @@ class AdsController extends Controller
 
                 foreach($catRow->Field->FieldOption as $fieldOptionRow){
 
-                    if($request->$fieldOptionRow->value == 'checked'){
+                    $optionValue1 = $fieldOptionRow->value;
+
+                    if($request->$optionValue1 == 'checked'){
 
                         $customValue = new AdsCustomValue();
                         $customValue->ads_id    = $ad->id;
@@ -388,6 +390,41 @@ class AdsController extends Controller
 
         session()->flash('success', 'Ad has been deleted');
         return redirect()->route('ads.index');
+    }
+
+    public function getAdsRelated(Request $request){
+
+        $customValue = AdsCustomValue::where('ads_id', $request->id)
+        ->get()
+        ->map(function($a){
+            $a->type = $a->Field->type;
+            $a->field_name = $a->Field->name;
+            unset($a->Field);
+            return $a;
+        });
+
+        $adsDependency = AdsFieldDependency::where('ads_id', $request->id)
+        ->get()
+        ->map(function($a){
+
+            if($a->master_type == 'make'){
+                $a->name = $a->Make->name;
+            }
+            if($a->master_type == 'model'){
+                $a->name = $a->Model->name;
+            }
+            if($a->master_type == 'Variant'){
+                $a->name = $a->Variant->name;
+            }
+
+            unset($a->Make, $a->Model);
+            return $a;
+        });
+
+        return response()->json([
+            'customValue'   => $customValue,
+            'adsDependency' => $adsDependency,
+        ], 200);
     }
 
     public function getMasterDependency(Request $request){

@@ -14,6 +14,6 @@ class AdsCustomValue extends Model
     }
 
     public function Option(){
-        return $this->hasOne(FieldOptions::class, 'option_id', 'id');
+        return $this->hasOne(FieldOptions::class, 'id', 'option_id');
     }
 }

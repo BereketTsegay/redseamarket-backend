@@ -597,3 +597,23 @@
                 </main>
 
 @endsection
+
+@push('script')
+@if (Session::has('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        text: {{ Session::get('success') }},
+    })
+</script>
+@endif
+
+@if (Session::has('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        text: {{ Session::get('error') }},
+    })
+</script>
+@endif
+@endpush

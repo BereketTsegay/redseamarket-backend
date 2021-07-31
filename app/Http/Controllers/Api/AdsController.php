@@ -24,6 +24,79 @@ use Illuminate\Support\Facades\Validator;
 
 class AdsController extends Controller
 {
+    public function adView(Request $request){
+
+        $rules = [
+            'ads_id'    => 'required|numeric',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+
+        try{
+
+            $ads = Ads::where('id', $request->ads_id)
+            ->get()
+            ->map(function($a){
+
+                $a->image = array_filter([
+                    $a->Image->map(function($q) use($a){
+                        $q->image;
+                        unset($q->ads_id, $q->img_flag);
+                        return $q;
+                    }),
+                ]);
+
+                $a->country_name = $a->Country->name;
+                $a->state_name = $a->State->name;
+                $a->city_name = $a->City->name;
+                $a->CustomValue->map(function($c){
+                    
+                    if($c->Field->description_area_flag == 0){
+                        $c->position = 'top';
+                        $c->name = $c->Field->name;
+                    }
+                    elseif($c->Field->description_area_flag == 1){
+                        $c->position = 'details_page';
+                        $c->name = $c->Field->name;
+                    }
+                    else{
+                        $c->position = 'none';
+                        $c->name = $c->Field->name;
+                    }
+                    unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                    return $c;
+                });
+
+                unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                return $a;
+            });
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'My favourite ads',
+                'ads'       => $ads,
+            ], 200);
+
+        }
+        catch (\Exception $e) {
+            
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
     public function adStore(Request $request){
         
         $rules = [

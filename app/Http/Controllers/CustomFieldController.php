@@ -75,10 +75,16 @@ class CustomFieldController extends Controller
 
             if(count($subName) > 0){
                 $name = '';
-
+                $k = 0;
                 foreach($subName as $nameRow){
 
-                    $name = $name.'_'.$nameRow;
+                    if($k == 0){
+                        $name = $name.$nameRow;
+                    }
+                    else{
+                        $name = $name.'-'.$nameRow;
+                    }
+                    $k++;
                 }
             }
             else{
@@ -213,9 +219,16 @@ class CustomFieldController extends Controller
             if(count($subName) > 0){
                 $name = '';
 
+                $k = 0;
                 foreach($subName as $nameRow){
 
-                    $name = $name.'_'.$nameRow;
+                    if($k == 0){
+                        $name = $name.$nameRow;
+                    }
+                    else{
+                        $name = $name.'-'.$nameRow;
+                    }
+                    $k++;
                 }
             }
             else{
@@ -325,9 +338,25 @@ class CustomFieldController extends Controller
 
     public function optionCreate(Request $request, $id){
 
+        $subValue = explode(' ', $request->value);
+
+        $k = 0;
+        foreach($subValue as $value){
+
+            $newValue = '';
+
+            if($k == 0){
+                $newValue = $newValue.$value;
+            }
+            else{
+                $newValue = $newValue.'-'.$value;
+            }
+            $k++;
+        }
+
         $option             = new FieldOptions();
         $option->field_id   = $id;
-        $option->value      = $request->value;
+        $option->value      = $request->newValue;
         $option->save();
 
         session()->flash('success', 'Option has been stored');

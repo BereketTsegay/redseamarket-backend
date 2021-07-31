@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Common\Status;
 use App\Common\UserType;
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordReset;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -117,6 +119,63 @@ class LoginController extends Controller
                 'message'   => 'Registration Successful',
                 'token'     => $token,
             ], 200);
+        }
+    }
+
+    public function sendPasswordToMail(Request $request){
+
+        $rules = [
+            'email' => 'required|email',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+
+        try{
+            $user = User::where('email', $request->email)
+            ->where('type', UserType::USER)
+            ->first();
+
+            if(!$user){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'No user with this email',
+                ], 401);
+            }
+
+            $newPassword = uniqid();
+
+            $details = [
+                'name'      => $user->name,
+                'password'  => $newPassword,
+            ];
+
+            User::where('email', $request->email)
+            ->update([
+                'password'  => Hash::make($newPassword),
+            ]);
+
+            Mail::to($request->email)->send(new PasswordReset($details));
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Password has been sended to your registered email',
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
         }
     }
 }

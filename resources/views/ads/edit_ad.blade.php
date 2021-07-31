@@ -681,7 +681,9 @@
             let custom_field = '';
             let select_id = '';
             let dependencyOption = '';
-            
+            let adId = {{ $ad->id }};
+            let adDependency = '';
+            let adCustomValue = '';
 
                 let option = '';
                 id = category;
@@ -755,6 +757,16 @@
                     }
                 });
 
+                $.ajax({
+                    url : '/ads/related/field',
+                    type : 'get',
+                    data : {id:adId},
+                    async: false,
+                    success:function(data){
+                        adDependency = data.adsDependency;
+                        adCustomValue = data.customValue;
+                    }
+                });
 
                 id = category;
 
@@ -766,51 +778,100 @@
                         
                         // let selectoption  = '<option value="">Select</option>';
                         // let identity = 'select_identity';
-
+                        
                         for(let i = 0; i < data.length; i++){
                             
                             // for(let j = 0; j < data[i].field.length; j++){
                                 
                                 switch (data[i].field.type){
                                     case 'text':
-                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                        if(adCustomValue[i].type == 'text' && adCustomValue[i].field_name == data[i].field.name){
+                                            custom_field += `<div class="col-md-6 form-group my-2">
                                                 <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                                <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                                <input type="text" class="form-control" name="${data[i].field.name}" value=${adCustomValue[i].value} id="${data[i].field.name}" placeholder="${data[i].field.name}">
                                             </div>`;
+                                        }
+                                        else{
+                                            custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                                </div>`;
+                                        }
                                         break;
                                     case 'textarea':
-                                        custom_field += `<div class="col-md-6 form-group my-2">
-                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                                <textarea type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}"></textarea>
-                                            </div>`;
+                                        if(adCustomValue[i].type == 'textarea' && adCustomValue[i].field_name == data[i].field.name){
+                                            custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <textarea type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">${adCustomValue[i].value}</textarea>
+                                                </div>`;
+                                            }
+                                            else{
+                                                custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <textarea type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}"></textarea>
+                                                </div>`;
+                                            }
                                         break;
                                     case 'checkbox':
-                                        custom_field += `<div class="col-md-6 form-group my-2">
-                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                                <input type="checkbox" class="" name="${data[i].field.name}" value="checked" id="${data[i].field.name}" placeholder="${data[i].field.name}">
-                                            </div>`;
+                                        if(adCustomValue[i].type == 'checkbox' && adCustomValue[i].field_name == data[i].field.name && adCustomValue[i].value == 1){
+                                            custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <input type="checkbox" class="" name="${data[i].field.name}" checked value="checked" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                                </div>`;
+                                        }
+                                        else{
+                                            custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <input type="checkbox" class="" name="${data[i].field.name}" value="checked" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                                </div>`;
+                                        }
                                         break;
                                     case 'checkbox_multiple':
+                                        // let newFieldArray = adCustomValue.filter(function(data){
+                                        //     return data.type == 'checkbox_multiple';
+                                        // });
+                                        
                                         for(let k = 0; k < data[i].field.field_option.length; k++){
-                                            custom_field += `<div class="form-group col-md-6 my-2">
-                                                                <div class="col-md-6">
-                                                                    <label for="">${data[i].field.field_option[k].value} </label>
-                                                                    <input type="checkbox" name="${data[i].field.field_option[k].value}" value="checked" id="${data[i].field.field_option[k].value}">
-                                                                </div>
-                                                            </div>`;
+                                            
+                                            //    for(let n = 0; n < newFieldArray.length; n++){ 
+                                                    if(adCustomValue[i].type == 'checkbox_multiple' && adCustomValue[i].field_name == data[i].field.name && adCustomValue[i].option_id == data[i].field.field_option[k].id){
+                                                        custom_field += `<div class="form-group col-md-6 my-2">
+                                                                            <div class="col-md-6">
+                                                                                <label for="">${data[i].field.field_option[k].value} </label>
+                                                                                <input type="checkbox" name="${data[i].field.field_option[k].value}" checked value="checked" id="${data[i].field.field_option[k].value}">
+                                                                            </div>
+                                                                        </div>`;
+                                                                       
+                                                                       
+                                                    }
+                                                    else{
+                                                        custom_field += `<div class="form-group col-md-6 my-2">
+                                                                            <div class="col-md-6">
+                                                                                <label for="">${data[i].field.field_option[k].value} </label>
+                                                                                <input type="checkbox" name="${data[i].field.field_name}" value="checked" id="${data[i].field.field_option[k].value}">
+                                                                            </div>
+                                                                        </div>`;
+                                                    }
+                                                // }
+
+                                               
                                         }
                                         break;
                                     case 'select':
-                                        
+                                    
                                         let preSelect = `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <select class="form-control" name="${data[i].field.name}" >
-                                            <option>Select</option>`;
+                                            <select class="form-control" name="${data[i].field.name}" >`;
 
                                         let preOption = '';
 
                                         for(let l = 0; l < data[i].field.field_option.length; l++){
-                                            preOption += `<option value="${data[i].field.field_option[l].id}">${data[i].field.field_option[l].value}</option>`;
+                                            if(adCustomValue[i].type == 'select' && adCustomValue[i].field_name == data[i].field.name && data[i].field.field_option[l].id == adCustomValue[i].option_id){
+                                                preOption += `<option selected value="${data[i].field.field_option[l].id}">${data[i].field.field_option[l].value}</option>`;
+                                            }
+                                            else{
+                                                preOption += `<option value="${data[i].field.field_option[l].id}">${data[i].field.field_option[l].value}</option>`;
+                                            }
                                         }
 
                                         let postSelect = `</select>
@@ -821,18 +882,29 @@
                                         break;
                                     case 'radio':
                                         for(let k = 0; k < data[i].field.field_option.length; k++){
-                                            custom_field += `<div class="form-group col-md-6 my-2">
+                                            // if(adCustomValue[i].type == 'radio' && adCustomValue[i].field_name == data[i].field.name && data[i].field.field_option[k].id == adCustomValue[i].option_id){
+                                            //     custom_field += `<div class="form-group col-md-6 my-2">
+                                            //                     <div class="col-md-6">
+                                            //                         <label for="">${data[i].field.field_option[k].value} </label>
+                                            //                         <input type="radio" checked name="${data[i].field.name}" value="${data[i].field.field_option[k].value}" id="${data[i].field.field_option[k].value}">
+                                            //                     </div>
+                                            //                 </div>`;console.log('hi');
+                                            // }
+                                            // else{
+                                                custom_field += `<div class="form-group col-md-6 my-2">
                                                                 <div class="col-md-6">
                                                                     <label for="">${data[i].field.field_option[k].value} </label>
                                                                     <input type="radio" name="${data[i].field.name}" value="${data[i].field.field_option[k].value}" id="${data[i].field.field_option[k].value}">
                                                                 </div>
                                                             </div>`;
+                                            // }
                                         }
                                         break;
                                     case 'file':
                                         custom_field += `<div class="col-md-6 form-group my-2">
                                                 <label for="${data[i].field.name}">${data[i].field.name} </label>
                                                 <input type="file" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}">
+
                                             </div>`;
                                         break;
                                     case 'url':
@@ -842,16 +914,32 @@
                                             </div>`;
                                         break;
                                     case 'number':
-                                        custom_field += `<div class="col-md-6 form-group my-2">
-                                                <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                                <input type="number" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
-                                            </div>`;
+                                        if(adCustomValue[i].type == 'number' && adCustomValue[i].field_name == data[i].field.name){
+                                            custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <input type="number" class="form-control" name="${data[i].field.name}" value=${adCustomValue[i].value} id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                                </div>`;
+                                            }
+                                            else{
+                                                custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <input type="number" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                                </div>`;
+                                            }
                                         break;
                                     case 'date':
-                                        custom_field += `<div class="col-md-6 form-group my-2">
+                                        if(adCustomValue[i].type == 'date' && adCustomValue[i].field_name == data[i].field.name){
+                                            custom_field += `<div class="col-md-6 form-group my-2">
+                                                    <label for="${data[i].field.name}">${data[i].field.name} </label>
+                                                    <input type="date" class="form-control" name="${data[i].field.name}" value=${adCustomValue[i].value} id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                                </div>`;
+                                            }
+                                            else{
+                                                custom_field += `<div class="col-md-6 form-group my-2">
                                                 <label for="${data[i].field.name}">${data[i].field.name} </label>
                                                 <input type="date" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
                                             </div>`;
+                                            }
                                         break;
 
                                     case 'dependency':
@@ -859,7 +947,7 @@
                                             custom_field += `<div class="col-md-6 form-group my-2">
                                                 <label for="${data[i].field.dependency[l].master}">${data[i].field.dependency[l].master} </label>
                                                 <select class="form-control" onChange="masterChange('${data[i].field.dependency[l].master}')" name="${data[i].field.dependency[l].master}" id="select_dependency_${data[i].field.dependency[l].master}">
-                                                    <option value="">Select</option>
+                                                    <option value="${adDependency.length > l ? adDependency[l].master_id : '' }">${adDependency.length > l ? adDependency[l].name : 'select'}</option>
                                                 </select>
                                             </div>`;
 
@@ -873,12 +961,16 @@
                                                     type : 'get',
                                                     data : {master:data[i].field.dependency[l].master},
                                                     success:function(result){
-                                                        
-                                                        
+                                                       
                                                         dependencyOption += '<option value="">Select</option>';
                                                         
                                                         for(let i = 0; i < result.length; i++){
-                                                            dependencyOption += `<option value="${result[i].id}">${result[i].name}</option>`;
+                                                            if(adDependency[l].master_id == result[i].id){
+                                                                dependencyOption += `<option selected value="${result[i].id}">${result[i].name}</option>`;
+                                                            }
+                                                            else{
+                                                                dependencyOption += `<option value="${result[i].id}">${result[i].name}</option>`;
+                                                            }
                                                         }
                                                     }
                                                 });
@@ -895,10 +987,57 @@
                         // $('#select_identity').html(selectoption);
                         
                         $(`#${select_id}`).html(dependencyOption);
+
+                        
                     }
                 });
 
+                for(let q = 0; q < adDependency.length; q++){
 
+                    let masId = adDependency[q].master_id;
+                    let selectId = '';
+                    let newOption = '';
+
+                    if(adDependency[q].master_type == 'make'){
+                        selectId = 'select_dependency_Make';
+
+                        $.ajax({
+                            url : '/global/vehicle/model/get',
+                            type : 'get',
+                            data : {id:masId},
+                            async : false,
+                            success:function(data){
+
+                                for(let i = 0; i < data.length; i++){
+                                    newOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+                                }
+
+                                $('#select_dependency_Model').append(newOption);
+                            }
+                        });
+
+                    }
+                    else if(adDependency[q].master_type == 'model'){
+                        selectId = 'select_dependency_Model';
+
+                        $.ajax({
+                            url : '/global/vehicle/varient/get',
+                            type : 'get',
+                            data : {id:masId},
+                            async : false,
+                            success:function(data){
+                                
+                                for(let i = 0; i < data.length; i++){
+                                    newOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+                                }
+                                
+                                $('#select_dependency_Variant').append(newOption);
+                            }
+                        });
+                    }
+                }
+
+                
                 masterChange = (master_type) => {
                 
                     if(master_type == 'Country'){
