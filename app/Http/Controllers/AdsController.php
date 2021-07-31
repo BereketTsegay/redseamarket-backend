@@ -165,23 +165,23 @@ class AdsController extends Controller
                 $customValue->save();
 
             }
-            elseif($catRow->Field->type == 'checkbox_multiple'){
+            // elseif($catRow->Field->type == 'checkbox_multiple'){
 
-                foreach($catRow->Field->FieldOption as $fieldOptionRow){
+            //     foreach($catRow->Field->FieldOption as $fieldOptionRow){
 
-                    $optionValue1 = $fieldOptionRow->value;
+            //         $optionValue1 = $fieldOptionRow->value;
 
-                    if($request->$optionValue1 == 'checked'){
+            //         if($request->$optionValue1 == 'checked'){
 
-                        $customValue = new AdsCustomValue();
-                        $customValue->ads_id    = $ad->id;
-                        $customValue->field_id  = $catRow->field_id;
-                        $customValue->option_id = $fieldOptionRow->id;
-                        $customValue->value     = $fieldOptionRow->value;
-                        $customValue->save();
-                    }
-                }
-            }
+            //             $customValue = new AdsCustomValue();
+            //             $customValue->ads_id    = $ad->id;
+            //             $customValue->field_id  = $catRow->field_id;
+            //             $customValue->option_id = $fieldOptionRow->id;
+            //             $customValue->value     = $fieldOptionRow->value;
+            //             $customValue->save();
+            //         }
+            //     }
+            // }
             elseif($catRow->Field->type == 'checkbox'){
 
                 $field_name = $catRow->Field->name;
@@ -206,31 +206,34 @@ class AdsController extends Controller
 
                 $field_name = $catRow->Field->name;
 
-                $date = Carbon::createFromFormat('d/m/Y', $request->$field_name)->format('Y-m-d');
+                // $date = Carbon::createFromFormat('d/m/Y', $request->$field_name)->format('Y-m-d');
 
                 $customValue = new AdsCustomValue();
                 $customValue->ads_id    = $ad->id;
                 $customValue->field_id  = $catRow->field_id;
                 $customValue->option_id = 0;
-                $customValue->value     = $date;
+                $customValue->value     = $request->$field_name;
                 $customValue->save();
             }
             elseif($catRow->Field->type == 'file'){
 
                 $field_name = $catRow->Field->name;
 
-                $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
-            
-                $request->$field_name->storeAs('public/custom_file', $file);
+                if($request->hasFile($field_name)){
+                    $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
+                
+                    $request->$field_name->storeAs('public/custom_file', $file);
 
-                $file = 'storage/custom_file/'.$file;
+                    $file = 'storage/custom_file/'.$file;
 
-                $customValue = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = 0;
-                $customValue->value     = $file;
-                $customValue->save();
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $file;
+                    $customValue->file      = 1;
+                    $customValue->save();
+                }
             }
             elseif($catRow->Field->type == 'dependency'){
 
@@ -305,9 +308,361 @@ class AdsController extends Controller
         return redirect()->route('ads.index');
     }
 
+    public function view($id){
+
+        $ad = Ads::where('id', $id)
+        ->first();
+        
+        return view('ads.ad_details', compact('ad'));
+    }
+
+    public function edit($id){
+
+        $ad = Ads::where('id', $id)
+        ->first();
+
+        $category = Category::where('delete_status', '!=', Status::DELETE)
+        ->where('status', Status::ACTIVE)
+        ->get();
+
+        $country = Country::orderBy('name')
+        ->get();
+
+        return view('ads.edit_ad', compact('ad', 'category', 'country'));
+    }
+
+    public function update(Request $request, $id){
+
+        $request->validate([
+            'category'          => 'required|numeric',
+            'title'             => 'required',
+            'price'             => 'required|numeric',
+            'state'             => 'required|numeric',
+            // 'subcategory'       => 'numeric',
+            'canonical_name'    => 'required',
+            'country'           => 'required|numeric',
+            // 'city'              => 'required|numeric',
+            'description'       => 'required',
+            'image.*'           => 'required|mimes:png,jpg,jpeg',
+        ]);
+
+        $ad = Ads::where('id', $id)
+        ->first();
+
+        AdsCustomValue::where('ads_id', $id)
+        ->delete();
+
+        AdsFieldDependency::where('ads_id', $id)
+        ->update([
+            'delete_status' => Status::DELETE,
+        ]);
+
+
+        if($request->status == 'checked'){
+            $status = 1;
+        }
+        else{
+            $status = 0;
+        }
+
+        if($request->negotiable == 'checked'){
+            $negotiable_flag = 1;
+        }
+        else{
+            $negotiable_flag = 0;
+        }
+
+        if($request->featured == 'checked'){
+            $featured_flag = 1;
+        }
+        else{
+            $featured_flag = 0;
+        }
+
+        if($request->city){
+            $city = $request->city;
+        }
+        else{
+            $city = $request->state;
+        }
+        
+        $categoryField = CategoryField::where('category_id', $request->category)
+        ->with(['Field' => function($a){
+            $a->where('delete_status', '!=', Status::DELETE)
+            ->with(['FieldOption' => function($q){
+                $q->where('delete_status', '!=', Status::DELETE);
+            }]);
+        }])
+        ->get();
+
+        Ads::where('id', $id)
+        ->update([
+            'category_id'       => $request->category,
+            'subcategory_id'    => $request->subcategory,
+            'title'             => $request->title,
+            'canonical_name'    => $request->canonical_name,
+            'description'       => $request->description,
+            'price'             => $request->price,
+            'negotiable_flag'   => $negotiable_flag,
+            'country_id'        => $request->country,
+            'state_id'          => $request->state,
+            'city_id'           => $request->city,
+            'featured_flag'     => $featured_flag,
+            'latitude'          => $request->address_latitude,
+            'longitude'         => $request->address_longitude,
+            'status'            => $status,
+        ]);
+
+        if($request->hasFile('image')){
+
+            foreach($request->image as $row){
+
+                $image = uniqid().'.'.$row->getClientOriginalExtension();
+            
+                $row->storeAs('public/ads', $image);
+
+                $image = 'storage/ads/'.$image;
+
+                $adImage            = new AdsImage();
+                $adImage->ads_id    = $ad->id;
+                $adImage->image     = $image;
+                $adImage->save();
+            }
+        }
+
+        foreach($categoryField as $catRow){
+            
+            if($catRow->Field->type == 'select'){
+                $select = $catRow->Field->name;
+                $option_id = $request->$select;
+                
+                $fieldOption = FieldOptions::where('id', $option_id)
+                ->where('field_id', $catRow->field_id)
+                ->first();
+                
+                $optionValue = $fieldOption->value;
+                
+                $customValue            = new AdsCustomValue();
+                $customValue->ads_id    = $ad->id;
+                $customValue->field_id  = $catRow->field_id;
+                $customValue->option_id = $option_id;
+                $customValue->value     = $optionValue;
+                $customValue->save();
+            }
+            elseif($catRow->Field->type == 'radio'){
+                $radio = $catRow->Field->name;
+                $optionValue = $request->$radio;
+                
+                $fieldOption = FieldOptions::where('value', $optionValue)
+                ->where('field_id', $catRow->field_id)
+                ->first();
+
+                $option_id = $fieldOption->id;
+
+                $customValue            = new AdsCustomValue();
+                $customValue->ads_id    = $ad->id;
+                $customValue->field_id  = $catRow->field_id;
+                $customValue->option_id = $option_id;
+                $customValue->value     = $optionValue;
+                $customValue->save();
+
+            }
+            // elseif($catRow->Field->type == 'checkbox_multiple'){
+
+            //     foreach($catRow->Field->FieldOption as $fieldOptionRow){
+
+            //         $optionValue1 = $fieldOptionRow->value;
+
+            //         if($request->$optionValue1 == 'checked'){
+
+            //             $customValue = new AdsCustomValue();
+            //             $customValue->ads_id    = $ad->id;
+            //             $customValue->field_id  = $catRow->field_id;
+            //             $customValue->option_id = $fieldOptionRow->id;
+            //             $customValue->value     = $fieldOptionRow->value;
+            //             $customValue->save();
+            //         }
+            //     }
+            // }
+            elseif($catRow->Field->type == 'checkbox'){
+
+                $field_name = $catRow->Field->name;
+
+                if($request->$field_name == 'checked'){
+                    if($catRow->Field->default_value){
+                        $val = $catRow->Field->default_value;
+                    }
+                    else{
+                        $val = 1;
+                    }
+
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $val;
+                    $customValue->save();
+                }
+            }
+            elseif($catRow->Field->type == 'date'){
+
+                $field_name = $catRow->Field->name;
+
+                // $date = Carbon::createFromFormat('d/m/Y', $request->$field_name)->format('Y-m-d');
+
+                $customValue = new AdsCustomValue();
+                $customValue->ads_id    = $ad->id;
+                $customValue->field_id  = $catRow->field_id;
+                $customValue->option_id = 0;
+                $customValue->value     = $request->$field_name;
+                $customValue->save();
+            }
+            elseif($catRow->Field->type == 'file'){
+
+                $field_name = $catRow->Field->name;
+
+                if($request->hasFile($field_name)){
+
+                    $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
+                
+                    $request->$field_name->storeAs('public/custom_file', $file);
+
+                    $file = 'storage/custom_file/'.$file;
+
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $file;
+                    $customValue->file      = 1;
+                    $customValue->save();
+                }
+            }
+            elseif($catRow->Field->type == 'dependency'){
+
+            }
+            else{
+                $field_name = $catRow->Field->name;
+
+                $customValue = new AdsCustomValue();
+                $customValue->ads_id    = $ad->id;
+                $customValue->field_id  = $catRow->field_id;
+                $customValue->option_id = 0;
+                $customValue->value     = $request->$field_name;
+                $customValue->save();
+            }
+        }
+
+        if($request->Make){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'make';
+            $adsDependency->master_id   = $request->Make;
+            $adsDependency->save();
+        }
+
+        if($request->Model){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'model';
+            $adsDependency->master_id   = $request->Model;
+            $adsDependency->save();
+        }
+
+        if($request->Variant){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'variant';
+            $adsDependency->master_id   = $request->Variant;
+            $adsDependency->save();
+        }
+
+        if($request->Country){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'country';
+            $adsDependency->master_id   = $request->Country;
+            $adsDependency->save();
+        }
+
+        if($request->State){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'state';
+            $adsDependency->master_id   = $request->State;
+            $adsDependency->save();
+        }
+
+        if($request->City){
+
+            $adsDependency              = new AdsFieldDependency();
+            $adsDependency->ads_id      = $ad->id;
+            $adsDependency->master_type = 'city';
+            $adsDependency->master_id   = $request->City;
+            $adsDependency->save();
+        }
+
+        session()->flash('success', 'Ad has been created');
+        return redirect()->route('ads.index');
+
+    }
+
+    public function delete($id){
+
+        Ads::where('id', $id)
+        ->update([
+            'delete_status' => Status::DELETE,
+        ]);
+
+        session()->flash('success', 'Ad has been deleted');
+        return redirect()->route('ads.index');
+    }
+
+    public function getAdsRelated(Request $request){
+
+        $customValue = AdsCustomValue::where('ads_id', $request->id)
+        ->orderBy('field_id')
+        ->get()
+        ->map(function($a){
+            $a->type = $a->Field->type;
+            $a->field_name = $a->Field->name;
+            unset($a->Field);
+            return $a;
+        });
+
+        $adsDependency = AdsFieldDependency::where('ads_id', $request->id)
+        ->get()
+        ->map(function($a){
+
+            if($a->master_type == 'make'){
+                $a->name = $a->Make->name;
+            }
+            if($a->master_type == 'model'){
+                $a->name = $a->Model->name;
+            }
+            if($a->master_type == 'Variant'){
+                $a->name = $a->Variant->name;
+            }
+
+            unset($a->Make, $a->Model);
+            return $a;
+        });
+
+        return response()->json([
+            'customValue'   => $customValue,
+            'adsDependency' => $adsDependency,
+        ], 200);
+    }
+
     public function getCustomField(Request $request){
 
         $field = CategoryField::where('category_id', $request->id)
+        ->orderBy('field_id')
         ->with(['Field' => function($a){
             $a->where('delete_status', '!=', Status::DELETE)
             ->where(function($b){
@@ -356,75 +711,6 @@ class AdsController extends Controller
         });
         
         return response()->json($field);
-    }
-
-    public function view($id){
-
-        $ad = Ads::where('id', $id)
-        ->first();
-        
-        return view('ads.ad_details', compact('ad'));
-    }
-
-    public function edit($id){
-
-        $ad = Ads::where('id', $id)
-        ->first();
-
-        $category = Category::where('delete_status', '!=', Status::DELETE)
-        ->where('status', Status::ACTIVE)
-        ->get();
-
-        $country = Country::orderBy('name')
-        ->get();
-
-        return view('ads.edit_ad', compact('ad', 'category', 'country'));
-    }
-
-    public function delete($id){
-
-        Ads::where('id', $id)
-        ->update([
-            'delete_status' => Status::DELETE,
-        ]);
-
-        session()->flash('success', 'Ad has been deleted');
-        return redirect()->route('ads.index');
-    }
-
-    public function getAdsRelated(Request $request){
-
-        $customValue = AdsCustomValue::where('ads_id', $request->id)
-        ->get()
-        ->map(function($a){
-            $a->type = $a->Field->type;
-            $a->field_name = $a->Field->name;
-            unset($a->Field);
-            return $a;
-        });
-
-        $adsDependency = AdsFieldDependency::where('ads_id', $request->id)
-        ->get()
-        ->map(function($a){
-
-            if($a->master_type == 'make'){
-                $a->name = $a->Make->name;
-            }
-            if($a->master_type == 'model'){
-                $a->name = $a->Model->name;
-            }
-            if($a->master_type == 'Variant'){
-                $a->name = $a->Variant->name;
-            }
-
-            unset($a->Make, $a->Model);
-            return $a;
-        });
-
-        return response()->json([
-            'customValue'   => $customValue,
-            'adsDependency' => $adsDependency,
-        ], 200);
     }
 
     public function getMasterDependency(Request $request){

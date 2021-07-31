@@ -90,7 +90,7 @@
 <script>
     Swal.fire({
         icon: 'success',
-        text: {{ Session::get('success') }},
+        text: '{{ Session::get('success') }}',
     })
 </script>
 @endif
@@ -99,7 +99,7 @@
 <script>
     Swal.fire({
         icon: 'error',
-        text: {{ Session::get('error') }},
+        text: '{{ Session::get('error') }}',
     })
 </script>
 @endif

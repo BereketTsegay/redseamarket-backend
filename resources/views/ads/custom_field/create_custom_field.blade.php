@@ -36,7 +36,7 @@
                                             <option value="text">Text</option>
                                             <option value="textarea">Textarea</option>
                                             <option value="checkbox">Checkbox</option>
-                                            <option value="checkbox_multiple-1">Checkbox (Multiple)</option>
+                                            {{-- <option value="checkbox_multiple-1">Checkbox (Multiple)</option> --}}
                                             <option value="select-1">Select Box</option>
                                             <option value="radio-1">Radio</option>
                                             <option value="file">File</option>

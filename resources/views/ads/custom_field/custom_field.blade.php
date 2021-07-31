@@ -26,6 +26,7 @@
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Category</th>
+                                <th>Options</th>
                                 <th>Status</th>
                                 <th>View</th>
                                 <th>Edit</th>
@@ -41,6 +42,7 @@
                                     <td>{{ $row->name }}</td>
                                     <td>{{ $row->type }}</td>
                                     <td><span class="badge badge-primary">{{ count($row->CategoryField) }} Category</span></td>
+                                    <td>{!! $row->option == 1 ? '<span class="badge badge-primary mx-2">'. count($row->FieldOption) .'</span>' : 'Null' !!}</td>
                                     <td>{!! $row->status == 1 ? '<span class="text-success">Active<span>' : '<span class="text-secondary">Disabled<span>' !!}</td>
                                     <td><a href="{{ route('custom_field.view', $row->id) }}"><button type="button" class="btn btn-primary">View</button></a></td>
                                     <td><a href="{{ route('custom_field.edit', $row->id) }}"><button type="button" class="btn btn-secondary">Edit</button></a></td>
@@ -148,7 +150,7 @@
 <script>
     Swal.fire({
         icon: 'success',
-        text: {{ Session::get('success') }},
+        text: '{{ Session::get('success') }}',
     })
 </script>
 @endif
@@ -157,7 +159,7 @@
 <script>
     Swal.fire({
         icon: 'error',
-        text: {{ Session::get('error') }},
+        text: '{{ Session::get('error') }}',
     })
 </script>
 @endif

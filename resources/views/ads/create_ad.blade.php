@@ -240,36 +240,36 @@
                                 case 'text':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}>
                                         </div>`;
                                     break;
                                 case 'textarea':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <textarea type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}"></textarea>
+                                            <textarea type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}></textarea>
                                         </div>`;
                                     break;
                                 case 'checkbox':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <input type="checkbox" class="" name="${data[i].field.name}" value="checked" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            <input type="checkbox" class="" name="${data[i].field.name}" value="checked" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}>
                                         </div>`;
                                     break;
-                                case 'checkbox_multiple':
-                                    for(let k = 0; k < data[i].field.field_option.length; k++){
-                                        custom_field += `<div class="form-group col-md-6 my-2">
-                                                            <div class="col-md-6">
-                                                                <label for="">${data[i].field.field_option[k].value} </label>
-                                                                <input type="checkbox" name="${data[i].field.field_option[k].value}" value="checked" id="${data[i].field.field_option[k].value}">
-                                                            </div>
-                                                        </div>`;
-                                    }
-                                    break;
+                                // case 'checkbox_multiple':
+                                //     for(let k = 0; k < data[i].field.field_option.length; k++){
+                                //         custom_field += `<div class="form-group col-md-6 my-2">
+                                //                             <div class="col-md-6">
+                                //                                 <label for="">${data[i].field.field_option[k].value} </label>
+                                //                                 <input type="checkbox" name="${data[i].field.field_option[k].value}" value="checked" id="${data[i].field.field_option[k].value}" ${data[i].field.required == 1 ? 'required' : ''}>
+                                //                             </div>
+                                //                         </div>`;
+                                //     }
+                                //     break;
                                 case 'select':
                                     
                                     let preSelect = `<div class="col-md-6 form-group my-2">
                                         <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                        <select class="form-control" name="${data[i].field.name}" >
+                                        <select class="form-control" name="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}>
                                         <option>Select</option>`;
 
                                     let preOption = '';
@@ -297,25 +297,25 @@
                                 case 'file':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <input type="file" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}">
+                                            <input type="file" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}>
                                         </div>`;
                                     break;
                                 case 'url':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            <input type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}>
                                         </div>`;
                                     break;
                                 case 'number':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <input type="number" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            <input type="number" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}>
                                         </div>`;
                                     break;
                                 case 'date':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <input type="date" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}">
+                                            <input type="date" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}>
                                         </div>`;
                                     break;
 
@@ -323,7 +323,7 @@
                                     for(let l = 0; l < data[i].field.dependency.length; l++){
                                         custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.dependency[l].master}">${data[i].field.dependency[l].master} </label>
-                                            <select class="form-control" onChange="masterChange('${data[i].field.dependency[l].master}')" name="${data[i].field.dependency[l].master}" id="select_dependency_${data[i].field.dependency[l].master}">
+                                            <select class="form-control" onChange="masterChange('${data[i].field.dependency[l].master}')" name="${data[i].field.dependency[l].master}" id="select_dependency_${data[i].field.dependency[l].master}" ${data[i].field.required == 1 ? 'required' : ''}>
                                                 <option value="">Select</option>
                                             </select>
                                         </div>`;

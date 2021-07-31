@@ -338,15 +338,21 @@ class CustomFieldController extends Controller
 
     public function optionCreate(Request $request, $id){
 
+        $request->validate([
+            'value' => 'required',
+        ]);
+
         $subValue = explode(' ', $request->value);
 
         $k = 0;
+        $newValue = '';
+
         foreach($subValue as $value){
 
-            $newValue = '';
-
             if($k == 0){
+                
                 $newValue = $newValue.$value;
+                
             }
             else{
                 $newValue = $newValue.'-'.$value;
@@ -356,7 +362,7 @@ class CustomFieldController extends Controller
 
         $option             = new FieldOptions();
         $option->field_id   = $id;
-        $option->value      = $request->newValue;
+        $option->value      = $newValue;
         $option->save();
 
         session()->flash('success', 'Option has been stored');

@@ -78,7 +78,11 @@
                                 @foreach ($ad->CustomValue as $item)
                                     <div class="row">
                                         <p class="col-md-6">{{ $item->Field->name }} :</p>
+                                        @if ($item->file == 1)
+                                        <a class="col-md-6" href="{{ asset($item->value) }}" target="blank" style="text-decoration: none;"><p>View File</p></a>
+                                        @else
                                         <p class="col-md-6">{{ $item->value }}</p>
+                                        @endif
                                     </div>
                                 @endforeach
 
@@ -193,7 +197,7 @@
 <script>
     Swal.fire({
         icon: 'success',
-        text: {{ Session::get('success') }},
+        text: '{{ Session::get('success') }}',
     })
 </script>
 @endif
@@ -202,7 +206,7 @@
 <script>
     Swal.fire({
         icon: 'error',
-        text: {{ Session::get('error') }},
+        text: '{{ Session::get('error') }}',
     })
 </script>
 @endif

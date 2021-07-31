@@ -25,7 +25,7 @@
                                     <p class="col-md-6">Canonical Name :</p>
                                     <p class="col-md-6">{{ $category->canonical_name }}</p>
                                 </div>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <p class="col-md-6">Country :</p>
                                     <p class="col-md-6">{{ $category->Country->name }}</p>
                                 </div>
@@ -36,7 +36,7 @@
                                 <div class="row">
                                     <p class="col-md-6">City :</p>
                                     <p class="col-md-6">{{ $category->City->name }}</p>
-                                </div>
+                                </div> --}}
                                 <div class="row">
                                     <p class="col-md-6">Sort Order :</p>
                                     <p class="col-md-6">{{ $category->sort_order }}</p>
@@ -49,6 +49,7 @@
                                     <p class="col-md-6">Description :</p>
                                     <p class="col-md-6">{{ $category->description }}</p>
                                 </div>
+                                @if(count($category->CustomField) !=0 )
                                 <hr>
                                 <h5>Custom Fields</h5>
                                 <hr>
@@ -74,6 +75,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                @endif
                             </div>
                             <div class="col-md-6">
                                 <h5 class="my-4">Image</h5>

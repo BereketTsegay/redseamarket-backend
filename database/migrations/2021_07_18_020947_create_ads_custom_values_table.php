@@ -19,6 +19,7 @@ class CreateAdsCustomValuesTable extends Migration
             $table->integer('field_id');
             $table->integer('option_id');
             $table->text('value');
+            $table->boolean('file')->default(0);
             $table->timestamps();
         });
     }

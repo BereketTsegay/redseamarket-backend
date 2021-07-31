@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/ads/related/field', [App\Http\Controllers\AdsController::class, 'getAdsRelated']);
 
 
 Route::get('/', function(){
@@ -121,10 +120,12 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::post('/ad/store', [App\Http\Controllers\AdsController::class, 'store'])->name('ads.store');
         Route::get('/ad/view/{id}', [App\Http\Controllers\AdsController::class, 'view'])->name('ads.view');
         Route::get('/ad/edit/{id}', [App\Http\Controllers\AdsController::class, 'edit'])->name('ads.edit');
+        Route::post('/ad/update/{id}', [App\Http\Controllers\AdsController::class, 'update'])->name('ads.update');
         Route::post('/ad/delete/{id}', [App\Http\Controllers\AdsController::class, 'delete'])->name('ads.delete');
 
         Route::get('/get/custom/field', [App\Http\Controllers\AdsController::class, 'getCustomField'])->name('ad.get.custom_field');
         Route::get('/get/master/dependency', [App\Http\Controllers\AdsController::class, 'getMasterDependency'])->name('ad.get.master.dependency');
+        Route::get('/ads/related/field', [App\Http\Controllers\AdsController::class, 'getAdsRelated']);
 
                 // Ads Request
 
