@@ -80,7 +80,7 @@ class AdsController extends Controller
             $city = $request->city;
         }
         else{
-            $city = $request->state;
+            $city = 0;
         }
         
         $categoryField = CategoryField::where('category_id', $request->category)
@@ -383,7 +383,7 @@ class AdsController extends Controller
             $city = $request->city;
         }
         else{
-            $city = $request->state;
+            $city = 0;
         }
         
         $categoryField = CategoryField::where('category_id', $request->category)
@@ -406,7 +406,7 @@ class AdsController extends Controller
             'negotiable_flag'   => $negotiable_flag,
             'country_id'        => $request->country,
             'state_id'          => $request->state,
-            'city_id'           => $request->city,
+            'city_id'           => $city,
             'featured_flag'     => $featured_flag,
             'latitude'          => $request->address_latitude,
             'longitude'         => $request->address_longitude,

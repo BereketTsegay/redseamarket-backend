@@ -43,7 +43,11 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">City :</p>
+                                    @if ($ad->city_id != 0)
                                     <p class="col-md-6">{{ $ad->City->name }}</p>
+                                    @else
+                                    <p class="col-md-6">{{ $ad->State->name }}</p>
+                                    @endif
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Price :</p>

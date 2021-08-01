@@ -34,7 +34,12 @@ class OtherController extends Controller
 
                 $a->Ads->country_name = $a->Ads->Country->name;
                 $a->Ads->state_name = $a->Ads->State->name;
-                $a->Ads->city_name = $a->Ads->City->name;
+                if($a->city_id != 0){
+                    $a->city_name = $a->City->name;
+                }
+                else{
+                    $a->city_name = $a->State->name;
+                }
                 $a->Ads->CustomValue->map(function($c){
                     
                     if($c->Field->description_area_flag == 0){
@@ -92,7 +97,12 @@ class OtherController extends Controller
 
                 $a->country_name = $a->Country->name;
                 $a->state_name = $a->State->name;
-                $a->city_name = $a->City->name;
+                if($a->city_id != 0){
+                    $a->city_name = $a->City->name;
+                }
+                else{
+                    $a->city_name = $a->State->name;
+                }
                 $a->CustomValue->map(function($c){
                     
                     if($c->Field->description_area_flag == 0){
@@ -226,7 +236,12 @@ class OtherController extends Controller
 
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
-                        $a->city_name = $a->City->name;
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
                         $a->CustomValue->map(function($c){
                             
                             if($c->Field->description_area_flag == 0){
@@ -274,7 +289,12 @@ class OtherController extends Controller
 
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
-                        $a->city_name = $a->City->name;
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
                         $a->CustomValue->map(function($c){
                             
                             if($c->Field->description_area_flag == 0){
@@ -322,7 +342,12 @@ class OtherController extends Controller
 
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
-                        $a->city_name = $a->City->name;
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
                         $a->CustomValue->map(function($c){
                             
                             if($c->Field->description_area_flag == 0){
@@ -369,7 +394,12 @@ class OtherController extends Controller
 
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
-                        $a->city_name = $a->City->name;
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
                         $a->CustomValue->map(function($c){
                             
                             if($c->Field->description_area_flag == 0){

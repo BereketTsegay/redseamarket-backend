@@ -57,7 +57,12 @@ class AdsController extends Controller
 
                 $a->country_name = $a->Country->name;
                 $a->state_name = $a->State->name;
-                $a->city_name = $a->City->name;
+                if($a->city_id != 0){
+                    $a->city_name = $a->City->name;
+                }
+                else{
+                    $a->city_name = $a->State->name;
+                }
                 $a->CustomValue->map(function($c){
                     
                     if($c->Field->description_area_flag == 0){
