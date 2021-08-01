@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Common\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Ads;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Favorite;
+use App\Models\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -396,6 +399,70 @@ class OtherController extends Controller
                 'status'    => 'success',
                 'message'   => 'Search result',
                 'ads'       => $myAds,
+            ], 200);
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getCountry(){
+        try{
+            $country = Country::orderBy('name')
+            ->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Country List',
+                'country'   => $country,
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getState(Request $request){
+        
+        try{
+            $state = State::where('country_id', $request->country)
+            ->orderBy('name')
+            ->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'State List',
+                'state'     => $state,
+            ], 200);
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+        
+    }
+
+    public function getCity(Request $request){
+
+        try{
+            $city = City::where('state_id', $request->state)
+            ->orderBy('name')
+            ->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'City List',
+                'city'     => $city,
             ], 200);
 
         }

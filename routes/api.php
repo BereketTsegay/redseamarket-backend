@@ -32,6 +32,10 @@ Route::post('/customer/favourite/adOrRemove', [\App\Http\Controllers\Api\OtherCo
 Route::post('/customer/ad/view', [\App\Http\Controllers\Api\AdsController::class, 'adView']);
 Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::class, 'searchAds']);
 
+Route::post('/customer/get/country', [\App\Http\Controllers\Api\OtherController::class,'getCountry']);
+Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::class, 'getState']);
+Route::post('/customer/get/city', [\App\Http\Controllers\Api\OtherController::class, 'getCity']);
+
 Route::middleware('auth:api')->group( function () {
     
 });
