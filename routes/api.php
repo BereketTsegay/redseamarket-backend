@@ -36,7 +36,12 @@ Route::post('/customer/get/country', [\App\Http\Controllers\Api\OtherController:
 Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::class, 'getState']);
 Route::post('/customer/get/city', [\App\Http\Controllers\Api\OtherController::class, 'getCity']);
 
+// ad enquiry
+Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
+
 Route::middleware('auth:api')->group( function () {
     
+    Route::post('/customer/view/profile', [\App\Http\Controllers\Api\LoginController::class, 'myProfile']);
+    Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
 });
 

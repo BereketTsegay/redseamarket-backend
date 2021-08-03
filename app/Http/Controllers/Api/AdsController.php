@@ -20,6 +20,7 @@ use App\Models\VarientMst;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 
 class AdsController extends Controller
@@ -41,7 +42,7 @@ class AdsController extends Controller
             ], 400);
         }
 
-        try{
+        // try{
 
             $ads = Ads::where('id', $request->ads_id)
             ->get()
@@ -54,6 +55,9 @@ class AdsController extends Controller
                         return $q;
                     }),
                 ]);
+
+                $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
 
                 $a->country_name = $a->Country->name;
                 $a->state_name = $a->State->name;
@@ -80,6 +84,7 @@ class AdsController extends Controller
                     unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
                     return $c;
                 });
+                $a->SellerInformation;
 
                 unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
                 return $a;
@@ -87,19 +92,19 @@ class AdsController extends Controller
 
             return response()->json([
                 'status'    => 'success',
-                'message'   => 'My favourite ads',
+                'message'   => 'Ad details',
                 'ads'       => $ads,
             ], 200);
 
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
 
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function adStore(Request $request){

@@ -6,6 +6,8 @@ use App\Common\Status;
 use App\Common\UserType;
 use App\Http\Controllers\Controller;
 use App\Mail\PasswordReset;
+use App\Models\Ads;
+use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -177,5 +179,62 @@ class LoginController extends Controller
                 'message'   => 'Something went wrong',
             ], 301);
         }
+    }
+
+    public function myProfile(){
+        
+        try {
+            $user = User::where('id', Auth::user()->id)
+            ->where('type', UserType::USER)
+            ->first();
+
+            $myAds = Ads::where('customer_id', $user->id)
+            ->where('status', Status::ACTIVE)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->count();
+
+            $myFavourite = Favorite::where('customer_id', $user->id)
+            ->whereHas('Ads')
+            ->count();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'User Profile',
+                'data'      => [
+                    'myads'         => $myAds,
+                    'myfavourite'   => $myFavourite,
+                    'user'          => $user,
+                ],
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function logout(){
+
+        // try{
+            if (Auth::check()) {
+                Auth::user()->AauthAcessToken()->delete();
+            }
+
+            return response()->json([
+
+                'status'    => 'success',
+                'message'   => 'User Logout',
+
+            ], 200);
+
+        // }
+        // catch(\Exception $e){
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 }

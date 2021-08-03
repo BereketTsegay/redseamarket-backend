@@ -39,9 +39,16 @@ class DashboardController extends Controller
             
             if($header){
                 $user = true;
+                if(Auth::user()){
+                    $userName = Auth::user()->name;
+                }
+                {
+                    $userName = '';
+                }
             }
             else{
                 $user = false;
+                $userName = '';
             }
 
             $latitude = $request->latitude;
@@ -162,6 +169,7 @@ class DashboardController extends Controller
                 'status'    => 'success',
                 'data'      => [
                     'loged_user_status' => $user,
+                    'user_name'         => $userName,
                     'category_default'  => $categoryDefault,
                     'categories'        => $category,
                 ],
