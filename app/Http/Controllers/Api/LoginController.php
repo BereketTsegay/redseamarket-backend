@@ -217,7 +217,7 @@ class LoginController extends Controller
 
     public function logout(){
 
-        // try{
+        try{
             if (Auth::check()) {
                 Auth::user()->AauthAcessToken()->delete();
             }
@@ -229,12 +229,13 @@ class LoginController extends Controller
 
             ], 200);
 
-        // }
-        // catch(\Exception $e){
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
+
 }
