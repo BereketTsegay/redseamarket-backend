@@ -20,9 +20,6 @@ class CreateCategoriesTable extends Migration
             $table->longText('description');
             $table->string('image');
             $table->integer('icon_class_id');
-            // $table->integer('country_id');
-            // $table->integer('state_id');
-            // $table->integer('city_id');
             $table->integer('display_flag')->default(0)->comment('1 disply in dashboard, 0 not display');
             $table->tinyInteger('status')->default(1);
             $table->integer('sort_order');

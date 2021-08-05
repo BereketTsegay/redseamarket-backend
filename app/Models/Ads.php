@@ -50,4 +50,20 @@ class Ads extends Model
         return $this->hasMany(AdsFieldDependency::class, 'ads_id', 'id')
         ->where('delete_status', '!=', Status::DELETE);
     }
+
+    public function MotoreValue(){
+        return $this->hasOne(MotorCustomeValues::class, 'ads_id', 'id');
+    }
+
+    public function MotorFeatures(){
+        return $this->hasMany(MotorFeatures::class, 'ads_id', 'id');
+    }
+
+    public function PropertyRend(){
+        return $this->hasOne(PropertyRendCustomeValues::class, 'ads_id', 'id');
+    }
+
+    public function PropertySale(){
+        return $this->hasOne(PropertySaleCustomeValues::class, 'ads_id', 'id');
+    }
 }

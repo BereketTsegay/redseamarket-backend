@@ -43,11 +43,23 @@
                                     <td class="text-secondary">Disabled</td>
                                     @endif
                                     <td><a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
-                                    <td><a href="{{ route('category.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
-                                    <form id="delete_category_form{{$row->id}}" action="{{ route('category.delete', $row->id) }}" method="POST">
-                                        @csrf
-                                    </form>
+                                    <td>
+                                        @if ($row->reserved_flag == 1)
+                                            <a href="#" title="Can't edit, reserved category"><button class="btn btn-secondary">Edit</button></a>
+                                        @else
+                                            <a href="{{ route('category.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                        @endif
+                                        
+                                    </td>
+                                    <td>
+                                        @if ($row->reserved_flag == 1)
+                                            <button type="button" class="btn btn-danger" title="Can't delete, reserved category">Delete</button>
+                                        @else
+                                            <button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
+                                            <form id="delete_category_form{{$row->id}}" action="{{ route('category.delete', $row->id) }}" method="POST">
+                                                @csrf
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

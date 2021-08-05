@@ -126,6 +126,7 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::get('/get/custom/field', [App\Http\Controllers\AdsController::class, 'getCustomField'])->name('ad.get.custom_field');
         Route::get('/get/master/dependency', [App\Http\Controllers\AdsController::class, 'getMasterDependency'])->name('ad.get.master.dependency');
         Route::get('/ads/related/field', [App\Http\Controllers\AdsController::class, 'getAdsRelated']);
+        Route::get('/get/motor/feature', [App\Http\Controllers\AdsController::class, 'getMotorFeature']);
 
                 // Ads Request
 

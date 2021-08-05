@@ -200,13 +200,248 @@
             $('.select2').select2();
         });
 
+        $(document).on('change', '#Make', function(){
+            let id = $(this).val();
+            let newOption = '';
+
+            $.ajax({
+                url : '/global/vehicle/model/get',
+                type : 'get',
+                data : {id:id},
+                success:function(data){
+                    newOption += `<option value="">Select Model</option>`;
+
+                    for(let i = 0; i < data.length; i++){
+
+                        newOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+
+                    }
+
+                    $('#Model').html(newOption);
+                }
+            });
+
+        });
+
         $(document).on('change', '#category', function(){
             let id = $(this).val();
             let option = '';
             let custom_field = '';
             let select_id = '';
             let dependencyOption = '';
+            let makeOption = '';
 
+            if(id == 1){
+
+                $.ajax({
+                    url : '/get/master/dependency',
+                    async : false,
+                    type : 'get',
+                    data : {master:'Make'},
+                    success:function(result){
+                        
+                        
+                        makeOption += '<option value="">Select</option>';
+                        
+                        for(let i = 0; i < result.length; i++){
+                            makeOption += `<option value="${result[i].id}">${result[i].name}</option>`;
+                        }
+                    }
+                });
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Make">Make </label>
+                                    <select class="select2 form-control @error('make') 'is-invalid' @enderror" name="make" id="Make">
+                                        ${makeOption}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        @error('make')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+                
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Model">Model </label>
+                                    <select class="form-control @error('model') 'is-invalid' @enderror" name="model" id="Model">
+                                        <option>Select Model</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        @error('model')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="RegisterdYear">Registerd Year </label>
+                                    <input type="number" class="form-control @error('registered_year') 'is-invalid' @enderror" name="registered_year" id="RegisterdYear" placeholder="Registerd Year" >
+                                    <div class="invalid-feedback">
+                                        @error('registered_year')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Fuel">Fuel Type </label>
+                                    <select class="form-control @error('fuel') 'is-invalid' @enderror" name="fuel" id="Fuel">
+                                        <option value="" >Select</option>
+                                        <option value="Petrol">Petrol</option>
+                                        <option value="Diesel">Diesel</option>
+                                        <option value="LPG Gas">LPG Gas</option>
+                                        <option value="Electric">Electric</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        @error('fuel')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2 row">
+                                    <label for="Transmission">Transmission </label>
+                                    <div class="custom-form-control col-md-6">
+                                        <label for="Manual">Manual </label>
+                                        <input type="radio" class="" name="transmission" id="Manual" value="Manual" >
+                                    </div>
+                                    <div class="custom-form-control col-md-6">
+                                        <label for="Automatic">Automatic </label>
+                                        <input type="radio" class="@error('transmission') 'is-invalid' @enderror" name="transmission" id="Automatic" value="Automatic" >
+                                        <div class="invalid-feedback">
+                                            @error('transmission')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2 row mx-2">
+                                    <label for="Transmission">Condition </label>
+                                    <div class="custom-form-control col-md-6">
+                                        <label for="New">New </label>
+                                        <input type="radio" class="" name="condition" id="New" value="New" >
+                                    </div>
+                                    <div class="custom-form-control col-md-6">
+                                        <label for="Used">Used </label>
+                                        <input type="radio" class="@error('condition') 'is-invalid' @enderror" name="condition" id="Used" value="Used" >
+                                        <div class="invalid-feedback">
+                                            @error('condition')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Mileage">Mileage </label>
+                                    <input type="number" class="form-control @error('mileage') 'is-invalid' @enderror" name="mileage" id="Mileage" placeholder="Mileage" >
+                                    <div class="invalid-feedback">
+                                        @error('mileage')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2 row mx-2">
+                                    <label for="Transmission">Features </label>
+                                    <div class="custom-form-control col-md-12">
+                                        <input type="checkbox" class="" name="features[]" id="AirConditioner" value="Air Conditioner" >
+                                        <label for="AirConditioner">Air Conditioner </label>
+                                    </div>
+                                    <div class="custom-form-control col-md-12">
+                                        <input type="checkbox" class="" name="features[]" id="GPS" value="GPS" >
+                                        <label for="GPS">GPS </label>
+                                    </div>
+                                    <div class="custom-form-control col-md-12">
+                                        <input type="checkbox" class="" name="features[]" id="SecuritySystem" value="Security System" >
+                                        <label for="SecuritySystem">Security System </label>
+                                    </div>
+                                    <div class="custom-form-control col-md-12">
+                                        <input type="checkbox" class="@error('features') 'is-invalid' @enderror" name="features[]" id="SpareTire" value="Spare Tire" >
+                                        <label for="SpareTire" >Spare Tire </label>
+                                        <div class="invalid-feedback">
+                                            @error('features')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>`;
+                
+            }
+            else if(id == 2 || id == 3){
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Size">Size </label>
+                                    <input type="number" class="form-control @error('size') 'is-invalid' @enderror" name="size" id="Size" placeholder="Size" >
+                                    <div class="invalid-feedback">
+                                        @error('size')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Room">Rooms </label>
+                                    <input type="number" class="form-control @error('rooms') 'is-invalid' @enderror" name="rooms" id="Room" placeholder="Rooms" >
+                                    <div class="invalid-feedback">
+                                        @error('rooms')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2 row mx-2">
+                                    <label for="Furnished">Furnished </label>
+                                    <div class="custom-form-control col-md-6">
+                                        <label for="Yes">Yes </label>
+                                        <input type="radio" class="@error('furnished') 'is-invalid' @enderror" name="furnished" id="Yes" value="Yes" >
+                                        <div class="invalid-feedback">
+                                            @error('furnished')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="custom-form-control col-md-6">
+                                        <label for="No">No </label>
+                                        <input type="radio" class="@error('furnished') 'is-invalid' @enderror" name="furnished" id="No" value="No" >
+                                        <div class="invalid-feedback">
+                                            @error('furnished')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Building">Building Type </label>
+                                    <select class="form-control @error('building') 'is-invalid' @enderror" name="building" id="Building">
+                                        <option value="" >Select</option>
+                                        <option value="Apartment">Apartment</option>
+                                        <option value="House">House</option>
+                                        <option value="Store">Store</option>
+                                        <option value="Office">Office</option>
+                                        <option value="Plot of land">Plot of land</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        @error('building')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 my-2 row mx-2">
+                                    <div class="custom-form-control col-md-12">
+                                        <label for="Parking">Parking </label>
+                                        <input type="checkbox" class="custom-control-input @error('parking') 'is-invalid' @enderror" name="parking" id="Parking" value="Parking" >
+                                        <div class="invalid-feedback">
+                                        @error('parking')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                    </div>
+                                </div>`;
+            }
+            
             $.ajax({
                 url : '/change/subcategory',
                 type : 'get',

@@ -12,6 +12,10 @@ use App\Models\CategoryField;
 use App\Models\Country;
 use App\Models\FieldOptions;
 use App\Models\MakeMst;
+use App\Models\MotorCustomeValues;
+use App\Models\MotorFeatures;
+use App\Models\PropertyRendCustomeValues;
+use App\Models\PropertySaleCustomeValues;
 use App\Models\RejectReason;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -41,7 +45,7 @@ class AdsController extends Controller
     }
 
     public function store(Request $request){
-
+        
         $request->validate([
             'category'          => 'required|numeric',
             'title'             => 'required',
@@ -54,6 +58,28 @@ class AdsController extends Controller
             'description'       => 'required',
             'image.*'           => 'required|mimes:png,jpg,jpeg',
         ]);
+
+        if($request->category == 1){
+            $request->validate([
+                'make'              => 'required|numeric',
+                'model'             => 'required|numeric',
+                'registered_year'   => 'required|numeric',
+                'fuel'              => 'required',
+                'transmission'      => 'required',
+                'condition'         => 'required',
+                'mileage'           => 'required|numeric',
+                'features.*'        => 'required',
+            ]);
+        }
+
+        elseif($request->category == 2 || $request->category == 3){
+            $request->validate([
+                'size'      => 'required|numeric',
+                'rooms'     => 'required|numeric',
+                'furnished' => 'required',
+                'building'  => 'required',
+            ]);
+        }
         
         if($request->status == 'checked'){
             $status = 1;
@@ -82,6 +108,12 @@ class AdsController extends Controller
         else{
             $city = 0;
         }
+        if($request->subcategory){
+            $subcategory = $request->subcategory;
+        }
+        else{
+            $subcategory = 0;
+        }
         
         $categoryField = CategoryField::where('category_id', $request->category)
         ->with(['Field' => function($a){
@@ -94,7 +126,7 @@ class AdsController extends Controller
 
         $ad                         = new Ads();
         $ad->category_id            = $request->category;
-        $ad->subcategory_id         = $request->subcategory;
+        $ad->subcategory_id         = $subcategory;
         $ad->title                  = $request->title;
         $ad->canonical_name         = $request->canonical_name;
         $ad->description            = $request->description;
@@ -126,6 +158,69 @@ class AdsController extends Controller
                 $adImage->image     = $image;
                 $adImage->save();
             }
+        }
+
+        if($request->category == 1){
+
+            $motor                      = new MotorCustomeValues();
+            $motor->ads_id              = $ad->id;
+            $motor->make_id             = $request->make;
+            $motor->model_id            = $request->model;
+            $motor->registration_year   = $request->registered_year;
+            $motor->fuel_type           = $request->fuel;
+            $motor->transmission        = $request->transmission;
+            $motor->condition           = $request->condition;
+            $motor->milage              = $request->mileage;
+            $motor->save();
+
+            if($request->features){
+
+                foreach($request->features as $feature1){
+                    
+                    $feature            = new MotorFeatures();
+                    $feature->ads_id    = $ad->id;
+                    $feature->value     = $feature1;
+                    $feature->save();
+                }
+            }
+
+        }
+        elseif($request->category == 2){
+
+            if($request->parking == 'Parking'){
+                $parking = 1;
+            }
+            else{
+                $parking = 0;
+            }
+
+            $propery                = new PropertyRendCustomeValues();
+            $propery->ads_id        = $ad->id;
+            $propery->size          = $request->size;
+            $propery->room          = $request->rooms;
+            $propery->furnished     = $request->furnished;
+            $propery->building_type = $request->building;
+            $propery->parking       = $parking;
+            $propery->save();
+        }
+        elseif($request->category == 3){
+
+            if($request->parking == 'Parking'){
+                $parking = 1;
+            }
+            else{
+                $parking = 0;
+            }
+
+            $propery                = new PropertySaleCustomeValues();
+            $propery->ads_id        = $ad->id;
+            $propery->size          = $request->size;
+            $propery->room          = $request->rooms;
+            $propery->furnished     = $request->furnished;
+            $propery->building_type = $request->building;
+            $propery->parking       = $parking;
+            $propery->save();
+
         }
 
         foreach($categoryField as $catRow){
@@ -346,6 +441,29 @@ class AdsController extends Controller
             'image.*'           => 'required|mimes:png,jpg,jpeg',
         ]);
 
+        if($request->category == 1){
+            $request->validate([
+                'make'              => 'required|numeric',
+                'model'             => 'required|numeric',
+                'registered_year'   => 'required|numeric',
+                'fuel'              => 'required',
+                'transmission'      => 'required',
+                'condition'         => 'required',
+                'mileage'           => 'required|numeric',
+                'features.*'        => 'required',
+            ]);
+        }
+
+        elseif($request->category == 2 || $request->category == 3){
+            $request->validate([
+                'size'      => 'required|numeric',
+                'rooms'     => 'required|numeric',
+                'furnished' => 'required',
+                'building'  => 'required',
+            ]);
+        }
+
+
         $ad = Ads::where('id', $id)
         ->first();
 
@@ -385,6 +503,12 @@ class AdsController extends Controller
         else{
             $city = 0;
         }
+        if($request->subcategory){
+            $subcategory = $request->subcategory;
+        }
+        else{
+            $subcategory = 0;
+        }
         
         $categoryField = CategoryField::where('category_id', $request->category)
         ->with(['Field' => function($a){
@@ -398,7 +522,7 @@ class AdsController extends Controller
         Ads::where('id', $id)
         ->update([
             'category_id'       => $request->category,
-            'subcategory_id'    => $request->subcategory,
+            'subcategory_id'    => $subcategory,
             'title'             => $request->title,
             'canonical_name'    => $request->canonical_name,
             'description'       => $request->description,
@@ -412,6 +536,71 @@ class AdsController extends Controller
             'longitude'         => $request->address_longitude,
             'status'            => $status,
         ]);
+
+        if($request->category == 1){
+
+            MotorCustomeValues::where('ads_id', $id)
+            ->update([
+                'make_id'           => $request->make,
+                'model_id'          => $request->model,
+                'registration_year' => $request->registered_year,
+                'fuel_type'         => $request->fuel,
+                'transmission'      => $request->transmission,
+                'condition'         => $request->condition,
+                'milage'            => $request->mileage,
+            ]);
+
+            MotorFeatures::where('ads_id', $id)
+            ->delete();
+
+            if($request->features){
+
+                foreach($request->features as $feature1){
+                    
+                    $feature            = new MotorFeatures();
+                    $feature->ads_id    = $ad->id;
+                    $feature->value     = $feature1;
+                    $feature->save();
+                }
+            }
+        }
+        elseif($request->category == 2){
+
+            if($request->parking == 'Parking'){
+                $parking = 1;
+            }
+            else{
+                $parking = 0;
+            }
+
+            PropertyRendCustomeValues::where('ads_id', $id)
+            ->update([
+                'size'          => $request->size,
+                'room'          => $request->rooms,
+                'furnished'     => $request->furnished,
+                'building_type' => $request->building,
+                'parking'       => $parking,
+            ]);
+        }
+        elseif($request->category == 3){
+
+            if($request->parking == 'Parking'){
+                $parking = 1;
+            }
+            else{
+                $parking = 0;
+            }
+
+            PropertySaleCustomeValues::where('ads_id', $id)
+            ->update([
+                'size'          => $request->size,
+                'room'          => $request->rooms,
+                'furnished'     => $request->furnished,
+                'building_type' => $request->building,
+                'parking'       => $parking,
+            ]);
+
+        }
 
         if($request->hasFile('image')){
 
@@ -772,5 +961,18 @@ class AdsController extends Controller
         ->get();
 
         return view('ads.request.request_details', compact('ad', 'reason'));
+    }
+
+    public function getMotorFeature(Request $request){
+
+        $request->validate([
+
+            'id'    => 'required',
+        ]);
+
+        $feature = MotorFeatures::where('ads_id', $request->id)
+        ->get();
+
+        return response()->json($feature);
     }
 }

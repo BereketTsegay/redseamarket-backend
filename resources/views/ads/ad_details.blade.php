@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Subcategory :</p>
-                                    <p class="col-md-6">{{ $ad->Subcategory->name }}</p>
+                                    <p class="col-md-6">{{ $ad->Subcategory ? $ad->Subcategory->name : 'Null' }}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Country :</p>
@@ -79,6 +79,90 @@
                                         @endif
                                     </p>
                                 </div>
+                                @if ($ad->category_id == 1)
+                                <div class="row">
+                                    <p class="col-md-6">Make :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->Make->name }}</p>
+                                </div>
+                                <div class="row">
+                                    <p class="col-md-6">Model :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->Model->name }}</p>
+                                </div>
+                                <div class="row">
+                                    <p class="col-md-6">Registration Year :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->registration_year }}</p>
+                                </div>
+                                <div class="row">
+                                    <p class="col-md-6">Fuel :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->fuel_type }}</p>
+                                </div>
+                                <div class="row">
+                                    <p class="col-md-6">Transmission :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->transmission }}</p>
+                                </div>
+                                <div class="row">
+                                    <p class="col-md-6">Condition :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->condition }}</p>
+                                </div>
+                                <div class="row">
+                                    <p class="col-md-6">Milage :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->milage }}</p>
+                                </div>
+                                    @if (count($ad->MotorFeatures) != 0)
+                                    <div class="">
+                                        <h4>Features</h4>
+                                        <hr>
+                                        @foreach ($ad->MotorFeatures as $feature)
+                                            <div class="row">
+                                                <p class="col-md-6">{{ $feature->value }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                @elseif ($ad->category_id == 2)
+                                    <div class="row">
+                                        <p class="col-md-6">Size :</p>
+                                        <p class="col-md-6">{{ $ad->PropertyRend->size }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Rooms :</p>
+                                        <p class="col-md-6">{{ $ad->PropertyRend->room }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Furnished :</p>
+                                        <p class="col-md-6">{{ $ad->PropertyRend->furnished }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Building Type :</p>
+                                        <p class="col-md-6">{{ $ad->PropertyRend->building_type }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Parking :</p>
+                                        <p class="col-md-6">{{ $ad->PropertyRend->parking == 1 ? 'Yes' : 'No' }}</p>
+                                    </div>
+
+                                @elseif ($ad->category_id == 3)
+                                    <div class="row">
+                                        <p class="col-md-6">Size :</p>
+                                        <p class="col-md-6">{{ $ad->PropertySale->size }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Rooms :</p>
+                                        <p class="col-md-6">{{ $ad->PropertySale->room }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Furnished :</p>
+                                        <p class="col-md-6">{{ $ad->PropertySale->furnished }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Building Type :</p>
+                                        <p class="col-md-6">{{ $ad->PropertySale->building_type }}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-md-6">Parking :</p>
+                                        <p class="col-md-6">{{ $ad->PropertySale->parking == 1 ? 'Yes' : 'No' }}</p>
+                                    </div>
+                                @endif
                                 @foreach ($ad->CustomValue as $item)
                                     <div class="row">
                                         <p class="col-md-6">{{ $item->Field->name }} :</p>
