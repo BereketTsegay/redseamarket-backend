@@ -35,6 +35,8 @@ Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::
 Route::post('/customer/get/country', [\App\Http\Controllers\Api\OtherController::class,'getCountry']);
 Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::class, 'getState']);
 Route::post('/customer/get/city', [\App\Http\Controllers\Api\OtherController::class, 'getCity']);
+Route::post('/customer/get/motors', [\App\Http\Controllers\Api\AdsController::class, 'getCategoryMotors']);
+Route::post('/customer/get/property', [\App\Http\Controllers\Api\AdsController::class, 'getProperty']);
 
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
@@ -45,6 +47,7 @@ Route::middleware('auth:api')->group( function () {
 
     Route::post('/customer/ads/store', [\App\Http\Controllers\Api\AdsController::class, 'adStore']);
     Route::post('/customer/view/profile', [\App\Http\Controllers\Api\LoginController::class, 'myProfile']);
+    Route::post('/customer/update/profile', [\App\Http\Controllers\Api\LoginController::class, 'updateProfile']);
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
 });
 

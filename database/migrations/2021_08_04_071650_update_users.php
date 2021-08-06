@@ -15,8 +15,8 @@ class UpdateUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             
-            $table->string('phone')->after('email');
-            $table->string('nationality_id')->after('phone');
+            $table->string('phone')->after('email')->nullable();
+            $table->string('nationality_id')->after('phone')->nullable();
         });
     }
 

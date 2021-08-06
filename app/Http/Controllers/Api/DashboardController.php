@@ -141,8 +141,7 @@ class DashboardController extends Controller
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
-                ->orderby('sort_order')
-                ->take(4);
+                ->orderby('sort_order');
             }])
             ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
                 $b->where('status', Status::ACTIVE)
@@ -230,8 +229,7 @@ class DashboardController extends Controller
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
-                ->orderby('sort_order')
-                ->take(4);
+                ->orderby('sort_order');
             }])
             ->with(['Ads' => function($b) use($latitude, $longitude, $radius){
                 $b->where('status', Status::ACTIVE)
@@ -307,8 +305,7 @@ class DashboardController extends Controller
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
-                ->orderby('sort_order')
-                ->take(4);
+                ->orderby('sort_order');
             }])
             ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
                 $b->where('status', Status::ACTIVE)

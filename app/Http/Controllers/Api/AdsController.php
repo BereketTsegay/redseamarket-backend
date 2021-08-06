@@ -8,6 +8,7 @@ use App\Models\Ads;
 use App\Models\AdsCustomValue;
 use App\Models\AdsFieldDependency;
 use App\Models\AdsImage;
+use App\Models\Category;
 use App\Models\CategoryField;
 use App\Models\City;
 use App\Models\Country;
@@ -16,6 +17,8 @@ use App\Models\MakeMst;
 use App\Models\ModelMst;
 use App\Models\SellerInformation;
 use App\Models\State;
+use App\Models\Subcategory;
+use App\Models\Testimonial;
 use App\Models\VarientMst;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,12 +45,26 @@ class AdsController extends Controller
             ], 400);
         }
 
-        // try{
+        try{
 
             $ads = Ads::where('id', $request->ads_id)
             ->get()
             ->map(function($a){
 
+                if($a->category_id == 1){
+                    $a->MotoreValue;
+                    $a->make = $a->MotoreValue->Make->name;
+                    $a->model = $a->MotoreValue->Model->name;
+                    $a->MotorFeatures;
+
+                    unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                }
+                elseif($a->category_id == 2){
+                    $a->PropertyRend;
+                }
+                elseif($a->category_id ==3){
+                    $a->PropertySale;
+                }
                 $a->image = array_filter([
                     $a->Image->map(function($q) use($a){
                         $q->image;
@@ -96,15 +113,15 @@ class AdsController extends Controller
                 'ads'       => $ads,
             ], 200);
 
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
 
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function adStore(Request $request){
@@ -587,5 +604,139 @@ class AdsController extends Controller
         }
 
         return $masterMst;
+    }
+
+    public function getCategoryMotors(){
+
+        try{
+            $motors = Category::where('id', 1)
+            ->with(['Subcategory' => function($a){
+                $a->withCount('Ads');
+            }])
+            ->first();
+
+            $ads = Ads::where('category_id', 1)
+            ->where('status', Status::ACTIVE)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->where('featured_flag', 1)
+            ->get()
+            ->map(function($a){
+                $a->state_name = $a->State->name;
+                $a->city_name = $a->City->name;
+                $a->make = $a->MotoreValue->Make->name;
+                $a->model = $a->MotoreValue->Model->name;
+                $a->year = $a->MotoreValue->registration_year;
+                $a->milage = $a->MotoreValue->milage;
+                $a->image = $a->Image;
+                unset($a->MotoreValue, $a->State, $a->City);
+                return $a;
+            });
+
+            $testimonial = Testimonial::orderBy('created_at', 'desc')
+            ->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'category list',
+                'data'      => [
+                    'motors'        => $motors,
+                    'ads'           => $ads,
+                    'testimonial'   => $testimonial,
+                ],
+            ], 200);
+        }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getProperty(Request $request){
+
+        $rules = [
+            'category_id'   => 'required|numeric',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+
+        try{
+
+            $property = Category::where('id', $request->category_id)
+            ->with(['Subcategory' => function($a){
+                $a->withCount('Ads');
+            }])
+            ->first();
+
+            $subcategory = Subcategory::where('category_id', $request->category_id)
+            ->where('status', Status::ACTIVE)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->orderBy('sort_order')
+            ->get()
+            ->map(function($a){
+
+                $a->Ads->map(function($b){
+                    
+                    if($b->category_id == 2 && $b->PropertyRend){
+                        
+                        $b->size = $b->PropertyRend->size;
+                        $b->room = $b->PropertyRend->room;
+                        $b->furnished = $b->PropertyRend->furnished; 
+                        $b->building_type = $b->PropertyRend->building_type;
+                        $b->parking = $b->PropertyRend->parking == 0 ? 'No' : 'Yes';
+
+                        unset($b->PropertyRend);
+                    }
+                    elseif($b->category_id == 3 && $b->PropertySale){
+                        
+                        $b->size = $b->PropertySale->size;
+                        $b->room = $b->PropertySale->room;
+                        $b->furnished = $b->PropertySale->furnished; 
+                        $b->building_type = $b->PropertySale->building_type;
+                        $b->parking = $b->PropertySale->parking == 0 ? 'No' : 'Yes';
+
+                        unset($b->PropertySale);
+                    }
+
+                    $b->state_name = $b->State->name;
+                    $b->city_name = $b->City->name;
+                    $b->Image;
+
+                    unset($b->State, $b->City);
+                    return $b;
+                });
+                return $a;
+            });
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'category list',
+                'data'      => [
+                    'property'      => $property,
+                    'subcategory'   => $subcategory,
+                ],
+            ], 200);
+
+        }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 }

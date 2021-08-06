@@ -27,7 +27,7 @@
                                             @foreach ($category as $row)
                                                 <option value="category_{{ $row->id }}">{{ $row->name }}</option>
                                                 @foreach ($row->Subcategory as $item)
-                                                    <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $row->name }}</option>
+                                                    <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                 @endforeach
                                             @endforeach
                                         </select>

@@ -33,9 +33,9 @@
 
                                                 @foreach ($row->Subcategory as $item)
                                                     @if($subcategory->parent_id == $item->id)
-                                                    <option selected value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $row->name }}</option>
+                                                    <option selected value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                     @else
-                                                    <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $row->name }}</option>
+                                                    <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                     @endif
                                                 @endforeach
                                             @endforeach

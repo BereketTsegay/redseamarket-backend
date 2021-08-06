@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Common\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,5 +20,11 @@ class Subcategory extends Model
 
     public function CustomField(){
         return $this->hasMany(CategoryField::class, 'subcategory_id', 'id');
+    }
+
+    public function Ads(){
+        return $this->hasMany(Ads::class, 'subcategory_id', 'id')
+        ->where('status', Status::ACTIVE)
+        ->where('delete_status', '!=', Status::DELETE);
     }
 }

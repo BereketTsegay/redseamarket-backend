@@ -238,4 +238,51 @@ class LoginController extends Controller
         }
     }
 
+    public function updateProfile(Request $request){
+
+        $id = Auth::user()->id;
+
+        $rules = [
+            'name'          => 'required',
+            'email'         => 'required|email|unique:users,email,'.$id.',id',
+            'phone'         => 'required|numeric',
+            'nationality'   => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+
+        // try{
+            User::where('id', Auth::user()->id)
+            ->update([
+                'name'              => $request->name,
+                'email'             => $request->email,
+                'phone'             => $request->phone,
+                'nationality_id'    => $request->nationality,
+            ]);
+
+            return response()->json([
+
+                'status'    => 'success',
+                'message'   => 'User profile has been updated',
+
+            ], 200);
+
+        // }
+        // catch(\Exception $e){
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
+    }
+
 }
