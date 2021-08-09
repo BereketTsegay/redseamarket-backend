@@ -198,7 +198,7 @@ class OtherController extends Controller
     }
 
     public function searchAds(Request $request){
-
+        
         $rules = [
             'search_key'    => 'required',
         ];
@@ -218,12 +218,11 @@ class OtherController extends Controller
 
             if($request->city && $request->category){
 
-                $myAds = tap(Ads::where('customer_id', 1) //Auth::user()->id;
+                $myAds = tap(Ads::where('category_id', $request->category)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
                 })
-                ->where('category_id', $request->category)
                 ->where('city_id', $request->city)
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
@@ -238,8 +237,26 @@ class OtherController extends Controller
                             }),
                         ]);
 
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
                         if($a->city_id != 0){
                             $a->city_name = $a->City->name;
                         }
@@ -272,12 +289,11 @@ class OtherController extends Controller
             }
             elseif($request->city){
 
-                $myAds = tap(Ads::where('customer_id', 1) //Auth::user()->id;
+                $myAds = tap(Ads::where('city_id', $request->city)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
                 })
-                ->where('city_id', $request->city)
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
                 ->paginate(1), function ($paginatedInstance){
@@ -291,8 +307,26 @@ class OtherController extends Controller
                             }),
                         ]);
 
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
                         if($a->city_id != 0){
                             $a->city_name = $a->City->name;
                         }
@@ -344,8 +378,26 @@ class OtherController extends Controller
                             }),
                         ]);
 
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
                         if($a->city_id != 0){
                             $a->city_name = $a->City->name;
                         }
@@ -398,6 +450,24 @@ class OtherController extends Controller
 
                         $a->country_name = $a->Country->name;
                         $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
                         if($a->city_id != 0){
                             $a->city_name = $a->City->name;
                         }
@@ -431,7 +501,7 @@ class OtherController extends Controller
 
             return response()->json([
                 'status'    => 'success',
-                'message'   => 'Search result for '. $request->search_key,
+                'message'   => 'Showing result for '. $request->search_key,
                 'ads'       => $myAds,
             ], 200);
 

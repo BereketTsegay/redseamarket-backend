@@ -106,9 +106,9 @@
                             <option value="">Select Category</option>
                             @foreach ($category as $item)
                                 <option value="category_{{ $item->id }}">{{ $item->name }}</option>
-                                @foreach ($item->Subcategory as $row1)
+                                {{-- @foreach ($item->Subcategory as $row1)
                                     <option value="subcategory_{{ $item->id }}_{{ $row1->id }}">-----| {{ $row1->name }}</option>
-                                @endforeach
+                                @endforeach --}}
                             @endforeach
                         </Select>
                     </div>

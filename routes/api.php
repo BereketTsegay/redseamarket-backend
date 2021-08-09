@@ -48,6 +48,9 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/ads/store', [\App\Http\Controllers\Api\AdsController::class, 'adStore']);
     Route::post('/customer/view/profile', [\App\Http\Controllers\Api\LoginController::class, 'myProfile']);
     Route::post('/customer/update/profile', [\App\Http\Controllers\Api\LoginController::class, 'updateProfile']);
+    Route::post('/customer/get/make', [\App\Http\Controllers\Api\AdsController::class, 'getMake']);
+    Route::post('/customer/get/model', [\App\Http\Controllers\Api\AdsController::class, 'getModel']);
+
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
 });
 

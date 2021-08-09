@@ -26,9 +26,9 @@
                                             <option value="">Select</option>
                                             @foreach ($category as $row)
                                                 <option value="category_{{ $row->id }}">{{ $row->name }}</option>
-                                                @foreach ($row->Subcategory as $item)
+                                                {{-- @foreach ($row->Subcategory as $item)
                                                     <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
-                                                @endforeach
+                                                @endforeach --}}
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback">

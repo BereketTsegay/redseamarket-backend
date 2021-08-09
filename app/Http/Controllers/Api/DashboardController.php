@@ -35,10 +35,7 @@ class DashboardController extends Controller
             ], 400);
         }
 
-        try{
-
-            
-                
+        // try{
                 
                 if(Auth::user()){
                     $user = true;
@@ -52,6 +49,33 @@ class DashboardController extends Controller
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;
+            
+            // $data = [
+            //     'latitude'  => $latitude,
+            //     'longitude' => $longitude,
+            // ];
+
+            // $dataString = json_encode($data);
+
+            
+
+            // $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=".env('GOOGLE_MAPS_API_KEY')."&sensor=false";
+
+            // $ch = curl_init();
+            // curl_setopt($ch, CURLOPT_URL, $url);
+            // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            // curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+            // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            // $response = curl_exec($ch);
+            // curl_close($ch);
+            
+            // $response_a = json_decode($response, true);
+            
+            // return $response_a;
+            // return $response_a['results'][1]['address_components'][5]['long_name'];
+
+
 
             $radius = 10; // Km
             $r = 6371000; // earth's mean radius 6371 for kilometer and 3956 for miles
@@ -173,14 +197,14 @@ class DashboardController extends Controller
                 ],
             ], 200);
 
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function LogedDashboard(Request $request){
@@ -375,13 +399,13 @@ class DashboardController extends Controller
             $category = Category::where('delete_status', '!=', Status::DELETE)
             ->where('status', Status::ACTIVE)
             ->orderBy('sort_order')
-            ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
-                $b->where('status', Status::ACTIVE)
-                ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                    ->having('distance', '<=', $radius);
-            })
-            ->take(5)
+            // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+            //     $b->where('status', Status::ACTIVE)
+            //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+            //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            //         ->having('distance', '<=', $radius);
+            // })
+            // ->take(5)
             ->get()
             ->map(function($a){
 

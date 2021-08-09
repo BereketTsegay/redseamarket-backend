@@ -100,6 +100,7 @@ class CategoryController extends Controller
         $category->sort_order       = $request->sort_order;
         $category->status           = $status;
         $category->display_flag     = $display_flag;
+        $category->reserved_flag    = 0;
         $category->save();
 
         session()->flash('success', 'Category has been created');
@@ -186,6 +187,13 @@ class CategoryController extends Controller
             $display_flag = 0;
         }
 
+        if($id == 1 || $id == 2 || $id == 3){
+            $reserved = 1;
+        }
+        else{
+            $reserved = 0;
+        }
+
         Category::where('id', $id)
         ->update([
             'name'              => $request->category_name,
@@ -199,6 +207,7 @@ class CategoryController extends Controller
             'sort_order'        => $request->sort_order,
             'status'            => $status,
             'display_flag'      => $display_flag,
+            'reserved_flag'     => $reserved,
         ]);
 
         session()->flash('success', 'Category has been updated');
