@@ -26,9 +26,7 @@ Route::post('/customer/get/master/dependency', [\App\Http\Controllers\Api\AdsCon
 
 Route::post('/customer/get/category', [\App\Http\Controllers\Api\DashboardController::class, 'getCategory']);
 Route::post('/customer/get/subcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubcategory']);
-Route::post('/customer/view/favourite', [\App\Http\Controllers\Api\OtherController::class, 'favouriteView']);
-Route::post('/customer/view/myAds', [\App\Http\Controllers\Api\OtherController::class, 'myAds']);
-Route::post('/customer/favourite/adOrRemove', [\App\Http\Controllers\Api\OtherController::class, 'favouriteStoreOrRemove']);
+
 Route::post('/customer/ad/view', [\App\Http\Controllers\Api\AdsController::class, 'adView']);
 Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::class, 'searchAds']);
 
@@ -51,6 +49,9 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/get/make', [\App\Http\Controllers\Api\AdsController::class, 'getMake']);
     Route::post('/customer/get/model', [\App\Http\Controllers\Api\AdsController::class, 'getModel']);
     Route::post('/customer/ad/favourite', [\App\Http\Controllers\Api\AdsController::class, 'favouriteGet']);
+    Route::post('/customer/view/favourite', [\App\Http\Controllers\Api\OtherController::class, 'favouriteView']);
+    Route::post('/customer/view/myAds', [\App\Http\Controllers\Api\OtherController::class, 'myAds']);
+    Route::post('/customer/favourite/adOrRemove', [\App\Http\Controllers\Api\OtherController::class, 'favouriteStoreOrRemove']);
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
 });

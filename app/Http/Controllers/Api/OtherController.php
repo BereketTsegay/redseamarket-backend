@@ -84,7 +84,7 @@ class OtherController extends Controller
 
         try{
 
-            $myAds = tap(Ads::where('customer_id', 1) //Auth::user()->id;
+            $myAds = tap(Ads::where('customer_id', Auth::user()->id)
             ->where('status', Status::ACTIVE)
             ->where('delete_status', '!=', Status::DELETE)
             ->paginate(12), function ($paginatedInstance){
@@ -168,7 +168,7 @@ class OtherController extends Controller
 
                 $favourite              = new Favorite();
                 $favourite->ads_id      = $request->ads_id;
-                $favourite->customer_id = 1;//Auth::user()->id;
+                $favourite->customer_id = Auth::user()->id;
                 $favourite->save();
 
                 return response()->json([
@@ -178,7 +178,7 @@ class OtherController extends Controller
             }
             else{
                 Favorite::where('ads_id', $request->ads_id)
-                ->where('customer_id', 1) //Auth::user()->id;
+                ->where('customer_id', Auth::user()->id)
                 ->delete();
 
                 return response()->json([
@@ -226,7 +226,7 @@ class OtherController extends Controller
                 ->where('city_id', $request->city)
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(1), function ($paginatedInstance){
+                ->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -296,7 +296,7 @@ class OtherController extends Controller
                 })
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(1), function ($paginatedInstance){
+                ->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -359,15 +359,14 @@ class OtherController extends Controller
             }
             elseif($request->category){
 
-                $myAds = tap(Ads::where('customer_id', 1) //Auth::user()->id;
+                $myAds = tap(Ads::where('category_id', $request->category)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
                 })
-                ->where('category_id', $request->category)
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(1), function ($paginatedInstance){
+                ->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -430,14 +429,13 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = tap(Ads::where('customer_id', 1) //Auth::user()->id;
+                $myAds = tap(Ads::where('status', Status::ACTIVE)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
                 })
-                ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(1), function ($paginatedInstance){
+                ->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -599,7 +597,7 @@ class OtherController extends Controller
             ], 400);
         }
 
-        // try{
+        try{
 
             $ads = Ads::where('id', $request->id)
             ->first();
@@ -620,14 +618,14 @@ class OtherController extends Controller
                 'message'   => 'Your enquiry has been plced.',
             ], 200);
 
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
     
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 }

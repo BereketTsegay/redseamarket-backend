@@ -820,7 +820,6 @@ class AdsController extends Controller
         }
         catch (\Exception $e) {
             
-    
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Something went wrong',

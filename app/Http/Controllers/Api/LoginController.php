@@ -90,8 +90,9 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => '400',
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         $user = User::where('email', $request->email)
@@ -102,7 +103,8 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Email already taken',
-            ], 400);
+                'code'      => '400',
+            ], 200);
         }
 
         $user               = new User();
@@ -119,6 +121,7 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Registration Successful',
+                'code'      => '200',
                 'token'     => $token,
             ], 200);
         }
