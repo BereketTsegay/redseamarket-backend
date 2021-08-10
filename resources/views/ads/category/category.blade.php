@@ -45,7 +45,7 @@
                                     <td><a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
                                     <td>
                                         @if ($row->reserved_flag == 1)
-                                            <a href="#" title="Can't edit, reserved category"><button class="btn btn-secondary">Edit</button></a>
+                                            <a href="#" title="Can't delete, reserved category"><button class="btn btn-secondary">Can't edit, reserved category</button></a>
                                         @else
                                             <a href="{{ route('category.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
                                         @endif
@@ -53,7 +53,7 @@
                                     </td>
                                     <td>
                                         @if ($row->reserved_flag == 1)
-                                            <button type="button" class="btn btn-danger" title="Can't delete, reserved category">Delete</button>
+                                            <button type="button" class="btn btn-danger" title="Can't delete, reserved category">Can't Delete, reserved category</button>
                                         @else
                                             <button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
                                             <form id="delete_category_form{{$row->id}}" action="{{ route('category.delete', $row->id) }}" method="POST">

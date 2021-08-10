@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\CategoryField;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Favorite;
 use App\Models\FieldOptions;
 use App\Models\Fields;
 use App\Models\MakeMst;
@@ -774,6 +775,46 @@ class AdsController extends Controller
                 'status'    => 'success',
                 'message'   => 'Model list',
                 'model'      => $model,
+            ], 200);
+
+        }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function favouriteGet(Request $request){
+
+        $rules = [
+            'ads_id'    => 'required|numeric',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'errors'    => $validate->errors(),
+            ], 400);
+        }
+
+        try{
+            
+            $favourite = Favorite::where('ads_id', $request->ads_id)
+            ->where('customer_id', Auth::user()->id)
+            ->count();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Favourite list',
+                'favourite' => $favourite,
             ], 200);
 
         }

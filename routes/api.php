@@ -50,6 +50,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/update/profile', [\App\Http\Controllers\Api\LoginController::class, 'updateProfile']);
     Route::post('/customer/get/make', [\App\Http\Controllers\Api\AdsController::class, 'getMake']);
     Route::post('/customer/get/model', [\App\Http\Controllers\Api\AdsController::class, 'getModel']);
+    Route::post('/customer/ad/favourite', [\App\Http\Controllers\Api\AdsController::class, 'favouriteGet']);
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
 });
