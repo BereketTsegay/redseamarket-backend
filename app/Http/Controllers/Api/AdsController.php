@@ -108,6 +108,14 @@ class AdsController extends Controller
                     unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
                     return $c;
                 });
+
+                if($a->sellerinformation_id == 0){
+                    $a->seller = 'admin';
+                }
+                else{
+                    $a->seller = 'user';
+                }
+
                 $a->SellerInformation;
 
                 unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);

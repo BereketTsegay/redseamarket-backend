@@ -27,4 +27,10 @@ class Subcategory extends Model
         ->where('status', Status::ACTIVE)
         ->where('delete_status', '!=', Status::DELETE);
     }
+
+    public function SubcategoryChild(){
+        return $this->hasMany(Subcategory::class, 'parent_id', 'id')
+        ->where('status', Status::ACTIVE)
+        ->where('delete_status', '!=', Status::DELETE);
+    }
 }

@@ -88,6 +88,7 @@ class DashboardController extends Controller
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
+                ->where('parent_id', 0)
                 ->orderby('sort_order')
                 ->take(4);
             }])
@@ -114,6 +115,13 @@ class DashboardController extends Controller
             ->map(function($a){
 
                 $a->Subcategory->map(function($c){
+
+                    $c->SubcategoryChild->map(function($d){
+
+                        unset($d->sort_order, $d->delete_status, $d->status);
+                        return $d;
+                    });
+                    
                     unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
                     return $c;
                 });
@@ -165,6 +173,7 @@ class DashboardController extends Controller
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
+                ->where('parent_id', 0)
                 ->orderby('sort_order');
             }])
             ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
@@ -178,6 +187,12 @@ class DashboardController extends Controller
             ->map(function($a){
 
                 $a->Subcategory->map(function($c){
+                    $c->SubcategoryChild->map(function($d){
+
+                        unset($d->sort_order, $d->delete_status, $d->status);
+                        return $d;
+                    });
+
                     unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
                     return $c;
                 });
@@ -253,6 +268,7 @@ class DashboardController extends Controller
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
+                ->where('parent_id', 0)
                 ->orderby('sort_order');
             }])
             ->with(['Ads' => function($b) use($latitude, $longitude, $radius){
@@ -278,6 +294,13 @@ class DashboardController extends Controller
             ->map(function($a){
 
                 $a->Subcategory->map(function($c){
+
+                    $c->SubcategoryChild->map(function($d){
+
+                        unset($d->sort_order, $d->delete_status, $d->status);
+                        return $d;
+                    });
+
                     unset($c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
                     return $c;
                 });
@@ -329,6 +352,7 @@ class DashboardController extends Controller
             ->with(['Subcategory' => function($a){
                 $a->where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
+                ->where('parent_id', 0)
                 ->orderby('sort_order');
             }])
             ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
@@ -342,6 +366,13 @@ class DashboardController extends Controller
             ->map(function($a){
 
                 $a->Subcategory->map(function($c){
+
+                    $c->SubcategoryChild->map(function($d){
+
+                        unset($d->sort_order, $d->delete_status, $d->status);
+                        return $d;
+                    });
+
                     unset($c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
                     return $c;
                 });
