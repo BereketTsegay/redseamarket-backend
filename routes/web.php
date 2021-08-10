@@ -135,6 +135,7 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::post('/ad/accept/{id}', [App\Http\Controllers\AdsController::class, 'adAccept'])->name('ad.accept');
 
         Route::get('/get/reject/reson', [App\Http\Controllers\AdsController::class, 'getRejectReson']);
+        Route::post('/ad/reject', [App\Http\Controllers\AdsController::class, 'adReject'])->name('reject.ads');
 
             // Banner
 
@@ -159,6 +160,12 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::get('/testimonial/view/{id}', [App\Http\Controllers\TestimonialController::class, 'view'])->name('testimonial.view');
         Route::get('/testimonial/edit/{id}', [App\Http\Controllers\TestimonialController::class, 'edit'])->name('testimonial.edit');
         Route::post('/testimonial/update/{id}', [App\Http\Controllers\TestimonialController::class, 'update'])->name('testimonial.update');
+
+            // Reson
+        
+        Route::get('/reject/reson', [App\Http\Controllers\RejectResonController::class, 'index'])->name('reject.index');
+        Route::post('/reject/reson/store', [App\Http\Controllers\RejectResonController::class, 'store'])->name('reject.store');
+        Route::post('/reject/reson/update', [App\Http\Controllers\RejectResonController::class, 'update'])->name('reject.update');
 
             // Payment
 

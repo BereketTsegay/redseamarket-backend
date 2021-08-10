@@ -136,6 +136,10 @@
                                 </nav>
                             </div> --}}
                             <div class="sb-sidenav-menu-heading">Others</div>
+                            <a class="nav-link" href="{{ route('reject.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                                Reject Resons
+                            </a>
                             <a class="nav-link" href="{{ route('icon.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-icons"></i></div>
                                 Icons

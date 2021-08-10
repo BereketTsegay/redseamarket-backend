@@ -148,10 +148,12 @@
                                 
                             </div>
                         </div>
-                        <form action="{{ route('ad.accept', $ad->id) }}" method="POST">@csrf
-                            <button type="submit" class="btn btn-primary my-4">Accept</button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button>
-                        </form>
+                        @if($ad->status == 0)
+                            <form action="{{ route('ad.accept', $ad->id) }}" method="POST">@csrf
+                                <button type="submit" class="btn btn-primary my-4">Accept</button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button>
+                            </form>
+                        @endif
                         
                     </div>
                 </div>
@@ -165,11 +167,13 @@
 <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+            <form action="{{ route('reject.ads') }}" method="POST">
+                @csrf
             <div class="modal-header">
-          <h5 class="modal-title" id="rejectModalLabel">Reject Ad Request</h5>
-          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-            {{-- <span aria-hidden="true">&times;</span> --}}
-          </button>
+                <h5 class="modal-title" id="rejectModalLabel">Reject Ad Request</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    {{-- <span aria-hidden="true">&times;</span> --}}
+                </button>
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -178,10 +182,11 @@
                         <select name="reason" class="form-control" id="Reason">
                             <option value="">Select</option>
                             @foreach ($reason as $row3)
-                                <option value="{{ $row3->id }}">{{ $row3->reason }}</option>
+                                <option value="{{ $row3->id }}">{{ $row3->reson }}</option>
                             @endforeach
                         </select>
                     </div>
+                    <input type="hidden" name="ad_id" value="{{ $ad->id }}">
                     <div class="form-group" id="reson_description">
                         
                     </div>
@@ -189,11 +194,12 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Reject</button>
+                <button type="submit" class="btn btn-primary">Reject</button>
             </div>
+        </form>
         </div>
     </div>
-  </div>
+</div>
     
 <script>
     $('#Reason').on('change', function(){

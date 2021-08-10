@@ -942,13 +942,17 @@ class AdsController extends Controller
 
         $adsRequest = Ads::where('status', Status::REQUEST)
         ->orderBy('created_at', 'desc')
-        ->paginate(1);
+        ->paginate(10);
 
         $reason = RejectReason::where('status', Status::ACTIVE)
         ->orderBy('reson')
         ->get();
 
-        return view('ads.request.ad_request', compact('adsRequest', 'reason'));
+        $adsRejected = Ads::where('status', Status::REJECTED)
+        ->orderBy('created_at', 'desc')
+        ->paginate(10, '*', 'rejected');
+
+        return view('ads.request.ad_request', compact('adsRequest', 'reason', 'adsRejected'));
     }
 
     public function adRequestDetails($id){
@@ -961,6 +965,18 @@ class AdsController extends Controller
         ->get();
 
         return view('ads.request.request_details', compact('ad', 'reason'));
+    }
+
+    public function adReject(Request $request){
+
+        Ads::where('id', $request->ad_id)
+        ->update([
+            'status'            => Status::REJECTED,
+            'reject_reason_id'  => $request->reason,
+        ]);
+
+        session()->flash('success', 'Ad has been rejected');
+        return redirect()->route('ad_request.index');
     }
 
     public function getMotorFeature(Request $request){

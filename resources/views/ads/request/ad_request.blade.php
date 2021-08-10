@@ -28,8 +28,8 @@
                             <div class="col-md-12 text-right mb-2 float-end">
                                 <form action="#" method="POST">
                                     @csrf
-                                <button type="button" class="btn btn-outline-secondary table-btn" data-toggle="modal" data-target=".penfilterModal">Filter <i class="pe-7s-edit btn-icon-wrapper">
-                                    </i></button>
+                                {{-- <button type="button" class="btn btn-outline-secondary table-btn" data-toggle="modal" data-target=".penfilterModal">Filter <i class="pe-7s-edit btn-icon-wrapper">
+                                    </i></button> --}}
                                 
                                 {{-- <button type="submit" class="btn btn-outline-secondary table-btn ml-2">Export PDF <i class="pe-7s-note2 btn-icon-wrapper"> </i></button> --}}
                                 </form>
@@ -64,13 +64,14 @@
                                     <td>{{ $row->User->name }}</td>
                                     <td><a href="{{ route('ad_request.details', $row->id) }}"><button class="btn btn-secondary">View</button></a></td>
                                     <td><form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form></td>
-                                    <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button></td>
+                                    <td><button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button></td>
                                 </tr>
                             @php
                                 $i++;
                             @endphp
                             @endforeach
                         </tbody>
+                        {{ $adsRequest->links('pagination::bootstrap-4') }}
                     </table>
                         </div>
 
@@ -79,95 +80,98 @@
                                 <div class="col-md-12 text-right mb-2 float-end">
                                     <form action="#" method="POST">
                                         @csrf
-                                    <button type="button" class="btn btn-outline-secondary table-btn" data-toggle="modal" data-target=".penfilterModal">Filter <i class="pe-7s-edit btn-icon-wrapper">
-                                        </i></button>
+                                    {{-- <button type="button" class="btn btn-outline-secondary table-btn" data-toggle="modal" data-target=".penfilterModal">Filter <i class="pe-7s-edit btn-icon-wrapper">
+                                        </i></button> --}}
                                     
                                     {{-- <button type="submit" class="btn btn-outline-secondary table-btn ml-2">Export PDF <i class="pe-7s-note2 btn-icon-wrapper"> </i></button> --}}
                                     </form>
                                 </div>
                                 <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Date</th>
-                                        <th>Category</th>
-                                        <th>Title</th>
-                                        <th>User</th>
-                                        <th>Reject Reason</th>
-                                        <th>View</th>
-                                    </tr>
+                                    @if (count($adsRejected) == 0)
+                                        <div class="text-center">No data foune! </div>
+                                    @else
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date</th>
+                                            <th>Category</th>
+                                            <th>Title</th>
+                                            <th>User</th>
+                                            <th>Reject Reason</th>
+                                            <th>View</th>
+                                        </tr>
+                                    @endif
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>61</td>
-                                        <td>dsafdsf</td>
-                                        <td class="w-50">fdsaf</td>
-                                        <td><a href="#"><button class="btn btn-secondary">View</button></a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>61</td>
-                                        <td>fdsaf</td>
-                                        <td class="w-50">fdsaf</td>
-                                        <td><a href="#"><button class="btn btn-secondary">View</button></a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>61</td>
-                                        <td>fdsaf</td>
-                                        <td class="w-50">fdsaf</td>
-                                        <td><a href="#"><button class="btn btn-secondary">View</button></a></td>
-                                    </tr>
+                                    @php
+                                        $i= ($adsRejected->currentpage() - 1 ) * $adsRejected->perpage() + 1;
+                                    @endphp
+
+                                    @foreach ($adsRejected as $row2)
+                                        <tr>
+                                            <th scope="row">{{ $i }}</th>
+                                            <td>{{ date('d-m-Y', strtotime($row2->created_at)) }}</td>
+                                            <td>{{ $row2->Category->name }}</td>
+                                            <td>{{ $row2->title }}</td>
+                                            <td>{{ $row2->User->name }}</td>
+                                            <td class="w-50">{{ $row2->RejectionNote->reson }}</td>
+                                            <td><a href="{{ route('ad_request.details', $row2->id) }}"><button class="btn btn-secondary">View</button></a></td>
+                                            @php
+                                                $i++;
+                                            @endphp
+                                        </tr>
+                                    @endforeach
                                 </tbody>
+                                {{ $adsRejected->links('pagination::bootstrap-4') }}
                             </table>
-                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main> 
+
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('reject.ads') }}" method="POST">
+                    @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Reject Ad Request</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                        {{-- <span aria-hidden="true">&times;</span> --}}
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="Reason">Reason</label>
+                            <select name="reason" class="form-control" id="Reason">
+                                <option value="">Select</option>
+                                @foreach ($reason as $row3)
+                                    <option value="{{ $row3->id }}">{{ $row3->reson }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="hidden" name="ad_id" value="" id="rejectAd_id">
+                        <div class="form-group" id="reson_description">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Reject</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('script')
     
-<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-          <h5 class="modal-title" id="rejectModalLabel">Reject Ad Request</h5>
-          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-            {{-- <span aria-hidden="true">&times;</span> --}}
-          </button>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <div class="form-group">
-                        <label for="Reason">Reason</label>
-                        <select name="reason" class="form-control" id="Reason">
-                            <option value="">Select</option>
-                            @foreach ($reason as $row3)
-                                <option value="{{ $row3->id }}">{{ $row3->reason }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group" id="reson_description">
-                        
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Reject</button>
-            </div>
-        </div>
-    </div>
-  </div>
+
 
 {{-- Reject Filter --}}
   <div class="modal fade rejfilterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -242,6 +246,12 @@
 </div>
 
 <script>
+
+    rejectAd = id => {
+
+        $('#rejectAd_id').val(id);
+    }
+
     $('#Reason').on('change', function(){
         let id = $(this).val();
         $.ajax({

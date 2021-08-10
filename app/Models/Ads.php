@@ -66,4 +66,8 @@ class Ads extends Model
     public function PropertySale(){
         return $this->hasOne(PropertySaleCustomeValues::class, 'ads_id', 'id');
     }
+
+    public function RejectionNote(){
+        return $this->hasOne(RejectReason::class, 'id', 'reject_reason_id');
+    }
 }

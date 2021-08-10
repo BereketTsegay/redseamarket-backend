@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AdsController extends Controller
@@ -130,7 +131,7 @@ class AdsController extends Controller
     }
 
     public function adStore(Request $request){
-        dd($request->all());
+        
         $rules = [
             'category'          => 'required|numeric',
             // 'subcategory'       => 'required|numeric',
@@ -143,7 +144,7 @@ class AdsController extends Controller
             // 'city'              => 'required|numeric',
             'latitude'          => 'required|numeric',
             'longitude'         => 'required|numeric',
-            'image.*'           => 'required|mimes:jpg,png,jpeg',
+            'image.*'           => 'required',
             'name'              => 'required',
             'email'             => 'required|email',
             'phone'             => 'required',
@@ -275,19 +276,26 @@ class AdsController extends Controller
                 $property->save();
             }
 
-            if($request->hasFile('image')){
+            if($request->image){
 
                 foreach($request->image as $row){
-    
-                    $image = uniqid().'.'.$row->getClientOriginalExtension();
-                
-                    $row->storeAs('public/ads', $image);
-    
-                    $image = 'storage/ads/'.$image;
+
+                    $image = $row;
+
+                    $image_parts = explode(";base64,", $image);
+                    $image_type_aux = explode("image/", $image_parts[0]);
+                    $image_type = $image_type_aux[1];
+                    $image_base64 = base64_decode($image_parts[1]);
+
+                    $ad_image = uniqid() . '.' .$image_type;
+
+                    Storage::put('public/ads/'.$ad_image, $image_base64);
+
+                    $ad_image = 'storage/ads/'.$ad_image;
     
                     $adImage            = new AdsImage();
                     $adImage->ads_id    = $ad->id;
-                    $adImage->image     = $image;
+                    $adImage->image     = $ad_image;
                     $adImage->save();
                 }
             }
