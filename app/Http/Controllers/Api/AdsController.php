@@ -130,7 +130,7 @@ class AdsController extends Controller
     }
 
     public function adStore(Request $request){
-        
+        dd($request->all());
         $rules = [
             'category'          => 'required|numeric',
             // 'subcategory'       => 'required|numeric',
@@ -295,36 +295,59 @@ class AdsController extends Controller
             if($request->fieldValue){
 
                 foreach($request->fieldValue as $catRow){
-                
-                    $field = Fields::where('id', $catRow->field_id)
+
+                    $option = null;
+                    $isFile = 0;
+
+                    $field = Fields::where('id', $catRow['field_id'])
                     ->first();
                     
                     if($field->type == 'select' || $field->type == 'radio'){
 
-                        $option = FieldOptions::where('field_id', $catRow->field_id)
-                        ->where('value', $catRow->value)
+                        $option = FieldOptions::where('field_id', $catRow['field_id'])
+                        ->where('value', $catRow['value'])
                         ->first();
 
-                        $isFile = 0;
                     }
                     elseif($field->type == 'file'){
+                        
+                        $customFile = uniqid().'.'.$catRow['value']->getClientOriginalExtension();
+                
+                        $catRow['value']->storeAs('public/custom_file', $customFile);
+        
+                        $customFile = 'storage/custom_file/'.$customFile;
+
                         $isFile = 1;
+                        $option = null;
                     }
 
                     if($option){
                         $option_id = $option->id;
                     }
                     else{
-                        $option = 0;
+                        $option_id = 0;
                     }
 
-                    $customValue            = new AdsCustomValue();
-                    $customValue->ads_id    = $ad->id;
-                    $customValue->field_id  = $catRow->field_id;
-                    $customValue->option_id = $option_id;
-                    $customValue->value     = $catRow->value;
-                    $customValue->file      = $isFile;
-                    $customValue->save();
+                    if($field->type == 'file'){
+
+                        $customValue            = new AdsCustomValue();
+                        $customValue->ads_id    = $ad->id;
+                        $customValue->field_id  = $catRow['field_id'];
+                        $customValue->option_id = $option_id;
+                        $customValue->value     = $customFile;
+                        $customValue->file      = $isFile;
+                        $customValue->save();
+                    }
+                    else{
+
+                        $customValue            = new AdsCustomValue();
+                        $customValue->ads_id    = $ad->id;
+                        $customValue->field_id  = $catRow['field_id'];
+                        $customValue->option_id = $option_id;
+                        $customValue->value     = $catRow['value'];
+                        $customValue->file      = $isFile;
+                        $customValue->save();
+                    }
 
                 }
             }
