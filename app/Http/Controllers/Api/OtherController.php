@@ -68,6 +68,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'My favourite ads',
+                'code'      => 200,
                 'favourite' => $favourite,
             ], 200);
         }
@@ -132,6 +133,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'My ads',
+                'code'      => 200,
                 'ads'       => $myAds,
             ], 200);
 
@@ -158,8 +160,9 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -173,6 +176,7 @@ class OtherController extends Controller
 
                 return response()->json([
                     'status'    => 'success',
+                    'code'      => 200,
                     'message'   => 'Ad added to favourite',
                 ], 200);
             }
@@ -210,8 +214,9 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -500,6 +505,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Showing result for '. $request->search_key,
+                'code'      => 200,
                 'ads'       => $myAds,
             ], 200);
 
@@ -520,6 +526,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Country List',
+                'code'      => 200,
                 'country'   => $country,
             ], 200);
         }
@@ -541,6 +548,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'State List',
+                'code'      => 200,
                 'state'     => $state,
             ], 200);
 
@@ -564,7 +572,8 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'City List',
-                'city'     => $city,
+                'code'      => 200,
+                'city'      => $city,
             ], 200);
 
         }
@@ -593,8 +602,9 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -615,9 +625,212 @@ class OtherController extends Controller
 
             return response()->json([
                 'status'    => 'success',
+                'code'      => 200,
                 'message'   => 'Your enquiry has been plced.',
             ], 200);
 
+        }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getCategoryAds(Request $request){
+
+        $rules = [
+            'category_id'   => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        try{
+            
+            $myAds = tap(Ads::where('category_id', $request->category_id)
+                ->where('status', Status::ACTIVE)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->paginate(10), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id == 3){
+                            $a->PropertySale;
+                        }
+
+                        $a->country_name = $a->Country->name;
+                        $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+                        $a->CustomValue->map(function($c){
+                            
+                            if($c->Field->description_area_flag == 0){
+                                $c->position = 'top';
+                                $c->name = $c->Field->name;
+                            }
+                            elseif($c->Field->description_area_flag == 1){
+                                $c->position = 'details_page';
+                                $c->name = $c->Field->name;
+                            }
+                            else{
+                                $c->position = 'none';
+                                $c->name = $c->Field->name;
+                            }
+                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                            return $c;
+                        });
+
+                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                        return $a;
+                    });
+                });
+
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Showing result ',
+                    'code'      => 200,
+                    'ads'       => $myAds,
+                ], 200);
+            
+        }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getSubcategoryAds(Request $request){
+
+        $rules = [
+            'subcategory_id'   => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        try{
+            
+            $myAds = tap(Ads::where('subcategory_id', $request->subcategory_id)
+                ->where('status', Status::ACTIVE)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->paginate(10), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id == 3){
+                            $a->PropertySale;
+                        }
+
+                        $a->country_name = $a->Country->name;
+                        $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+                        $a->CustomValue->map(function($c){
+                            
+                            if($c->Field->description_area_flag == 0){
+                                $c->position = 'top';
+                                $c->name = $c->Field->name;
+                            }
+                            elseif($c->Field->description_area_flag == 1){
+                                $c->position = 'details_page';
+                                $c->name = $c->Field->name;
+                            }
+                            else{
+                                $c->position = 'none';
+                                $c->name = $c->Field->name;
+                            }
+                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                            return $c;
+                        });
+
+                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                        return $a;
+                    });
+                });
+
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Showing result ',
+                    'code'      => 200,
+                    'ads'       => $myAds,
+                ], 200);
+            
         }
         catch (\Exception $e) {
             

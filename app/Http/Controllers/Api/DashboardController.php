@@ -31,11 +31,12 @@ class DashboardController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 200,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
-        // try{
+        try{
                 
                 if(Auth::user()){
                     $user = true;
@@ -121,7 +122,7 @@ class DashboardController extends Controller
                         unset($d->sort_order, $d->delete_status, $d->status);
                         return $d;
                     });
-                    
+
                     unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
                     return $c;
                 });
@@ -204,6 +205,7 @@ class DashboardController extends Controller
 
             return response()->json([
                 'status'    => 'success',
+                'code'      => 200,
                 'data'      => [
                     'loged_user_status' => $user,
                     'user_name'         => $userName,
@@ -212,14 +214,14 @@ class DashboardController extends Controller
                 ],
             ], 200);
 
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function LogedDashboard(Request $request){
@@ -236,8 +238,9 @@ class DashboardController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -384,6 +387,7 @@ class DashboardController extends Controller
 
             return response()->json([
                 'status'    => 'success',
+                'code'      => 200,
                 'data'      => [
                     'loged_user_status' => $user,
                     'user_name'         => $userName,
@@ -416,8 +420,9 @@ class DashboardController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 200,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -448,6 +453,7 @@ class DashboardController extends Controller
 
                 'status'        => 'success',
                 'message'       => 'Category found',
+                'code'      => 200,
                 'categories'    => $category,
             ], 200);
 
@@ -474,8 +480,9 @@ class DashboardController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 200,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -495,6 +502,7 @@ class DashboardController extends Controller
 
                 'status'        => 'success',
                 'message'       => 'Category found',
+                'code'      => 200,
                 'subcategories' => $subcategory,
             ], 200);
         }

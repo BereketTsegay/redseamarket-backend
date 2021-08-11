@@ -48,8 +48,9 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => '400',
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -125,6 +126,7 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Ad details',
+                'code'      => 200,
                 'ads'       => $ads,
             ], 200);
 
@@ -167,11 +169,12 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
-        // try{
+        try{
 
 
             if($request->phone_hide == true){
@@ -426,17 +429,18 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Ad request has been placed',
+                'code'      => 200,
             ], 200);
 
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
 
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
 
     }
 
@@ -454,8 +458,9 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -509,6 +514,7 @@ class AdsController extends Controller
 
             return response()->json([
                 'status'    => 'success',
+                'code'      => 200,
                 'data'      => [
                     'category_field'    => $category_field,
                 ],
@@ -538,8 +544,9 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try {
@@ -586,6 +593,7 @@ class AdsController extends Controller
             return response()->json([
                 'status'        => 'success',
                 'message'       => 'Master data found',
+                'code'          => 200,
                 'mster_data'    => $dependency,
             ], 200);
         }
@@ -645,6 +653,7 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'category list',
+                'code'      => 200,
                 'data'      => [
                     'motors'        => $motors,
                     'ads'           => $ads,
@@ -675,8 +684,9 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -730,6 +740,7 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'category list',
+                'code'      => 200,
                 'data'      => [
                     'property'      => $property,
                     'subcategory'   => $subcategory,
@@ -758,6 +769,7 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Make list',
+                'code'      => 200,
                 'make'      => $make,
             ], 200);
         }
@@ -782,6 +794,7 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Model list',
+                'code'      => 200,
                 'model'      => $model,
             ], 200);
 
@@ -809,8 +822,9 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -822,6 +836,7 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Favourite list',
+                'code'      => 200,
                 'favourite' => $favourite,
             ], 200);
 

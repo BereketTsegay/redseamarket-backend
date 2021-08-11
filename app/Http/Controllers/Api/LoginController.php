@@ -31,8 +31,9 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 200,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         $user = User::where('email', $request->email)
@@ -44,8 +45,9 @@ class LoginController extends Controller
 
             return response()->json([
                 'status'    => 'error',
+                'code'      => 400,
                 'message'   => 'Invalid email or password',
-            ], 400);
+            ], 200);
         }
 
         if(!Hash::check($request->password, $user->password)){
@@ -53,7 +55,8 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid email or password',
-            ], 400);
+                'code'      => 400,
+            ], 200);
         }
 
         if(Auth::loginUsingId($user->id)){
@@ -62,6 +65,7 @@ class LoginController extends Controller
 
             return response()->json([
                 'status'    => 'success',
+                'code'      => 200,
                 'message'   => 'Welcome '. $user->name,
                 'token'     => $token,
             ], 200);
@@ -70,8 +74,9 @@ class LoginController extends Controller
 
             return response()->json([
                 'status'    => 'error',
+                'code'      => 401,
                 'message'   => 'Unauthorised',
-            ], 401);
+            ], 200);
         }
     }
 
@@ -153,8 +158,9 @@ class LoginController extends Controller
 
                 return response()->json([
                     'status'    => 'error',
+                    'code'      => 401,
                     'message'   => 'No user with this email',
-                ], 401);
+                ], 200);
             }
 
             $newPassword = uniqid();
@@ -174,6 +180,7 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Password has been sended to your registered email',
+                'code'      => 200,
             ], 200);
         }
         catch(\Exception $e){
@@ -203,6 +210,7 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'User Profile',
+                'code'      => 200,
                 'data'      => [
                     'myads'         => $myAds,
                     'myfavourite'   => $myFavourite,
@@ -229,6 +237,7 @@ class LoginController extends Controller
 
                 'status'    => 'success',
                 'message'   => 'User Logout',
+                'code'      => 200,
 
             ], 200);
 
@@ -259,11 +268,12 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => 400,
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
-        // try{
+        try{
             User::where('id', Auth::user()->id)
             ->update([
                 'name'              => $request->name,
@@ -276,16 +286,17 @@ class LoginController extends Controller
 
                 'status'    => 'success',
                 'message'   => 'User profile has been updated',
+                'code'      => 200,
 
             ], 200);
 
-        // }
-        // catch(\Exception $e){
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
 }

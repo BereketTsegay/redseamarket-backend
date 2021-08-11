@@ -29,6 +29,8 @@ Route::post('/customer/get/subcategory', [\App\Http\Controllers\Api\DashboardCon
 
 Route::post('/customer/ad/view', [\App\Http\Controllers\Api\AdsController::class, 'adView']);
 Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::class, 'searchAds']);
+Route::post('/customer/get/category/ads', [\App\Http\Controllers\Api\OtherController::class, 'getCategoryAds']);
+Route::post('/customer/get/subcategory/ads', [\App\Http\Controllers\Api\OtherController::class, 'getSubcategoryAds']);
 
 Route::post('/customer/get/country', [\App\Http\Controllers\Api\OtherController::class,'getCountry']);
 Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::class, 'getState']);
