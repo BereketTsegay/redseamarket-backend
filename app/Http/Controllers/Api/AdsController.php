@@ -849,4 +849,2040 @@ class AdsController extends Controller
             ], 301);
         }
     }
+
+    public function getPropertyFilter(Request $request){
+
+        $rules = [
+            'category_id'       => 'required|numeric',
+            'subcategory_id'    => 'required|numeric',
+            'latitude'          => 'required',
+            'longitude'         => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+        
+        // try{
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
+
+            $subcategory = Subcategory::where('id', $request->subcategory_id)
+            ->first();
+            
+            if($request->city && $request->property_type && $request->price && $request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->city && $request->property_type && $request->price){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->city && $request->property_type && $request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->city && $request->property_type){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->city && $request->price && $request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->city && $request->price){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('price', '<=', $request->price)
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->city && $request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->city){
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('city_id', $request->city)
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->property_type && $request->price && $request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->property_type && $request->price){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->property_type && $request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type)
+                        ->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->property_type){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('building_type', $request->property_type);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->price && $request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->price){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->where('price', '<=', $request->price)
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            elseif($request->room){
+
+                if($request->category_id == 2){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->whereHas('PropertyRend', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+                elseif($request->category_id == 3){
+
+                    $myAds = tap(Ads::where('status', Status::ACTIVE)
+                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius)
+                    ->whereHas('PropertySale', function($a) use($request){
+                        $a->where('room', '<=',$request->room);
+                    })
+                    ->where('delete_status', '!=', Status::DELETE)
+                    ->where('category_id', $request->category_id)
+                    ->where('subcategory_id', $request->subcategory_id)
+                    ->paginate(10), function($paginatedInstance){
+                        return $paginatedInstance->getCollection()->transform(function($a){
+
+                            $a->image = array_filter([
+                                $a->Image->map(function($q) use($a){
+                                    $q->image;
+                                    unset($q->ads_id, $q->img_flag);
+                                    return $q;
+                                }),
+                            ]);
+
+                            $a->subcategory_name = $a->Subcategory->name;
+                                
+
+                            $a->country_name = $a->Country->name;
+                            $a->state_name = $a->State->name;
+                            if($a->city_id != 0){
+                                $a->city_name = $a->City->name;
+                            }
+                            else{
+                                $a->city_name = $a->State->name;
+                            }
+
+                            if($a->category_id == 2){
+                                $a->PropertyRend;
+                            }
+                            elseif($a->category_id == 3){
+                                $a->PropertySale;
+                            }
+
+                            if($a->sellerinformation_id == 0){
+                                $a->seller = 'admin';
+                            }
+                            else{
+                                $a->seller = 'user';
+                                $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                                $a->seller_phone =  $a->SellerInformation->phone;
+                                $a->seller_email = $a->SellerInformation->email;
+
+                                unset($a->SellerInformation);
+                            }
+
+                            $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                            $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                            unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                            return $a;
+                        });
+                    });
+                }
+            }
+            else{
+                
+                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->where('category_id', $request->category_id)
+                ->where('subcategory_id', $request->subcategory_id)
+                ->paginate(10), function($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        $a->subcategory_name = $a->Subcategory->name;
+                            
+
+                        $a->country_name = $a->Country->name;
+                        $a->state_name = $a->State->name;
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+
+                        if($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id == 3){
+                            $a->PropertySale;
+                        }
+
+                        if($a->sellerinformation_id == 0){
+                            $a->seller = 'admin';
+                        }
+                        else{
+                            $a->seller = 'user';
+                            $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                            $a->seller_phone =  $a->SellerInformation->phone;
+                            $a->seller_email = $a->SellerInformation->email;
+
+                            unset($a->SellerInformation);
+                        }
+
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                        return $a;
+                    });
+                });
+            }
+
+            return response()->json([
+                'status'        => 'success',
+                'message'       => 'Result list',
+                'code'          => 200,
+                'ads'           => $myAds,
+                'subcategory'   => $subcategory,
+            ], 200);
+
+
+        // }
+        // catch (\Exception $e) {
+            
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
+    }
 }

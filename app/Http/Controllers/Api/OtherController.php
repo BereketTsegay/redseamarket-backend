@@ -22,8 +22,8 @@ class OtherController extends Controller
         try{
 
             $favourite = tap(Favorite::where('customer_id', 1)//Auth::user()->id)
-            ->paginate(12), function ($paginatedInstance){
-                return $paginatedInstance->getCollection()->transform(function($a){
+                ->paginate(12), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
 
                     $a->Ads;
                     $a->Ads->image = array_filter([
@@ -205,6 +205,8 @@ class OtherController extends Controller
         
         $rules = [
             'search_key'    => 'required',
+            'latitude'      => 'required',
+            'longitude'     => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -221,9 +223,17 @@ class OtherController extends Controller
 
         try{
 
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
+
             if($request->city && $request->category){
 
                 $myAds = tap(Ads::where('category_id', $request->category)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
@@ -295,6 +305,9 @@ class OtherController extends Controller
             elseif($request->city){
 
                 $myAds = tap(Ads::where('city_id', $request->city)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
@@ -365,6 +378,9 @@ class OtherController extends Controller
             elseif($request->category){
 
                 $myAds = tap(Ads::where('category_id', $request->category)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
@@ -435,6 +451,9 @@ class OtherController extends Controller
             else{
 
                 $myAds = tap(Ads::where('status', Status::ACTIVE)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
                 ->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
@@ -644,6 +663,8 @@ class OtherController extends Controller
 
         $rules = [
             'category_id'   => 'required',
+            'latitude'      => 'required',
+            'longitude'     => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -659,8 +680,16 @@ class OtherController extends Controller
         }
 
         try{
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
             
             $myAds = tap(Ads::where('category_id', $request->category_id)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
                 ->paginate(10), function ($paginatedInstance){
@@ -744,7 +773,9 @@ class OtherController extends Controller
     public function getSubcategoryAds(Request $request){
 
         $rules = [
-            'subcategory_id'   => 'required',
+            'subcategory_id'    => 'required',
+            'latitude'          => 'required',
+            'longitude'         => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -760,8 +791,16 @@ class OtherController extends Controller
         }
 
         try{
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
             
             $myAds = tap(Ads::where('subcategory_id', $request->subcategory_id)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
                 ->paginate(10), function ($paginatedInstance){
