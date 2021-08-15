@@ -201,6 +201,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/datatables-simple-demo.js') }}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 
     <script>
         let year = new Date().getFullYear();
@@ -210,7 +211,7 @@
 <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('admin.change.password') }}" method="POST">
+            <form action="{{ route('admin.change.password') }}" method="POST" id="changePasswordForm">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
@@ -220,11 +221,11 @@
                 <div class="modal-body">
                     <div class="form-group my-2">
                         <label for="CurrentPassword">Current Password</label>
-                        <input type="text" name="current_password" class="form-control" placeholder="Current Password" autocomplete="off">
+                        <input type="password" name="current_password" class="form-control" placeholder="Current Password" autocomplete="off">
                     </div>
                     <div class="form-group my-2">
                         <label for="newPassword">New Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="New Password" autocomplete="off">
+                        <input type="password" name="password" class="form-control" placeholder="New Password" id="password" autocomplete="off">
                     </div>
                     <div class="form-group my-2">
                         <label for="confirmPassword">Confirm Password</label>
@@ -248,6 +249,25 @@
     dismissModal = () => {
         $('#changePasswordModal').modal('hide');
     }
+
+    $('form[id="changePasswordForm"]').validate({
+            rules : {
+                current_password: {
+                        required : true,
+                    },
+                password: {
+                        required: true,
+                    },
+                password_confirmation: {
+                    required: true,
+                    equalTo: "#password",
+                    }
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+            
+    });
 </script>
 
 @stack('script')    

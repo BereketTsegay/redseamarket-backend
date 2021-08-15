@@ -44,7 +44,7 @@ class ReservedCategorySeeder extends Seeder
         $category->canonical_name   = 'motors';
         $category->description      = 'test';
         $category->image            = 'motor.jpg';
-        $category->icon_class_id    = 1;
+        // $category->icon_class_id    = 1;
         $category->display_flag     = 1;
         $category->status           = 1;
         $category->sort_order       = 1;
@@ -56,7 +56,7 @@ class ReservedCategorySeeder extends Seeder
         $category->canonical_name   = 'property-for-rent';
         $category->description      = 'test';
         $category->image            = 'property-for-rent.jpg';
-        $category->icon_class_id    = 1;
+        // $category->icon_class_id    = 1;
         $category->display_flag     = 1;
         $category->status           = 1;
         $category->sort_order       = 1;
@@ -68,7 +68,7 @@ class ReservedCategorySeeder extends Seeder
         $category->canonical_name   = 'property-for-sale';
         $category->description      = 'test';
         $category->image            = 'property-for-sale.jpg';
-        $category->icon_class_id    = 1;
+        // $category->icon_class_id    = 1;
         $category->display_flag     = 1;
         $category->status           = 1;
         $category->sort_order       = 1;

@@ -29,7 +29,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="form-group my-2">
+                                    {{-- <div class="form-group my-2">
                                         <label for="Name">Icon Class</label>
                                         <select name="icon_class" id="" class="form-control @error('icon_class') is-invalid @enderror" autocomplete="off">
                                             <option value="">Select Icon</option>
@@ -46,7 +46,7 @@
                                                 {{ $message }}
                                             @enderror
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- <div class="form-group my-2">
                                         <label for="State">State</label>
                                         <select name="state" id="state" class=" select2 form-control @error('state') is-invalid @enderror" autocomplete="off">

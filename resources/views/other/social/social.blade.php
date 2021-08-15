@@ -90,12 +90,12 @@
 <div class="modal fade" id="createSocialModal" tabindex="-1" role="dialog" aria-labelledby="createSocialModalModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('social.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('social.store') }}" method="POST" enctype="multipart/form-data" id="createSocial">
                 @csrf
                 <div class="modal-header">
-                <h5 class="modal-title" id="createSocialModalModalLabel">Create Social Link</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-                </button>
+                    <h5 class="modal-title" id="createSocialModalModalLabel">Create Social Link</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -147,6 +147,22 @@
             
             $('#delete_social_form'+ids).submit();
         }
+
+        $('form[id="createSocial"]').validate({
+            rules : {
+                name: {
+                        required : true,
+                    },
+                url: {
+                        required: true,
+                    },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+            
+        });
+
   </script>
 
 @if (Session::has('success'))

@@ -49,7 +49,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Price">Price</label>
-                                        <input type="text" name="price" value="{{ $ad->price }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
+                                        <input type="number" name="price" value="{{ $ad->price }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('price')
                                                 {{ $message }}
@@ -201,6 +201,78 @@
             return str.toLowerCase().replace(/ +/g, '-').replace(/[^-\w]/g, '');
         }
 
+        $('form[id="adStoreForm"]').validate({
+            rules : {
+                category: {
+                        required : true,
+                    },
+                title: {
+                        required: true,
+                    },
+                price: {
+                        required: true,
+                    },
+                state: {
+                        required: true,
+                    },
+                'image[]': {
+                        required: true,
+                        extension: "jpg|jpeg|png",
+                    },
+                country:{
+                        required: true,
+                    },
+                description: {
+                        required: true,
+                    },
+
+
+                make: {
+                        required: true,
+                    },
+                model: {
+                        required: true,
+                    },
+                registered_year: {
+                        required: true,
+                        number: true
+                },
+                fuel: {
+                        required: true,
+                    },
+                transmission: {
+                        required: true,
+                    },
+                condition: {
+                        required: true,
+                    },
+                mileage: {
+                        required: true,
+                        number: true
+                    },
+
+                size: {
+                        required: true,
+                        number: true
+                    },
+                rooms: {
+                        required: true,
+                        number: true
+                    },
+                furnished: {
+                        required: true,
+                    },
+                building: {
+                        required: true,
+                    },
+                },
+
+            
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+
 
         $(document).ready(function() {
             $('.select2').select2();
@@ -301,7 +373,7 @@
                                 </div>`;
 
                 custom_field += `<div class="col-md-6 form-group my-2 row mx-2">
-                                    <label for="Transmission">Condition </label>
+                                    <label for="Condition">Condition </label>
                                     <div class="custom-form-control col-md-6">
                                         <label for="New">New </label>
                                         <input type="radio" class="" name="condition" id="New" value="New" >

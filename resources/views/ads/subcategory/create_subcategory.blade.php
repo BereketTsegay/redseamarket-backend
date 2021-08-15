@@ -25,8 +25,14 @@
                                         <select name="category" id="" class="form-control @error('category') is-invalid @enderror" autocomplete="off">
                                             <option value="">Select</option>
                                             @foreach ($category as $row)
+                                                @if (old('category') == 'category_'.$row->id)
+                                                <option selected value="category_{{ $row->id }}">{{ $row->name }}</option>
+                                                @endif
                                                 <option value="category_{{ $row->id }}">{{ $row->name }}</option>
                                                 @foreach ($row->Subcategory as $item)
+                                                @if (old('category') == 'subcategory_{{ $row->id }}_{{ $item->id }}')
+                                                    <option selected value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
+                                                @endif
                                                     <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                 @endforeach
                                             @endforeach
@@ -49,9 +55,9 @@
                                     <div class="form-group my-2">
                                         <label for="Type">Type</label>
                                         <select name="type" id="" class="form-control @error('type') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select Type</option>
-                                            <option value="0">Flat</option>
-                                            <option value="1">Percentage</option>
+                                            <option {{ old('type') == '' ? 'selected' : ''}} value="">Select Type</option>
+                                            <option {{ old('type') == '0' ? 'selected' : '' }} value="0">Flat</option>
+                                            <option {{ old('type') == '1' ? 'selected' : '' }} value="1">Percentage</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('type')

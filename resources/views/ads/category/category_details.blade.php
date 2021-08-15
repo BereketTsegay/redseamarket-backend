@@ -82,9 +82,9 @@
                                 <hr>
                                 <a href="{{ asset($category->image) }}" target="blank"><img src="{{ asset($category->image) }}" alt="image" width="250px"></a>
                                 <hr>
-                                <h5 class="my-4">Icon</h5>
+                                {{-- <h5 class="my-4">Icon</h5>
                                 <hr>
-                                <i class="{{ $category->Icon->name }}" style="font-size: 50px"></i>
+                                <i class="{{ $category->Icon->name }}" style="font-size: 50px"></i> --}}
                             </div>
                         </div>
                     </div>

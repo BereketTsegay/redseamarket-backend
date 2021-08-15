@@ -33,17 +33,17 @@
                                         <label for="Type">Type</label>
                                         <select name="type" id="select_type" class="form-control @error('type') is-invalid @enderror" autocomplete="off">
                                             <option value="">Select Type</option>
-                                            <option value="text">Text</option>
-                                            <option value="textarea">Textarea</option>
-                                            <option value="checkbox">Checkbox</option>
+                                            <option {{ old('type') == 'text' ? 'selected' : '' }} value="text">Text</option>
+                                            <option {{ old('type') == 'textarea' ? 'selected' : '' }} value="textarea">Textarea</option>
+                                            <option {{ old('type') == 'checkbox' ? 'selected' : '' }} value="checkbox">Checkbox</option>
                                             {{-- <option value="checkbox_multiple-1">Checkbox (Multiple)</option> --}}
-                                            <option value="select-1">Select Box</option>
-                                            <option value="radio-1">Radio</option>
-                                            <option value="file">File</option>
-                                            <option value="url">URL</option>
-                                            <option value="number">Number</option>
-                                            <option value="date">Date</option>
-                                            <option value="dependency-2">Dependency</option>
+                                            <option {{ old('type') == 'select-1' ? 'selected' : '' }} value="select-1">Select Box</option>
+                                            <option {{ old('type') == 'radio-1' ? 'selected' : '' }} value="radio-1">Radio</option>
+                                            <option {{ old('type') == 'file' ? 'selected' : '' }} value="file">File</option>
+                                            <option {{ old('type') == 'url' ? 'selected' : '' }} value="url">URL</option>
+                                            <option {{ old('type') == 'number' ? 'selected' : '' }} value="number">Number</option>
+                                            <option {{ old('type') == 'date' ? 'selected' : '' }} value="date">Date</option>
+                                            <option {{ old('type') == 'dependency' ? 'selected' : '' }} value="dependency-2">Dependency</option>
                                             {{-- <option value="date_time">Date Time</option>
                                             <option value="date_range">Date Range</option>
                                             <option value="video">Video (Youtube, Vimeo)</option> --}}
@@ -88,9 +88,9 @@
                                         <label for="Name">Description Area</label>
                                         <select name="description_area" id="" class="form-control @error('description_area') is-invalid @enderror" autocomplete="off">
                                             <option value="">Select</option>
-                                            <option value="2">None</option>
-                                            <option value="0">Top Section</option>
-                                            <option value="1">Details Section</option>
+                                            <option {{ old('description_area') == '2' ? 'selected' : '' }} value="2">None</option>
+                                            <option {{ old('description_area') == '0' ? 'selected' : '' }} value="0">Top Section</option>
+                                            <option {{ old('description_area') == '1' ? 'selected' : '' }} value="1">Details Section</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('description_area')

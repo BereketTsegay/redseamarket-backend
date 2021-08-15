@@ -5,12 +5,12 @@
     <main>
         <div class="container-fluid px-4">
             
-            <button type="button" class="btn btn-primary float-end" data-toggle="modal" data-target="#createIconModal">Create Icon</button>
+            <button type="button" class="btn btn-primary float-end" data-toggle="modal" data-target="#createIconModal">Create Reson</button>
             
-            <h2 class="mt-4">Icons</h2>
+            <h2 class="mt-4">Reson</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Icons</li>
+                <li class="breadcrumb-item active">Reson</li>
             </ol>
             
             <div class="card mb-4">
@@ -59,9 +59,13 @@
     <div class="modal fade" id="createIconModal" tabindex="-1" role="dialog" aria-labelledby="createIconModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{ route('reject.store') }}" method="POST">
+                <form action="{{ route('reject.store') }}" method="POST" id="rejectReson">
                     @csrf
-                    
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editIconModalLabel">Create Reson</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
                     <div class="modal-body">
                         <div class="container">
                             <div class="form-group my-2">
@@ -93,10 +97,10 @@
     <div class="modal fade" id="editIconModal" tabindex="-1" role="dialog" aria-labelledby="editIconModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{ route('reject.update') }}" method="POST">
+                <form action="{{ route('reject.update') }}" method="POST" id="rejecResonEdit">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editIconModalLabel">Edit Icon</h5>
+                        <h5 class="modal-title" id="editIconModalLabel">Edit Reson</h5>
                         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
@@ -130,6 +134,35 @@
         
         let ids = '';
 
+        $('form[id="rejectReson"]').validate({
+            rules : {
+                reson: {
+                        required : true,
+                    },
+                description: {
+                        required: true,
+                    },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+            
+        });
+
+        $('form[id="rejecResonEdit"]').validate({
+            rules : {
+                reson: {
+                        required : true,
+                    },
+                description: {
+                        required: true,
+                    },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+            
+        });
 
 
         resonEdit = (id, reson, description, status) => {

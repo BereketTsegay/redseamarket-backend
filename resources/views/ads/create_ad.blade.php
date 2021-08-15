@@ -16,16 +16,16 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="container">
-                        <form action="{{ route('ads.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('ads.store') }}" method="POST" enctype="multipart/form-data" id="adStoreForm">
                             <div class="row">
                                 <div class="col-md-6">
                                     @csrf
                                     <div class="form-group my-2">
                                         <label for="category">Category</label>
                                         <select name="category" id="category" class="form-control @error('category') is-invalid @enderror" autocomplete="off">
-                                            <option >Select</option>
+                                            <option value="" >Select</option>
                                             @foreach ($category as $row)
-                                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                                <option {{ old('category') == $row->id ? 'selected' : '' }} value="{{ $row->id }}">{{ $row->name }}</option>
                                             @endforeach
                                            
                                         </select>
@@ -46,7 +46,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Price">Price</label>
-                                        <input type="text" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
+                                        <input type="number" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('price')
                                                 {{ $message }}
@@ -195,6 +195,72 @@
             return str.toLowerCase().replace(/ +/g, '-').replace(/[^-\w]/g, '');
         }
 
+        $('form[id="adStoreForm"]').validate({
+            rules : {
+                category: {
+                        required : true,
+                    },
+                title: {
+                        required: true,
+                    },
+                price: {
+                        required: true,
+                    },
+                state: {
+                        required: true,
+                    },
+                'image[]': {
+                        required: true,
+                    },
+                country:{
+                        required: true,
+                    },
+                description: {
+                        required: true,
+                    },
+
+
+                make: {
+                        required: true,
+                    },
+                model: {
+                        required: true,
+                    },
+                registered_year: {
+                        required: true,
+                },
+                fuel: {
+                        required: true,
+                    },
+                transmission: {
+                        required: true,
+                    },
+                condition: {
+                        required: true,
+                    },
+                mileage: {
+                        required: true,
+                    },
+
+                size: {
+                        required: true,
+                    },
+                rooms: {
+                        required: true,
+                    },
+                furnished: {
+                        required: true,
+                    },
+                building: {
+                        required: true,
+                    },
+                },
+
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+
 
         $(document).ready(function() {
             $('.select2').select2();
@@ -222,6 +288,7 @@
             });
 
         });
+
 
         $(document).on('change', '#category', function(){
             let id = $(this).val();

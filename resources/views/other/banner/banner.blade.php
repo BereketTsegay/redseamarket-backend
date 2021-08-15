@@ -99,9 +99,9 @@
                             <label for="Type">Postion</label>
                             <Select name="position" class="form-control">
                                 <option value="">Select</option>
-                                <option value="Top">Top</option>
-                                <option value="Middle">Middle</option>
-                                <option value="Bottom">Bottom</option>
+                                <option {{ old('position') == 'Top' ? 'selected' : '' }} value="Top">Top</option>
+                                <option {{ old('position') == 'Middle' ? 'selected' : ''}} value="Middle">Middle</option>
+                                <option {{ old('position') == 'Bottom' ? 'selected' : ''}} value="Bottom">Bottom</option>
                             </Select>
                         </div>
                         <div class="form-group my-2">
@@ -138,15 +138,15 @@
                     <div class="container">
                         <div class="form-group my-2">
                             <label for="EditName">Name</label>
-                            <input type="text" name="name" class="form-control" id="editName" placeholder="Name">
+                            <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="editName" placeholder="Name">
                         </div>
                         <div class="form-group my-2">
                             <label for="Type">Postion</label>
                             <Select name="position" id="editPosition" class="form-control">
                                 <option value="">Select</option>
-                                <option value="Top">Top</option>
-                                <option value="Middle">Middle</option>
-                                <option value="Bottom">Bottom</option>
+                                <option {{ old('position') == 'Top' ? 'selected' : '' }} value="Top">Top</option>
+                                <option {{ old('position') == 'Middle' ? 'selected' : ''}} value="Middle">Middle</option>
+                                <option {{ old('position') == 'Bottom' ? 'selected' : ''}} value="Bottom">Bottom</option>
                             </Select>
                         </div>
                         <div class="form-group my-2">

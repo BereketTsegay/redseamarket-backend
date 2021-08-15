@@ -86,7 +86,7 @@
     <div class="modal fade" id="createIconModal" tabindex="-1" role="dialog" aria-labelledby="createIconModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{ route('icon.store') }}" method="POST">
+                <form action="{{ route('icon.store') }}" method="POST" id="createIcon">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="createIconModalLabel">Create Icon</h5>
@@ -105,7 +105,7 @@
                             </div>
                             <div class="form-group my-2">
                                 <label for="Status">Active</label>
-                                <input type="checkbox" name="status" value="checked" autocomplete="off">
+                                <input type="checkbox" checked name="status" value="checked" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
     <div class="modal fade" id="editIconModal" tabindex="-1" role="dialog" aria-labelledby="editIconModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{ route('icon.update') }}" method="POST">
+                <form action="{{ route('icon.update') }}" method="POST" id="editIcon">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="editIconModalLabel">Edit Icon</h5>
@@ -143,7 +143,7 @@
                             </div>
                             <div class="form-group my-2">
                                 <label for="Status">Active</label>
-                                <input type="checkbox" name="status" value="checked" autocomplete="off">
+                                <input type="checkbox" checked name="status" value="checked" autocomplete="off">
                             </div>
 
                             <input type="hidden" name="icon_id" id="editId">
@@ -176,6 +176,36 @@
             $('#edit_sort_order').val(sort_order);
             $('#edit_name').val(name);
         }
+
+        $('form[id="createIcon"]').validate({
+            rules : {
+                name: {
+                        required : true,
+                    },
+                sort_order: {
+                        required: true,
+                    },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+            
+        });
+
+        $('form[id="editIcon"]').validate({
+            rules : {
+                name: {
+                        required : true,
+                    },
+                sort_order: {
+                        required: true,
+                    },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+            
+        });
   </script>
 
 @if (Session::has('success'))

@@ -73,7 +73,7 @@
 <div class="modal fade" id="optionCreate" tabindex="-1" role="dialog" aria-labelledby="optionCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('custom_field.option.create', $field->id) }}" method="POST">
+            <form action="{{ route('custom_field.option.create', $field->id) }}" method="POST" id="optionForm">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="optionCreateModalLabel">Create Option</h5>
@@ -83,7 +83,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <Label for="Value">Value</Label>
-                        <input type="text" name="value" class="form-control" placeholder="Value" autocomplete="off">
+                        <input type="text" name="value" id="value" class="form-control" placeholder="Value" autocomplete="off">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -104,6 +104,18 @@
         deleteOption = () => {
             $('#option_delete_form'+ids).submit();
         }
+
+        $('form[id="optionForm"]').validate({
+            rules : {
+                value: {
+                        required : true,
+                    },
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+            
+        });
     </script>
 
 @if (Session::has('success'))

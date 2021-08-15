@@ -44,7 +44,7 @@ class CategoryController extends Controller
      
         $request->validate([
             'category_name'     => 'required',
-            'icon_class'        => 'required|numeric',
+            // 'icon_class'        => 'required|numeric',
             // 'city'              => 'required|numeric',
             // 'state'             => 'required|numeric',
             'canonical_name'    => 'required',
@@ -93,7 +93,7 @@ class CategoryController extends Controller
         $category->canonical_name   = $request->canonical_name;
         $category->description      = $request->description;
         $category->image            = $image;
-        $category->icon_class_id    = $request->icon_class;
+        // $category->icon_class_id    = $request->icon_class;
         // $category->country_id       = $request->country;
         // $category->state_id         = $request->state;
         // $category->city_id          = $request->city;
@@ -136,7 +136,7 @@ class CategoryController extends Controller
 
         $request->validate([
             'category_name'     => 'required',
-            'icon_class'        => 'required|numeric',
+            // 'icon_class'        => 'required|numeric',
             // 'city'              => 'required|numeric',
             'canonical_name'    => 'required',
             // 'country'           => 'required|numeric',
@@ -200,7 +200,7 @@ class CategoryController extends Controller
             'canonical_name'    => $request->canonical_name,
             'description'       => $request->description,
             'image'             => $image,
-            'icon_class_id'     => $request->icon_class,
+            // 'icon_class_id'     => $request->icon_class,
             // 'country_id'        => $request->country,
             // 'state_id'          => $request->state,
             // 'city_id'           => $request->city,

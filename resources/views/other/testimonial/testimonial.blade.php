@@ -89,15 +89,15 @@
                     <div class="container">
                         <div class="form-group my-2">
                             <label for="Name">Name</label>
-                            <input type="text" name="name" class="form-control" id="Name" placeholder="Name">
+                            <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="Name" placeholder="Name">
                         </div>
                         <div class="form-group">
                             <label for="Designation">Designation</label>
-                            <input type="text" class="form-control" name="designation" id="Designation" placeholder="Designation">
+                            <input type="text" value="{{ old('designation') }}" class="form-control" name="designation" id="Designation" placeholder="Designation">
                         </div>
                         <div class="form-group my-2">
                             <label for="Description">Description</label>
-                            <textarea name="description" class="form-control" id="Description" cols="30" rows="3" placeholder="Description"></textarea>
+                            <textarea name="description" class="form-control" id="Description" cols="30" rows="3" placeholder="Description">{{ old('description') }}</textarea>
                         </div>
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
