@@ -18,6 +18,7 @@ Route::post('/user/login', [\App\Http\Controllers\Api\LoginController::class, 'l
 Route::post('/user/register', [\App\Http\Controllers\Api\LoginController::class, 'register']);
 Route::post('/user/forgot/send/password/toMail', [\App\Http\Controllers\Api\LoginController::class, 'sendPasswordToMail']);
 Route::post('/customer/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'dashboard']);
+Route::post('/customer/city/list', [\App\Http\Controllers\Api\OtherController::class, 'cityList']);
 
     // Ads Section
     
@@ -39,6 +40,7 @@ Route::post('/customer/get/city', [\App\Http\Controllers\Api\OtherController::cl
 Route::post('/customer/get/motors', [\App\Http\Controllers\Api\AdsController::class, 'getCategoryMotors']);
 Route::post('/customer/get/property', [\App\Http\Controllers\Api\AdsController::class, 'getProperty']);
 Route::post('/customer/search/motors', [\App\Http\Controllers\Api\AdsController::class, 'motorSearch']);
+Route::post('/customer/social/link', [\App\Http\Controllers\Api\OtherController::class,'socialLink']);
 
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);

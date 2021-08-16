@@ -9,6 +9,7 @@ use App\Models\Ads;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Favorite;
+use App\Models\SocialLink;
 use App\Models\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -874,6 +875,84 @@ class OtherController extends Controller
         catch (\Exception $e) {
             
     
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function socialLink(){
+        
+        try{
+            $social = SocialLink::where('status', Status::ACTIVE)
+            ->get()
+            ->map(function($a){
+                $a->social_icons = $a->Icon->name;
+                unset($a->Icon);
+                return $a;
+            });
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Social Links',
+                'code'      => 200,
+                'social'    => $social,
+            ], 200);
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function cityList(Request $request){
+
+        try{
+
+            $rules = [
+                'country_id'    => 'required|numeric',
+            ];
+    
+            $validate = Validator::make($request->all(), $rules);
+    
+            if($validate->fails()){
+    
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $state = State::where('country_id', $request->country_id)
+            ->get();
+
+            $city = [];
+
+            foreach($state as $row){
+
+                $cities = City::where('state_id', $row->id)
+                ->get();
+
+                foreach($cities as $col){
+                    $city[] = $col;
+                }
+            }
+
+            
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'City list',
+                'code'      => 200,
+                'city'      => $city,
+            ], 200);
+        }
+        catch(\Exception $e){
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Something went wrong',
