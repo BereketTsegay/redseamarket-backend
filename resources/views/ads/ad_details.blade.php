@@ -105,7 +105,7 @@
                                     <p class="col-md-6">{{ $ad->MotoreValue->condition }}</p>
                                 </div>
                                 <div class="row">
-                                    <p class="col-md-6">Milage :</p>
+                                    <p class="col-md-6">Mileage :</p>
                                     <p class="col-md-6">{{ $ad->MotoreValue->milage }}</p>
                                 </div>
                                     @if (count($ad->MotorFeatures) != 0)

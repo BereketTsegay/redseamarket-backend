@@ -38,6 +38,7 @@ Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::c
 Route::post('/customer/get/city', [\App\Http\Controllers\Api\OtherController::class, 'getCity']);
 Route::post('/customer/get/motors', [\App\Http\Controllers\Api\AdsController::class, 'getCategoryMotors']);
 Route::post('/customer/get/property', [\App\Http\Controllers\Api\AdsController::class, 'getProperty']);
+Route::post('/customer/search/motors', [\App\Http\Controllers\Api\AdsController::class, 'motorSearch']);
 
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);

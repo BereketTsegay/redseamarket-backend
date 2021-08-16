@@ -871,7 +871,7 @@ class AdsController extends Controller
             ], 200);
         }
         
-        // try{
+        try{
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;
@@ -2876,6 +2876,221 @@ class AdsController extends Controller
             ], 200);
 
 
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function motorSearch(Request $request){
+
+        // try{
+            
+            $rules = [
+                'search_key'    => 'required',
+                'latitude'      => 'required',
+                'longitude'     => 'required',
+            ];
+    
+            $validate = Validator::make($request->all(), $rules);
+    
+            if($validate->fails()){
+    
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
+
+            
+            $myAds = Ads::where('category_id', $request->category)
+            ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            ->having('distance', '<=', $radius)
+            ->where(function($a) use($request){
+                $a->orwhere('title', 'like', '%'.$request->search_key.'%')
+                ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
+            })
+            ->where('status', Status::ACTIVE)
+            ->where('delete_status', '!=', Status::DELETE);
+            
+            if($request->subcategory){
+
+                $myAds->where('subcategory_id', $request->subcategory);
+            }
+
+            if($request->condition){
+                
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('condition', $request->condition);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('condition', $request->condition);
+                });
+            }
+
+            if($request->transmission){
+
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('transmission', $request->transmission);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('transmission', $request->transmission);
+                });
+            }
+
+            if($request->priceFrom && $request->priceTo){
+                $myAds->where('price', '>=', $request->priceFrom)
+                ->where('price', '<=', $request->priceTo);
+            }
+            elseif($request->priceFrom){
+                $myAds->where('price', '>=', $request->priceFrom);
+            }
+            elseif($request->priceTo){
+                $myAds->where('price', '<=', $request->priceTo);;
+            }
+
+            if($request->yearFrom && $request->yearTo){
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('registration_year', '>=', $request->yearFrom)
+                    ->where('registration_year', '<=', $request->yearTo);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('registration_year', '>=', $request->yearFrom)
+                    ->where('registration_year', '<=', $request->yearTo);
+                });
+            }
+            elseif($request->yearFrom){
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('registration_year', '>=', $request->yearFrom);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('registration_year', '>=', $request->yearFrom);
+                });
+            }
+            elseif($request->yearTo){
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('registration_year', '<=', $request->yearTo);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('registration_year', '<=', $request->yearTo);
+                });
+            }
+
+            if($request->mileageFrom && $request->mileageTo){
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('milage', '>=', $request->mileageFrom)
+                    ->where('milage', '<=', $request->mileageTo);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('milage', '>=', $request->mileageFrom)
+                    ->where('milage', '<=', $request->mileageTo);
+                });
+            }
+            elseif($request->mileageFrom){
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('milage', '>=', $request->mileageFrom);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('milage', '>=', $request->mileageFrom);
+                });
+            }
+            elseif($request->mileageTo){
+                $myAds->with(['MotoreValue' => function($q) use($request){
+                    $q->where('milage', '<=', $request->mileageTo);
+                }])
+                ->whereHas('MotoreValue', function($p) use($request){
+                    $p->where('milage', '<=', $request->mileageTo);
+                });
+            }
+            
+            if(isset($request->seller)){
+                
+                if($request->seller == 0){
+                    $myAds->where('sellerinformation_id', 0);
+                }
+                else{
+                    $myAds->where('sellerinformation_id', '!=', 0);
+                }
+            }
+
+            $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
+                return $paginatedInstance->getCollection()->transform(function($a){
+
+                    $a->image = array_filter([
+                        $a->Image->map(function($q) use($a){
+                            $q->image;
+                            unset($q->ads_id, $q->img_flag);
+                            return $q;
+                        }),
+                    ]);
+
+                    if($a->category_id == 1){
+                        $a->MotoreValue;
+                        $a->make = $a->MotoreValue->Make->name;
+                        $a->model = $a->MotoreValue->Model->name;
+                        // $a->MotorFeatures;
+    
+                        unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                    }
+                    elseif($a->category_id == 2){
+                        $a->PropertyRend;
+                    }
+                    elseif($a->category_id ==3){
+                        $a->PropertySale;
+                    }
+
+                    $a->country_name = $a->Country->name;
+                    $a->state_name = $a->State->name;
+                    $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                    $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                    if($a->city_id != 0){
+                        $a->city_name = $a->City->name;
+                    }
+                    else{
+                        $a->city_name = $a->State->name;
+                    }
+                    $a->CustomValue->map(function($c){
+                        
+                        if($c->Field->description_area_flag == 0){
+                            $c->position = 'top';
+                            $c->name = $c->Field->name;
+                        }
+                        elseif($c->Field->description_area_flag == 1){
+                            $c->position = 'details_page';
+                            $c->name = $c->Field->name;
+                        }
+                        else{
+                            $c->position = 'none';
+                            $c->name = $c->Field->name;
+                        }
+                        unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                        return $c;
+                    });
+
+                    unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                    return $a;
+                });
+            });
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Result for '. $request->search_key,
+                'code'      => 200,
+                'ads'       => $myAds,
+            ]);
         // }
         // catch (\Exception $e) {
             
