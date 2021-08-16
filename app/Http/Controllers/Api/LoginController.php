@@ -251,29 +251,29 @@ class LoginController extends Controller
     }
 
     public function updateProfile(Request $request){
-
-        $id = Auth::user()->id;
-
-        $rules = [
-            'name'          => 'required',
-            'email'         => 'required|email|unique:users,email,'.$id.',id',
-            'phone'         => 'required|numeric',
-            'nationality'   => 'required',
-        ];
-
-        $validate = Validator::make($request->all(), $rules);
-
-        if($validate->fails()){
-
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid request',
-                'code'      => 400,
-                'errors'    => $validate->errors(),
-            ], 200);
-        }
-
+        
         try{
+            $id = Auth::user()->id;
+
+            $rules = [
+                'name'          => 'required',
+                'email'         => 'required|email|unique:users,email,'.$id.',id',
+                'phone'         => 'required|numeric',
+                'nationality'   => 'required',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+            
             User::where('id', Auth::user()->id)
             ->update([
                 'name'              => $request->name,
@@ -288,6 +288,58 @@ class LoginController extends Controller
                 'message'   => 'User profile has been updated',
                 'code'      => 200,
 
+            ], 200);
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function changePassword(Request $request){
+
+        try{
+            $rules = [
+                'old_password'  => 'required',
+                'password'      => 'required|confirmed',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $user = User::where('id', Auth::user()->id)
+            ->first();
+
+            if(!Hash::check($request->old_password, $user->password)){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Incurrect password',
+                    'code'      => 400,
+                ], 200);
+            }
+
+            User::where('id', Auth::user()->id)
+            ->update([
+                'password'  => Hash::make($request->password),
+            ]);
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Password has been changed',
+                'code'      => 200,
             ], 200);
 
         }
