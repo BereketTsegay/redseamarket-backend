@@ -663,9 +663,9 @@ class OtherController extends Controller
     public function getCategoryAds(Request $request){
 
         $rules = [
-            'category_id'   => 'required',
-            'latitude'      => 'required',
-            'longitude'     => 'required',
+            'canonical_name'    => 'required',
+            'latitude'          => 'required',
+            'longitude'         => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -687,11 +687,13 @@ class OtherController extends Controller
 
             $radius = 10; // Km
             
-            $myAds = tap(Ads::where('category_id', $request->category_id)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+            $myAds = tap(Ads::selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 ->having('distance', '<=', $radius)
                 ->where('status', Status::ACTIVE)
+                ->whereHas('Category', function($a) use($request){
+                    $a->where('canonical_name', $request->canonical_name);
+                })
                 ->where('delete_status', '!=', Status::DELETE)
                 ->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
