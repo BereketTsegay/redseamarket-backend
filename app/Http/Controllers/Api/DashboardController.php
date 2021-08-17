@@ -131,7 +131,7 @@ class DashboardController extends Controller
 
                     $b->country = $b->Country->name;
                     $b->state = $b->State->name;
-                    $b->city = $b->City->name;
+                    $b->city = $b->City ? $b->City->name : $b->State->name ;
                     $b->CustomValue->map(function($c){
                         
                         if($c->Field->description_area_flag == 0){
@@ -312,7 +312,7 @@ class DashboardController extends Controller
 
                     $b->country = $b->Country->name;
                     $b->state = $b->State->name;
-                    $b->city = $b->City->name;
+                    $b->city = $b->City ? $b->City->name : $b->State->name ;
                     $b->CustomValue->map(function($c){
                         
                         if($c->Field->description_area_flag == 0){
