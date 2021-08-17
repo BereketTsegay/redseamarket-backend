@@ -63,6 +63,7 @@ class AdsController extends Controller
             $request->validate([
                 'make'              => 'required|numeric',
                 'model'             => 'required|numeric',
+                'varient'           => 'required|numeric',
                 'registered_year'   => 'required|numeric',
                 'fuel'              => 'required',
                 'transmission'      => 'required',
@@ -166,6 +167,7 @@ class AdsController extends Controller
             $motor->ads_id              = $ad->id;
             $motor->make_id             = $request->make;
             $motor->model_id            = $request->model;
+            $motor->varient_id          = $request->varient;
             $motor->registration_year   = $request->registered_year;
             $motor->fuel_type           = $request->fuel;
             $motor->transmission        = $request->transmission;
@@ -445,6 +447,7 @@ class AdsController extends Controller
             $request->validate([
                 'make'              => 'required|numeric',
                 'model'             => 'required|numeric',
+                'varient'           => 'required|numeric',
                 'registered_year'   => 'required|numeric',
                 'fuel'              => 'required',
                 'transmission'      => 'required',
@@ -543,6 +546,7 @@ class AdsController extends Controller
             ->update([
                 'make_id'           => $request->make,
                 'model_id'          => $request->model,
+                'varient_id'        => $request->varient,
                 'registration_year' => $request->registered_year,
                 'fuel_type'         => $request->fuel,
                 'transmission'      => $request->transmission,

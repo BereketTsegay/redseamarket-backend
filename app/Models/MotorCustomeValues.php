@@ -16,4 +16,8 @@ class MotorCustomeValues extends Model
     public function Model(){
         return $this->hasOne(ModelMst::class, 'id', 'model_id');
     }
+
+    public function Variant(){
+        return $this->hasOne(VarientMst::class, 'id', 'varient_id');
+    }
 }

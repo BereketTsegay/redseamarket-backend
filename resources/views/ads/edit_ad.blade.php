@@ -233,6 +233,9 @@
                 model: {
                         required: true,
                     },
+                varient: { 
+                        required: true,
+                    },
                 registered_year: {
                         required: true,
                         number: true
@@ -276,6 +279,52 @@
 
         $(document).ready(function() {
             $('.select2').select2();
+        });
+
+        $(document).on('change', '#Make', function(){
+            let id = $(this).val();
+            let newOption = '';
+
+            $.ajax({
+                url : '/global/vehicle/model/get',
+                type : 'get',
+                data : {id:id},
+                success:function(data){
+                    newOption += `<option value="">Select Model</option>`;
+
+                    for(let i = 0; i < data.length; i++){
+
+                        newOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+
+                    }
+
+                    $('#Model').html(newOption);
+                }
+            });
+
+        });
+
+        $(document).on('change', '#Model', function(){
+            let id = $(this).val();
+            let newOption = '';
+
+            $.ajax({
+                url : '/global/vehicle/varient/get',
+                type : 'get',
+                data : {id:id},
+                success:function(data){
+                    newOption += `<option value="">Select Varient</option>`;
+
+                    for(let i = 0; i < data.length; i++){
+
+                        newOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+
+                    }
+
+                    $('#Varient').html(newOption);
+                }
+            });
+
         });
 
         $(document).on('change', '#category', function(){
@@ -324,6 +373,18 @@
                                     </select>
                                     <div class="invalid-feedback">
                                         @error('model')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Varient">Variant </label>
+                                    <select class="form-control @error('varient') 'is-invalid' @enderror" name="varient" id="Varient">
+                                        <option>Select Variant</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        @error('varient')
                                             {{ $message }}
                                         @enderror
                                     </div>
@@ -977,8 +1038,10 @@
 
                 let makeOption = '';
                 let modelOption = '';
+                let varientOption = '';
                 let make = '{{ $ad->category_id == 1 ? $ad->MotoreValue->make_id : '' }}';
                 let model = '{{ $ad->category_id == 1 ? $ad->MotoreValue->model_id : '' }}';
+                let variant = '{{ $ad->category_id == 1 ? $ad->MotoreValue->varient_id : '' }}';
                 let register = '{{ $ad->category_id == 1 ? $ad->MotoreValue->registration_year : '' }}';
                 let fuel = '{{$ad->category_id == 1 ? $ad->MotoreValue->fuel_type : '' }}';
                 let transmission = '{{ $ad->category_id == 1 ? $ad->MotoreValue->transmission : '' }}';
@@ -1027,6 +1090,25 @@
                     }
                 });
 
+                $.ajax({
+                    url : '/global/vehicle/varient/get',
+                    type : 'get',
+                    data : {id:model},
+                    async: false,
+                    success:function(data){
+
+                        for(let i = 0; i < data.length; i++){
+                            if(variant == data[i].id){
+                                
+                                varientOption += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            else{
+                                varientOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                        }
+                    }
+                });
+
 
                 custom_field += `<div class="col-md-6 form-group my-2">
                                     <label for="Make">Make </label>
@@ -1047,6 +1129,18 @@
                                     </select>
                                     <div class="invalid-feedback">
                                         @error('model')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Variant">Variant </label>
+                                    <select class="form-control @error('varient') 'is-invalid' @enderror" name="varient" id="Varient">
+                                        ${varientOption}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        @error('varient')
                                             {{ $message }}
                                         @enderror
                                     </div>

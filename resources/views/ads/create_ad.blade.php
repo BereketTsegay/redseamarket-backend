@@ -226,6 +226,9 @@
                 model: {
                         required: true,
                     },
+                varient: { 
+                        required: true,
+                    },
                 registered_year: {
                         required: true,
                 },
@@ -289,6 +292,29 @@
 
         });
 
+        $(document).on('change', '#Model', function(){
+            let id = $(this).val();
+            let newOption = '';
+
+            $.ajax({
+                url : '/global/vehicle/varient/get',
+                type : 'get',
+                data : {id:id},
+                success:function(data){
+                    newOption += `<option value="">Select Varient</option>`;
+
+                    for(let i = 0; i < data.length; i++){
+
+                        newOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+
+                    }
+
+                    $('#Varient').html(newOption);
+                }
+            });
+
+        });
+
 
         $(document).on('change', '#category', function(){
             let id = $(this).val();
@@ -335,6 +361,18 @@
                                     </select>
                                     <div class="invalid-feedback">
                                         @error('model')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
+                                </div>`;
+
+                custom_field += `<div class="col-md-6 form-group my-2">
+                                    <label for="Variant">Varient </label>
+                                    <select class="form-control @error('varient') 'is-invalid' @enderror" name="varient" id="Varient">
+                                        <option>Select variant</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        @error('varient')
                                             {{ $message }}
                                         @enderror
                                     </div>

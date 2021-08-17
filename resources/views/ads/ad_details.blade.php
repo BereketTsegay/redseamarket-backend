@@ -89,6 +89,10 @@
                                     <p class="col-md-6">{{ $ad->MotoreValue->Model->name }}</p>
                                 </div>
                                 <div class="row">
+                                    <p class="col-md-6">Variant :</p>
+                                    <p class="col-md-6">{{ $ad->MotoreValue->Variant->name }}</p>
+                                </div>
+                                <div class="row">
                                     <p class="col-md-6">Registration Year :</p>
                                     <p class="col-md-6">{{ $ad->MotoreValue->registration_year }}</p>
                                 </div>

@@ -18,6 +18,7 @@ class CreateMotorCustomeValuesTable extends Migration
             $table->integer('ads_id');
             $table->integer('make_id');
             $table->integer('model_id');
+            $table->integer('varient_id');
             $table->string('registration_year');
             $table->string('fuel_type');
             $table->string('transmission');

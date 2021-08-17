@@ -61,11 +61,12 @@ class AdsController extends Controller
 
                 if($a->category_id == 1){
                     $a->MotoreValue;
-                    $a->make = $a->MotoreValue->Make->name;
-                    $a->model = $a->MotoreValue->Model->name;
+                    $a->make = $a->MotoreValue->Make ? $a->MotoreValue->Make->name : '';
+                    $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
+                    $a->variant = $a->MotoreValue->Variant ? $a->MotoreValue->Variant->name : '';
                     $a->MotorFeatures;
 
-                    unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                    unset($a->MotoreValue->Make, $a->MotoreValue->Model, $a->MotoreValue->Variant);
                 }
                 elseif($a->category_id == 2){
                     $a->PropertyRend;
@@ -238,6 +239,7 @@ class AdsController extends Controller
                 $motor->ads_id              = $ad->id;
                 $motor->make_id             = $request->make_id;
                 $motor->model_id            = $request->model_id;
+                $motor->varient_id          = $request->variant_id;
                 $motor->registration_year   = $request->registration_year;
                 $motor->fuel_type           = $request->fuel;
                 $motor->transmission        = $request->transmission;
@@ -796,6 +798,33 @@ class AdsController extends Controller
                 'message'   => 'Model list',
                 'code'      => 200,
                 'model'      => $model,
+            ], 200);
+
+        }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getVarieant(Request $request){
+
+        try{
+
+            $variant = VarientMst::where('model_id', $request->model_id)
+            ->where('status', Status::ACTIVE)
+            ->orderBy('name')
+            ->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Variant list',
+                'code'      => 200,
+                'variant'   => $variant,
             ], 200);
 
         }
