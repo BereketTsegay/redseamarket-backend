@@ -206,6 +206,13 @@ class AdsController extends Controller
                 $city = 0;
             }
 
+            if($request->subcategory){
+                $subcategory = $request->subcategory;
+            }
+            else{
+                $subcategory = 0;
+            }
+
             $customer                   = new SellerInformation();
             $customer->name             = $request->name;
             $customer->email            = $request->email;
@@ -216,7 +223,7 @@ class AdsController extends Controller
 
             $ad                        = new Ads();
             $ad->category_id           = $request->category;
-            $ad->subcategory_id        = $request->subcategory;
+            $ad->subcategory_id        = $subcategory;
             $ad->title                 = $request->title;
             $ad->canonical_name        = $request->canonical_name;
             $ad->description           = $request->description;

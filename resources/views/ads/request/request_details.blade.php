@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Subcategory :</p>
-                                    <p class="col-md-6">{{ $ad->Subcategory->name }}</p>
+                                    <p class="col-md-6">{!! $ad->Subcategory ? $ad->Subcategory->name : '<span class="text-secondary">Null</span>' !!}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Country :</p>
@@ -55,11 +55,11 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Negotiable :</p>
-                                    <p class="col-md-6">{!! $ad->negotiable_flag == 1 ? '<span class="text-success">Yes</span>' : '<span class="text-secondary">No</span>' !!}</p>
+                                    <p class="col-md-6">{!! $ad->negotiable_flag == 1 ? 'Yes' : 'No' !!}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Featured :</p>
-                                    <p class="col-md-6">{!! $ad->featured_flag == 1 ? '<span class="text-success">Yes</span>' : '<span class="text-secondary">No</span>' !!}</p>
+                                    <p class="col-md-6">{!! $ad->featured_flag == 1 ? 'Yes' : 'No' !!}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Description :</p>
@@ -164,7 +164,7 @@
                                         <p class="col-md-6">{{ $ad->PropertySale->parking == 1 ? 'Yes' : 'No' }}</p>
                                     </div>
                                 @endif
-                                
+
                                 @foreach ($ad->CustomValue as $item)
                                     <div class="row">
                                         <p class="col-md-6">{{ $item->Field->name }} :</p>
