@@ -193,7 +193,7 @@ class LoginController extends Controller
 
     public function myProfile(){
         
-        try {
+        // try {
             $user = User::where('id', Auth::user()->id)
             ->where('type', UserType::USER)
             ->first();
@@ -207,6 +207,9 @@ class LoginController extends Controller
             ->whereHas('Ads')
             ->count();
 
+            $viewCount = Ads::where('customer_id', Auth::user()->id)
+            ->sum('view_count');
+
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'User Profile',
@@ -215,15 +218,16 @@ class LoginController extends Controller
                     'myads'         => $myAds,
                     'myfavourite'   => $myFavourite,
                     'user'          => $user,
+                    'adsView'       => $viewCount,
                 ],
             ], 200);
-        }
-        catch(\Exception $e){
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        // }
+        // catch(\Exception $e){
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function logout(){

@@ -2888,7 +2888,7 @@ class AdsController extends Controller
 
     public function motorSearch(Request $request){
 
-        // try{
+        try{
             
             $rules = [
                 'search_key'    => 'required',
@@ -3091,13 +3091,56 @@ class AdsController extends Controller
                 'code'      => 200,
                 'ads'       => $myAds,
             ]);
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function adsViewEntry(Request $request){
+
+        try{
+
+            $rules = [
+                'ads_id'    => 'required|numeric',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+    
+            if($validate->fails()){
+    
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $ads = Ads::where('id', $request->ads_id)
+            ->first();
+
+            Ads::where('id', $request->ads_id)
+            ->update([
+                'view_count'    => $ads->view_count + 1,
+            ]);
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'View added',
+                'code'      => 200,
+            ]);
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 }

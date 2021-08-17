@@ -7,6 +7,7 @@ use App\Common\UserType;
 use App\Mail\PasswordReset;
 use App\Models\Ads;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -172,7 +173,49 @@ class LoginController extends Controller
         ->where('delete_status', '!=', Status::DELETE)
         ->count();
 
-        return view('dashboard', compact('inActiveAd', 'activeAd', 'user'));
+        $year = Carbon::now()->year;
+        $nextYear = Carbon::now()->addYear()->year;
+        
+        // Order Chart
+
+        $months = [];
+        
+        for($i = 1; $i <= Carbon::now()->month; $i++){
+            if($i<10){
+                $months[] = '0'.$i;
+            }
+            else{
+                $months[] = ''.$i;
+            }
+            
+        }
+
+        $adCount = [];
+
+        foreach($months as $month){
+
+            $adCount[] = Ads::where('delete_status', '!=', Status::DELETE)
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->count();
+        }
+
+        $adCount = json_encode($adCount, JSON_NUMERIC_CHECK);
+
+        $userCount = [];
+
+        foreach($months as $month){
+
+            $userCount[] = User::where('delete_status', '!=', Status::DELETE)
+            ->where('type', UserType::USER)
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->count();
+        }
+        
+        $userCount = json_encode($userCount, JSON_NUMERIC_CHECK);
+
+        return view('dashboard', compact('inActiveAd', 'activeAd', 'user', 'adCount', 'userCount'));
     }
 
     public function userIndex(){

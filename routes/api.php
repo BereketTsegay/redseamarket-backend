@@ -41,6 +41,7 @@ Route::post('/customer/get/motors', [\App\Http\Controllers\Api\AdsController::cl
 Route::post('/customer/get/property', [\App\Http\Controllers\Api\AdsController::class, 'getProperty']);
 Route::post('/customer/search/motors', [\App\Http\Controllers\Api\AdsController::class, 'motorSearch']);
 Route::post('/customer/social/link', [\App\Http\Controllers\Api\OtherController::class,'socialLink']);
+Route::post('/customer/ads/view/countupdate', [\App\Http\Controllers\Api\AdsController::class, 'adsViewEntry']);
 
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);

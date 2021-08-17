@@ -22,7 +22,7 @@ class OtherController extends Controller
 
         try{
 
-            $favourite = tap(Favorite::where('customer_id', 1)//Auth::user()->id)
+            $favourite = tap(Favorite::where('customer_id', Auth::user()->id)
                 ->paginate(12), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
