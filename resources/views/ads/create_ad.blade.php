@@ -14,6 +14,15 @@
             </ol>
             
             <div class="card mb-4">
+                @if (count($errors) > 0)
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <div class="card-body">
                     <div class="container">
                         <form action="{{ route('ads.store') }}" method="POST" enctype="multipart/form-data" id="adStoreForm">
@@ -56,7 +65,7 @@
                                     <div class="form-group my-2">
                                         <label for="state">State</label>
                                         <select name="state" id="state" class="select2 form-control @error('state') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select State</option>
+                                            <option value={{ old('state') }}>Select State</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('state')
@@ -68,9 +77,10 @@
                                         <label for="Image">Image (Multiple)</label>
                                         <input type="file" name="image[]" autocomplete="off" class="form-control @error('image') is-invalid @enderror" multiple>
                                         <div class="invalid-feedback">
-                                            @error('image')
-                                                {{ $message }}
+                                            @error('image.*')
+                                                hi
                                             @enderror
+                                            
                                         </div>
                                     </div>
                                     <div class="row">
@@ -98,7 +108,7 @@
                                     <div class="form-group my-2">
                                         <label for="subcategory">Subcategory (Optional)</label>
                                         <select name="subcategory" id="subcategory" class="form-control @error('subcategory') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select</option>
+                                            <option value={{old('subcategory')}}>Select</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('subcategory')
@@ -120,7 +130,8 @@
                                         <select name="country" id="country" class="select2 form-control @error('country') is-invalid @enderror" autocomplete="off">
                                             <option value="">Select</option>
                                             @foreach ($country as $row1)
-                                                <option value="{{ $row1->id }}">{{ $row1->name }}</option>
+                                                
+                                                <option {{ old('country') == $row1->id ? 'selected' : '' }} value="{{ $row1->id }}">{{ $row1->name }}</option>
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback">
@@ -132,7 +143,7 @@
                                     <div class="form-group my-2">
                                         <label for="city">City</label>
                                         <select name="city" id="city" class="select2  form-control @error('city') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select</option>
+                                            <option value={{old('city')}}>Select</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('city')
@@ -140,7 +151,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group my-2">
                                         <label for="Description">Description</label>
                                         <textarea name="description" class="form-control @error('description') is-invalid @enderror" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ old('description') }}</textarea>
                                         <div class="invalid-feedback">
@@ -152,6 +163,55 @@
                                 </div>
                                 <div class="row" id="custom_fields">
                                     
+                                </div>
+
+                                <hr class="my-2">
+                                <h5>Seller information</h5>
+                                <div class="col-md-6">
+                                    <div class="form-group my-2">
+                                        <label for="SellerName">Seller Name</label>
+                                        <input type="text" name="seller_name" value="{{ old('seller_name') }}" class="form-control @error('seller_name') is-invalid @enderror" placeholder="Seller Name" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('seller_name')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="Phone">Phone</label>
+                                        <input type="number" name="Phone" value="{{ old('phone') }}" class="form-control @error('Phone') is-invalid @enderror" placeholder="Phone" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('Phone')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group my-2">
+                                            <label for="PhoneHide">Phone Hide</label>
+                                            <input type="checkbox" name="phone_hide_flag" value="checked" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group my-2">
+                                        <label for="Email">Email</label>
+                                        <input type="email" name="email" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('email')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="Address">Address</label>
+                                        <textarea name="customer_address" class="form-control @error('customer_address') is-invalid @enderror" cols="30" rows="3" placeholder="Address" autocomplete="off">{{ old('customer_address') }}</textarea>
+                                        <div class="invalid-feedback">
+                                            @error('customer_address')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <hr class="my-3">
@@ -839,6 +899,77 @@
                     }
                 });
             });
+
+            let country_id = $('#country :selected').val();
+            let state_id = $('#state :selected').val();
+            let city_id = $('#city :selected').val();
+            let category_id = $('#category :selected').val();
+            let subcategory_id = $('#subcategory :selected').val();
+            let stateOption = '';
+
+
+                $.ajax({
+                    url : '/global/state/get',
+                    type : 'get',
+                    data : {id:country_id},
+                    success:function(data){
+
+                        for(let i = 0; i < data.length; i++){
+                            if(state_id == data[i].id){
+                                stateOption += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            else{
+                                stateOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                        }
+
+                        $('#state').html(stateOption);
+                    }
+                });
+            
+
+                let cityOption = '';
+
+                $.ajax({
+                    url : '/global/city/get',
+                    type : 'get',
+                    data : {id:state_id},
+                    success:function(data){
+
+                        for(let i = 0; i < data.length; i++){
+                            if(city_id == data[i].id){
+                                cityOption += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            else{
+                                cityOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                        }
+
+                        $('#city').html(cityOption);
+                    }
+                });
+
+                let subcategoryOption = '<option value="">Select Subcategory</option>';
+
+                $.ajax({
+                    url : '/change/subcategory',
+                    type : 'get',
+                    data : {id:category_id},
+                    success:function(data){
+                        
+                        for(let i = 0; i < data.length; i++){
+                            if(subcategory_id == data[i].id){
+                                subcategoryOption += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                            }
+                            else{
+                                subcategoryOption += `<option value="${data[i].id}">${data[i].name}</option>`;
+                            }
+
+                        }
+                        
+                        $('#subcategory').html(subcategoryOption);
+                    }
+                });
             
         });
 

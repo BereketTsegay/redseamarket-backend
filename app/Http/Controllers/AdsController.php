@@ -17,6 +17,7 @@ use App\Models\MotorFeatures;
 use App\Models\PropertyRendCustomeValues;
 use App\Models\PropertySaleCustomeValues;
 use App\Models\RejectReason;
+use App\Models\SellerInformation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,8 +57,13 @@ class AdsController extends Controller
             'country'           => 'required|numeric',
             // 'city'              => 'required|numeric',
             'description'       => 'required',
+            'seller_name'       => 'required',
+            'Phone'             => 'required|numeric',
+            'email'             => 'required|email',
+            'customer_address'  => 'required',
             'image.*'           => 'required|mimes:png,jpg,jpeg',
         ]);
+        
 
         if($request->category == 1){
             $request->validate([
@@ -115,6 +121,21 @@ class AdsController extends Controller
         else{
             $subcategory = 0;
         }
+
+        if($request->phone_hide_flag == 'checked'){
+            $phoneHideFlag = 1;
+        }
+        else{
+            $phoneHideFlag = 0;
+        }
+
+        $seller                     = new SellerInformation();
+        $seller->name               = $request->seller_name;
+        $seller->email              = $request->email;
+        $seller->phone              = $request->Phone;
+        $seller->phone_hide_flag    = $phoneHideFlag;
+        $seller->address            = $request->customer_address;
+        $seller->save();
         
         $categoryField = CategoryField::where('category_id', $request->category)
         ->with(['Field' => function($a){
@@ -136,7 +157,7 @@ class AdsController extends Controller
         $ad->country_id             = $request->country;
         $ad->state_id               = $request->state;
         $ad->city_id                = $city;
-        $ad->sellerinformation_id   = 0; //Admin
+        $ad->sellerinformation_id   = $seller->id;
         $ad->customer_id            = Auth()->user()->id;
         $ad->featured_flag          = $featured_flag;
         $ad->latitude               = $request->address_latitude;
@@ -429,7 +450,7 @@ class AdsController extends Controller
     }
 
     public function update(Request $request, $id){
-
+        
         $request->validate([
             'category'          => 'required|numeric',
             'title'             => 'required',
@@ -440,7 +461,11 @@ class AdsController extends Controller
             'country'           => 'required|numeric',
             // 'city'              => 'required|numeric',
             'description'       => 'required',
-            'image.*'           => 'required|mimes:png,jpg,jpeg',
+            'seller_name'       => 'required',
+            'phone'             => 'required|numeric',
+            'email'             => 'required|email',
+            'customer_address'  => 'required',
+            'image.*'           => 'mimes:png,jpg,jpeg',
         ]);
 
         if($request->category == 1){
@@ -512,6 +537,13 @@ class AdsController extends Controller
         else{
             $subcategory = 0;
         }
+        if($request->phone_hide_flag == 'checked'){
+            $phoneHideFlag = 1;
+        }
+        else{
+            $phoneHideFlag = 0;
+        }
+
         
         $categoryField = CategoryField::where('category_id', $request->category)
         ->with(['Field' => function($a){
@@ -521,6 +553,15 @@ class AdsController extends Controller
             }]);
         }])
         ->get();
+
+        SellerInformation::where('id', $ad->sellerinformation_id)
+        ->update([
+            'name'              => $request->seller_name,
+            'email'             => $request->email,
+            'phone'             => $request->phone,
+            'phone_hide_flag'   => $phoneHideFlag,
+            'address'           => $request->customer_address,
+        ]);
 
         Ads::where('id', $id)
         ->update([

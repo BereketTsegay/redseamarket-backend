@@ -33,6 +33,7 @@ Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::
 Route::post('/customer/get/category/ads', [\App\Http\Controllers\Api\OtherController::class, 'getCategoryAds']);
 Route::post('/customer/get/subcategory/ads', [\App\Http\Controllers\Api\OtherController::class, 'getSubcategoryAds']);
 Route::post('/customer/get/property/filter', [\App\Http\Controllers\Api\AdsController::class, 'getPropertyFilter']);
+Route::post('/customer/get/motor/list', [\App\Http\Controllers\Api\OtherController::class, 'getMototList']);
 
 Route::post('/customer/get/country', [\App\Http\Controllers\Api\OtherController::class,'getCountry']);
 Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::class, 'getState']);

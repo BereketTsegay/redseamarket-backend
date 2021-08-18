@@ -160,6 +160,55 @@
                                     
                                 </div>
 
+                                <hr class="my-2">
+                                <h5>Seller information</h5>
+                                <div class="col-md-6">
+                                    <div class="form-group my-2">
+                                        <label for="SellerName">Seller Name</label>
+                                        <input type="text" name="seller_name" value="{{ $ad->SellerInformation ? $ad->SellerInformation->name : '' }}" class="form-control @error('seller_name') is-invalid @enderror" placeholder="Seller Name" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('seller_name')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="Phone">Phone</label>
+                                        <input type="phone" name="phone" value="{{ $ad->SellerInformation ? $ad->SellerInformation->phone : '' }}" class="form-control @error('phone') is-invalid @enderror" placeholder="Phone" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('phone')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group my-2">
+                                            <label for="PhoneHide">Phone Hide</label>
+                                            <input type="checkbox" {{ $ad->SellerInformation ? $ad->SellerInformation->phone_hide_flag == 1 ? 'checked' : '' : ''}} name="phone_hide_flag" value="checked" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group my-2">
+                                        <label for="Email">Email</label>
+                                        <input type="email" name="email" value="{{ $ad->SellerInformation ? $ad->SellerInformation->email : ''}}" class="form-control @error('email') is-invalid @enderror" placeholder="Email" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('email')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="Address">Address</label>
+                                        <textarea name="customer_address" class="form-control @error('customer_address') is-invalid @enderror" cols="30" rows="3" placeholder="Address" autocomplete="off">{{ $ad->SellerInformation ? $ad->SellerInformation->address : '' }}</textarea>
+                                        <div class="invalid-feedback">
+                                            @error('customer_address')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <hr class="my-3">
                                 <div class="position-relative row form-group">
                                     <div class="col-lg-2 col-md-4">

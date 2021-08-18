@@ -643,6 +643,8 @@ class AdsController extends Controller
             ->where('status', Status::ACTIVE)
             ->where('delete_status', '!=', Status::DELETE)
             ->where('featured_flag', 1)
+            ->take(30)
+            ->inRandomOrder()
             ->get()
             ->map(function($a){
                 $a->state_name = $a->State->name;

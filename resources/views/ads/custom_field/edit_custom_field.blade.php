@@ -33,17 +33,17 @@
                                         <label for="Type">Type</label>
                                         <select name="type" id="select_type" class="form-control @error('type') is-invalid @enderror" autocomplete="off">
                                             <option value="">Select Type</option>
-                                            <option value="text">Text</option>
-                                            <option value="textarea">Textarea</option>
-                                            <option value="checkbox">Checkbox</option>
+                                            <option {{ $field->type == 'text' ? 'selected' : ''}} value="text">Text</option>
+                                            <option {{ $field->type == 'textarea' ? 'selected' : ''}} value="textarea">Textarea</option>
+                                            <option {{ $field->type == 'checkbox' ? 'selected' : ''}} value="checkbox">Checkbox</option>
                                             {{-- <option value="checkbox_multiple-1">Checkbox (Multiple)</option> --}}
-                                            <option value="select-1">Select Box</option>
-                                            <option value="radio-1">Radio</option>
-                                            <option value="file">File</option>
-                                            <option value="url">URL</option>
-                                            <option value="number">Number</option>
-                                            <option value="date">Date</option>
-                                            <option value="dependency">Dependency</option>
+                                            <option {{ $field->type == 'select' ? 'selected' : ''}} value="select-1">Select Box</option>
+                                            <option {{ $field->type == 'radio' ? 'selected' : ''}} value="radio-1">Radio</option>
+                                            <option {{ $field->type == 'file' ? 'selected' : ''}} value="file">File</option>
+                                            <option {{ $field->type == 'url' ? 'selected' : ''}} value="url">URL</option>
+                                            <option {{ $field->type == 'number' ? 'selected' : ''}} value="number">Number</option>
+                                            <option {{ $field->type == 'date' ? 'selected' : ''}} value="date">Date</option>
+                                            <option {{ $field->type == 'dependency' ? 'selected' : ''}} value="dependency">Dependency</option>
                                             {{-- <option value="date_time">Date Time</option>
                                             <option value="date_range">Date Range</option>
                                             <option value="video">Video (Youtube, Vimeo)</option> --}}
@@ -88,9 +88,9 @@
                                         <label for="Name">Description Area</label>
                                         <select name="description_area" id="" class="form-control @error('description_area') is-invalid @enderror" autocomplete="off">
                                             <option value="">Select</option>
-                                            <option value="2">None</option>
-                                            <option value="0">Top Section</option>
-                                            <option value="1">Details Section</option>
+                                            <option {{ $field->description_area_flag == 2 ? 'selected' : ''}} value="2">None</option>
+                                            <option {{ $field->description_area_flag == 0 ? 'selected' : ''}} value="0">Top Section</option>
+                                            <option {{ $field->description_area_flag == 1 ? 'selected' : ''}} value="1">Details Section</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             @error('description_area')

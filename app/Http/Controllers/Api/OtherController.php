@@ -538,6 +538,323 @@ class OtherController extends Controller
         }
     }
 
+    public function getMototList(Request $request){
+
+        try{
+            $rules = [
+                'latitude'      => 'required',
+                'longitude'     => 'required',
+            ];
+    
+            $validate = Validator::make($request->all(), $rules);
+    
+            if($validate->fails()){
+    
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
+
+            if($request->city && $request->subcategory){
+
+                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                ->where('category_id', 1)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->where('city_id', $request->city)
+                ->where('subcategory_id', $request->subcategory)
+                ->paginate(10), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        $a->country_name = $a->Country->name;
+                        $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+                        $a->CustomValue->map(function($c){
+                            
+                            if($c->Field->description_area_flag == 0){
+                                $c->position = 'top';
+                                $c->name = $c->Field->name;
+                            }
+                            elseif($c->Field->description_area_flag == 1){
+                                $c->position = 'details_page';
+                                $c->name = $c->Field->name;
+                            }
+                            else{
+                                $c->position = 'none';
+                                $c->name = $c->Field->name;
+                            }
+                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                            return $c;
+                        });
+
+                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                        return $a;
+                    });
+                });
+            }
+            elseif($request->city){
+                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                ->where('category_id', 1)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->where('city_id', $request->city)
+                ->paginate(10), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        $a->country_name = $a->Country->name;
+                        $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+                        $a->CustomValue->map(function($c){
+                            
+                            if($c->Field->description_area_flag == 0){
+                                $c->position = 'top';
+                                $c->name = $c->Field->name;
+                            }
+                            elseif($c->Field->description_area_flag == 1){
+                                $c->position = 'details_page';
+                                $c->name = $c->Field->name;
+                            }
+                            else{
+                                $c->position = 'none';
+                                $c->name = $c->Field->name;
+                            }
+                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                            return $c;
+                        });
+
+                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                        return $a;
+                    });
+                });
+            }
+            elseif($request->subcategory){
+
+                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                ->where('category_id', 1)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->where('subcategory_id', $request->subcategory)
+                ->paginate(10), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        $a->country_name = $a->Country->name;
+                        $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+                        $a->CustomValue->map(function($c){
+                            
+                            if($c->Field->description_area_flag == 0){
+                                $c->position = 'top';
+                                $c->name = $c->Field->name;
+                            }
+                            elseif($c->Field->description_area_flag == 1){
+                                $c->position = 'details_page';
+                                $c->name = $c->Field->name;
+                            }
+                            else{
+                                $c->position = 'none';
+                                $c->name = $c->Field->name;
+                            }
+                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                            return $c;
+                        });
+
+                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                        return $a;
+                    });
+                });
+            }
+            else{
+
+                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                ->where('category_id', 1)
+                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->paginate(10), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        $a->country_name = $a->Country->name;
+                        $a->state_name = $a->State->name;
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        if($a->category_id == 1){
+                            $a->MotoreValue;
+                            $a->make = $a->MotoreValue->Make->name;
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->MotorFeatures;
+        
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
+                        elseif($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id ==3){
+                            $a->PropertySale;
+                        }
+
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+                        $a->CustomValue->map(function($c){
+                            
+                            if($c->Field->description_area_flag == 0){
+                                $c->position = 'top';
+                                $c->name = $c->Field->name;
+                            }
+                            elseif($c->Field->description_area_flag == 1){
+                                $c->position = 'details_page';
+                                $c->name = $c->Field->name;
+                            }
+                            else{
+                                $c->position = 'none';
+                                $c->name = $c->Field->name;
+                            }
+                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                            return $c;
+                        });
+
+                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                        return $a;
+                    });
+                });
+            }
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Showing result',
+                'code'      => 200,
+                'ads'       => $myAds,
+            ], 200);
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
     public function getCountry(){
         try{
             $country = Country::orderBy('name')
