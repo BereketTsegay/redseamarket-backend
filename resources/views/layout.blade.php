@@ -136,6 +136,10 @@
                                 </nav>
                             </div> --}}
                             <div class="sb-sidenav-menu-heading">Others</div>
+                            <a class="nav-link" href="{{ route('dealer.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
+                                Featured Dealer
+                            </a>
                             <a class="nav-link" href="{{ route('reject.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
                                 Reject Resons

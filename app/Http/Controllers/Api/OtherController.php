@@ -9,6 +9,7 @@ use App\Models\Ads;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Favorite;
+use App\Models\FeaturedDealers;
 use App\Models\SocialLink;
 use App\Models\State;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ class OtherController extends Controller
                     ]);
 
                     $a->Ads->country_name = $a->Ads->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                     $a->Ads->state_name = $a->Ads->State->name;
                     if($a->city_id != 0){
                         $a->city_name = $a->City->name;
@@ -101,6 +103,7 @@ class OtherController extends Controller
                     ]);
 
                     $a->country_name = $a->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                     $a->state_name = $a->State->name;
                     if($a->city_id != 0){
                         $a->city_name = $a->City->name;
@@ -269,6 +272,7 @@ class OtherController extends Controller
                         }
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -342,6 +346,7 @@ class OtherController extends Controller
                         }
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -415,6 +420,7 @@ class OtherController extends Controller
                         }
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -472,6 +478,7 @@ class OtherController extends Controller
                         ]);
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -585,6 +592,7 @@ class OtherController extends Controller
                         ]);
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -653,6 +661,7 @@ class OtherController extends Controller
                         ]);
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -722,6 +731,7 @@ class OtherController extends Controller
                         ]);
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -790,6 +800,7 @@ class OtherController extends Controller
                         ]);
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -1039,6 +1050,7 @@ class OtherController extends Controller
                         }
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -1150,6 +1162,7 @@ class OtherController extends Controller
                         }
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
@@ -1269,6 +1282,28 @@ class OtherController extends Controller
                 'message'   => 'City list',
                 'code'      => 200,
                 'city'      => $city,
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function featuredDealer(){
+
+        try{
+
+            $featured = FeaturedDealers::where('status', Status::ACTIVE)
+            ->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Featured dealer list',
+                'code'      => 200,
+                'featured'  => $featured,
             ], 200);
         }
         catch(\Exception $e){

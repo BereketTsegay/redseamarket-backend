@@ -172,6 +172,13 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::view('payment/aproved', 'other.payment.aproved_payment')->name('payment.aproved');
         Route::view('payment/declined', 'other.payment.declined_payment')->name('payment.declined');
 
+            // Featured Dealer
+
+        Route::get('/featured/dealer', [App\Http\Controllers\IconController::class, 'featuredIndex'])->name('dealer.index');
+        Route::post('/featured/dealer/store', [App\Http\Controllers\IconController::class, 'featuredStore'])->name('dealer.store');
+        Route::post('/featured/dealer/update', [App\Http\Controllers\IconController::class, 'featuredUpdate'])->name('dealer.update');
+        Route::post('/featured/dealer/delete/{id}', [App\Http\Controllers\IconController::class, 'featuredDelete'])->name('dealer.delete');
+
         Route::get('/admin/logout', function(){
             Auth::logout();
     

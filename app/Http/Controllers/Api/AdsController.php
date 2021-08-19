@@ -86,6 +86,7 @@ class AdsController extends Controller
                 $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
 
                 $a->country_name = $a->Country->name;
+                $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                 $a->state_name = $a->State->name;
                 if($a->city_id != 0){
                     $a->city_name = $a->City->name;
@@ -651,10 +652,11 @@ class AdsController extends Controller
                 $a->city_name = $a->City->name;
                 $a->make = $a->MotoreValue->Make->name;
                 $a->model = $a->MotoreValue->Model->name;
+                $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                 $a->year = $a->MotoreValue->registration_year;
                 $a->milage = $a->MotoreValue->milage;
                 $a->image = $a->Image;
-                unset($a->MotoreValue, $a->State, $a->City);
+                unset($a->MotoreValue, $a->State, $a->City, $a->Country);
                 return $a;
             });
 
@@ -738,11 +740,12 @@ class AdsController extends Controller
                         unset($b->PropertySale);
                     }
 
+                    $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                     $b->state_name = $b->State->name;
                     $b->city_name = $b->City->name;
                     $b->Image;
 
-                    unset($b->State, $b->City);
+                    unset($b->State, $b->City, $b->Country->Currency);
                     return $b;
                 });
                 return $a;
@@ -951,6 +954,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1016,6 +1020,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1083,6 +1088,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1147,6 +1153,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1215,6 +1222,7 @@ class AdsController extends Controller
 
                             $a->country_name = $a->Country->name;
                             $a->state_name = $a->State->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
                             }
@@ -1278,6 +1286,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1344,6 +1353,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1407,6 +1417,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1474,6 +1485,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1538,6 +1550,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1602,6 +1615,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1663,6 +1677,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1729,6 +1744,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1792,6 +1808,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1854,6 +1871,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1914,6 +1932,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -1981,6 +2000,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2045,6 +2065,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2111,6 +2132,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2174,6 +2196,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2240,6 +2263,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2303,6 +2327,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2368,6 +2393,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2430,6 +2456,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2496,6 +2523,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2559,6 +2587,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2622,6 +2651,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2682,6 +2712,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2747,6 +2778,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2809,6 +2841,7 @@ class AdsController extends Controller
                                 
 
                             $a->country_name = $a->Country->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                             $a->state_name = $a->State->name;
                             if($a->city_id != 0){
                                 $a->city_name = $a->City->name;
@@ -2869,6 +2902,7 @@ class AdsController extends Controller
                             
 
                         $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
                         if($a->city_id != 0){
                             $a->city_name = $a->City->name;
@@ -3090,6 +3124,7 @@ class AdsController extends Controller
                     }
 
                     $a->country_name = $a->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                     $a->state_name = $a->State->name;
                     $a->created_on = date('d-M-Y', strtotime($a->created_at));
                     $a->updated_on = date('d-M-Y', strtotime($a->updated_at));

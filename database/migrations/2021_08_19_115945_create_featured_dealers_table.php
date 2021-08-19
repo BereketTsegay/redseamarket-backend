@@ -1,10 +1,11 @@
 <?php
 
+use App\Common\Status;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCurrenciesTable extends Migration
+class CreateFeaturedDealersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +14,11 @@ class CreateCurrenciesTable extends Migration
      */
     public function up()
     {
-        Schema::create('currencies', function (Blueprint $table) {
+        Schema::create('featured_dealers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('suffix');
-            $table->integer('country_id');
-            $table->integer('city_id');
-            $table->integer('status');
+            $table->string('dealer_name');
+            $table->string('dealer_image');
+            $table->integer('status')->default(Status::ACTIVE);
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateCurrenciesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('currencies');
+        Schema::dropIfExists('featured_dealers');
     }
 }

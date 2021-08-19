@@ -130,6 +130,7 @@ class DashboardController extends Controller
                 $a->Ads->map(function($b){
 
                     $b->country = $b->Country->name;
+                    $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                     $b->state = $b->State->name;
                     $b->city = $b->City ? $b->City->name : $b->State->name ;
                     $b->CustomValue->map(function($c){
@@ -311,6 +312,7 @@ class DashboardController extends Controller
                 $a->Ads->map(function($b){
 
                     $b->country = $b->Country->name;
+                    $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                     $b->state = $b->State->name;
                     $b->city = $b->City ? $b->City->name : $b->State->name ;
                     $b->CustomValue->map(function($c){
