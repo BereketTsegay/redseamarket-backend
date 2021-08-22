@@ -88,7 +88,7 @@
                                 </div>
                                 <thead>
                                     @if (count($adsRejected) == 0)
-                                        <div class="text-center">No data foune! </div>
+                                        <div class="text-center">No data found! </div>
                                     @else
                                         <tr>
                                             <th>#</th>
