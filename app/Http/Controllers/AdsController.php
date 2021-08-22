@@ -21,6 +21,8 @@ use App\Models\SellerInformation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Image;
 
 class AdsController extends Controller
 {
@@ -170,8 +172,13 @@ class AdsController extends Controller
             foreach($request->image as $row){
 
                 $image = uniqid().'.'.$row->getClientOriginalExtension();
-            
-                $row->storeAs('public/ads', $image);
+
+                // $img = $this->imageWatermark($row, $image);
+
+                             
+                // $img->save(public_path('storage/ads', $image));
+                // dd(Storage::getVisibility($image));
+                // Storage::disk('public')->move(public_path('tempfile').$image, 'public/ads/'.$image);
 
                 $image = 'storage/ads/'.$image;
 
@@ -1035,5 +1042,24 @@ class AdsController extends Controller
         ->get();
 
         return response()->json($feature);
+    }
+
+
+
+    public static function imageWatermark($image, $fileName){
+
+        $img = Image::make($image);
+
+        $newImg = Image::make(public_path('brand.png'));
+
+        $newImg->resize(113, 24);
+        
+        $newImg->opacity(50);
+
+        $img->insert($newImg, 'center-left', 10, 10);
+
+        $img->save(public_path('tempfile/'.$fileName));
+
+        return $img;
     }
 }
