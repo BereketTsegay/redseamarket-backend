@@ -23,7 +23,7 @@
                                     @csrf
                                     <div class="form-group my-2">
                                         <label for="SortOrder">Name</label>
-                                        <input type="text" name="name" value="{{ $user->name }}" class="form-control @error('name') is-invalid @enderror" placeholder="Name" autocomplete="off">
+                                        <input type="text" name="name" value="{{ $user->name }}" class="form-control @error('name') is-invalid @enderror" placeholder="Name" autocomplete="off" readonly>
                                         <div class="invalid-feedback">
                                             @error('name')
                                                 {{ $message }}
@@ -32,7 +32,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Name">Email</label>
-                                        <input type="text" name="email" value="{{ $user->email }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email" autocomplete="off">
+                                        <input type="text" name="email" value="{{ $user->email }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email" autocomplete="off" readonly>
                                         <div class="invalid-feedback">
                                             @error('email')
                                                 {{ $message }}
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary my-3">Update</button>
-                            <button type="button" data-toggle="modal" data-target="#changeUserPasswordModal" class="btn btn-secondary my-3">Change Password</button>
+                            {{-- <button type="button" data-toggle="modal" data-target="#changeUserPasswordModal" class="btn btn-secondary my-3">Change Password</button> --}}
                         </form>
                     </div>
                 </div>

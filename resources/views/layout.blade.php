@@ -59,10 +59,10 @@
                                     <a class="nav-link" href="{{ route('user.index') }}">Users</a>
                                 </nav>
                             </div>
-                            <a class="nav-link" href="{{ route('banner.index') }}">
+                            {{-- <a class="nav-link" href="{{ route('banner.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
                                 Banners
-                            </a>
+                            </a> --}}
                             <a class="nav-link" href="{{ route('testimonial.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
                                 Testimonials
