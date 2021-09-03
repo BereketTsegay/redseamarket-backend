@@ -170,7 +170,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group my-2">
                                         <label for="SellerName">Seller Name</label>
-                                        <input type="text" name="seller_name" value="{{ old('seller_name') }}" class="form-control @error('seller_name') is-invalid @enderror" placeholder="Seller Name" autocomplete="off">
+                                        <input type="text" name="seller_name" value="{{ $user->name }}" class="form-control @error('seller_name') is-invalid @enderror" placeholder="Seller Name" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('seller_name')
                                                 {{ $message }}
@@ -179,7 +179,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Phone">Phone</label>
-                                        <input type="number" name="Phone" value="{{ old('phone') }}" class="form-control @error('Phone') is-invalid @enderror" placeholder="Phone" autocomplete="off">
+                                        <input type="number" name="Phone" value="{{ $user->phone }}" class="form-control @error('Phone') is-invalid @enderror" placeholder="Phone" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('Phone')
                                                 {{ $message }}
@@ -196,7 +196,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group my-2">
                                         <label for="Email">Email</label>
-                                        <input type="email" name="email" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email" autocomplete="off">
+                                        <input type="email" name="email" value="{{ $user->email }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('email')
                                                 {{ $message }}
@@ -646,7 +646,7 @@
                                 case 'textarea':
                                     custom_field += `<div class="col-md-6 form-group my-2">
                                             <label for="${data[i].field.name}">${data[i].field.name} </label>
-                                            <textarea type="text" class="form-control" name="${data[i].field.name}" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}></textarea>
+                                            <textarea type="text" class="form-control" name="${data[i].field.id}" id="${data[i].field.name}" placeholder="${data[i].field.name}" ${data[i].field.required == 1 ? 'required' : ''}></textarea>
                                         </div>`;
                                     break;
                                 case 'checkbox':
@@ -685,14 +685,17 @@
                                         
                                     break;
                                 case 'radio':
+                                    
+                                    custom_field += `<div class="form-group col-md-6 my-2 row">
+                                        <label for="${data[i].field.name}">${data[i].field.name} </label>`;
+                                        
                                     for(let k = 0; k < data[i].field.field_option.length; k++){
-                                        custom_field += `<div class="form-group col-md-6 my-2">
-                                                            <div class="col-md-6">
+                                        custom_field += `<div class="col-md-4">
                                                                 <label for="">${data[i].field.field_option[k].value} </label>
                                                                 <input type="radio" name="${data[i].field.name}" value="${data[i].field.field_option[k].value}" id="${data[i].field.field_option[k].value}">
-                                                            </div>
-                                                        </div>`;
+                                                            </div>`;
                                     }
+                                    custom_field += `</div>`;
                                     break;
                                 case 'file':
                                     custom_field += `<div class="col-md-6 form-group my-2">

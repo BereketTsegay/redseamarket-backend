@@ -78,7 +78,7 @@
 <div class="modal fade" id="createTestimonialModal" tabindex="-1" role="dialog" aria-labelledby="createTestimonialModalModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('testimonial.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('testimonial.store') }}" method="POST" enctype="multipart/form-data" id="testimonial">
                 @csrf
                 <div class="modal-header">
                 <h5 class="modal-title" id="createTestimonialModalModalLabel">Create Testimonial</h5>
@@ -89,7 +89,13 @@
                     <div class="container">
                         <div class="form-group my-2">
                             <label for="Name">Name</label>
-                            <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="Name" placeholder="Name">
+                            <select name="name" id="" class="form-control">
+                                <option value="">Select User</option>
+                                @foreach ($user as $row1)
+                                    <option {{ old('name') == $row1->name ? 'selected' : ''}} value="{{ $row1->name }}">{{ $row1->name }}</option>
+                                @endforeach
+                            </select>
+                            {{-- <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="Name" placeholder="Name"> --}}
                         </div>
                         <div class="form-group">
                             <label for="Designation">Designation</label>
@@ -126,6 +132,28 @@
             
             $('#delete_Banner_form'+ids).submit();
         }
+
+        $('form[id="testimonial"]').validate({
+            rules : {
+                name: {
+                        required : true,
+                    },
+                designation: {
+                        required: true,
+                    },
+                image: {
+                        required: true,
+                    },
+                description: {
+                        required: true,
+                    },
+                },
+
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+
   </script>
 
 @if (Session::has('success'))

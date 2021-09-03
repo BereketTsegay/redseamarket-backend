@@ -19,7 +19,7 @@ Route::post('/user/register', [\App\Http\Controllers\Api\LoginController::class,
 Route::post('/user/forgot/send/password/toMail', [\App\Http\Controllers\Api\LoginController::class, 'sendPasswordToMail']);
 Route::post('/customer/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'dashboard']);
 Route::post('/customer/city/list', [\App\Http\Controllers\Api\OtherController::class, 'cityList']);
-
+Route::post('/verify/email', [\App\Http\Controllers\Api\LoginController::class, 'vefifyEmail']);
     // Ads Section
     
 Route::post('/customer/ads/custom_field_and_dependency', [\App\Http\Controllers\Api\AdsController::class, 'customFieldsAndDependency']);
@@ -46,6 +46,7 @@ Route::post('/customer/ads/view/countupdate', [\App\Http\Controllers\Api\AdsCont
 
 Route::post('/customer/get/featured/dealer', [\App\Http\Controllers\Api\OtherController::class,'featuredDealer']);
 
+Route::post('/stripe/payment', [\App\Http\Controllers\Api\OtherController::class,'recivePayment']);
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
 

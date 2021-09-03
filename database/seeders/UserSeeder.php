@@ -16,14 +16,15 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $user                   = new User();
-        $user->name             = 'Admin';
-        $user->email            = 'admin@gmail.com';
-        $user->phone            = 1234567891;
-        $user->nationality_id   = 0;
-        $user->password         = Hash::make('admin');
-        $user->type             = UserType::ADMIN;
-        $user->status           = 1;
+        $user                       = new User();
+        $user->name                 = 'Admin';
+        $user->email                = 'admin@gmail.com';
+        $user->phone                = 1234567891;
+        $user->nationality_id       = 0;
+        $user->password             = Hash::make('admin');
+        $user->type                 = UserType::ADMIN;
+        $user->status               = 1;
+        $user->email_verified_flag  = 1;
         $user->save();
     }
 }

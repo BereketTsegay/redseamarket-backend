@@ -12,6 +12,7 @@ class SocialLinkController extends Controller
     public function index(){
 
         $social = SocialLink::where('status', Status::ACTIVE)
+        ->orderBy('created_at', 'desc')
         ->get();
 
         $icon = IconClass::where('delete_status', '!=', Status::DELETE)

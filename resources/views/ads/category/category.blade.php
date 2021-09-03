@@ -26,9 +26,9 @@
                                 <th>Name</th>
                                 <th>Canonical Name</th>
                                 <th>Active</th>
-                                <th>View</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
+                                {{-- <th>Edit</th>
+                                <th>Delete</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -42,7 +42,32 @@
                                     @else
                                     <td class="text-secondary">Disabled</td>
                                     @endif
-                                    <td><a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary" class="">View</button></a>
+                                                
+                                                @if ($row->reserved_flag == 1)
+                                                    <a href="#" title="Can't delete, reserved category"><button class="btn btn-secondary">Can't edit, reserved category</button></a>
+                                                @else
+                                                    <a href="{{ route('category.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                @endif
+                                                
+                                                @if ($row->reserved_flag == 1)
+                                                    <button type="button" class="btn btn-danger" title="Can't delete, reserved category">Can't Delete, reserved category</button>
+                                                @else
+                                                    <button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
+                                                    <form id="delete_category_form{{$row->id}}" action="{{ route('category.delete', $row->id) }}" method="POST">
+                                                        @csrf
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+                                    {{-- <td><a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
                                     <td>
                                         @if ($row->reserved_flag == 1)
                                             <a href="#" title="Can't delete, reserved category"><button class="btn btn-secondary">Can't edit, reserved category</button></a>
@@ -60,7 +85,7 @@
                                                 @csrf
                                             </form>
                                         @endif
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>

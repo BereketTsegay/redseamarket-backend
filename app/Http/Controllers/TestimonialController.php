@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Status;
+use App\Common\UserType;
 use App\Models\Testimonial;
+use App\Models\User;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\FuncCall;
 
@@ -10,9 +13,15 @@ class TestimonialController extends Controller
 {
     public function index(){
 
-        $testimonial = Testimonial::get();
+        $testimonial = Testimonial::orderBy('created_at', 'desc')
+        ->get();
 
-        return view('other.testimonial.testimonial', compact('testimonial'));
+        $user = User::where('type', '!=', UserType::ADMIN)
+        ->where('status', Status::ACTIVE)
+        ->orderBy('name')
+        ->get();
+
+        return view('other.testimonial.testimonial', compact('testimonial', 'user'));
     }
 
     public function store(Request $request){
@@ -57,7 +66,12 @@ class TestimonialController extends Controller
         $testimonial = Testimonial::where('id', $id)
         ->first();
 
-        return view('other.testimonial.edit_testimonial', compact('testimonial'));
+        $user = User::where('type', '!=', UserType::ADMIN)
+        ->where('status', Status::ACTIVE)
+        ->orderBy('name')
+        ->get();
+
+        return view('other.testimonial.edit_testimonial', compact('testimonial', 'user'));
     }
 
     public function update(Request $request, $id){

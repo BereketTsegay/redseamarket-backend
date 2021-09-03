@@ -6,8 +6,10 @@ use App\Common\Status;
 use App\Common\UserType;
 use App\Http\Controllers\Controller;
 use App\Mail\PasswordReset;
+use App\Mail\VerifyEmail;
 use App\Models\Ads;
 use App\Models\Favorite;
+use App\Models\Otp;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -112,23 +114,138 @@ class LoginController extends Controller
             ], 200);
         }
 
-        $user               = new User();
-        $user->name         = $request->name;
-        $user->email        = $request->email;
-        $user->password     = Hash::make($request->password);
-        $user->type         = UserType::USER;
+        $uid = rand(000000, 999999);
+
+        $user                       = new User();
+        $user->name                 = $request->name;
+        $user->email                = $request->email;
+        $user->password             = Hash::make($request->password);
+        $user->type                 = UserType::USER;
+        $user->email_verified_flag  = Status::REQUEST;
         $user->save();
 
-        if(Auth::loginUsingId($user->id)){
+        $otp                = new Otp();
+        $otp->email         = $request->email;
+        $otp->otp           = $uid;
+        $otp->expiry_status = false;
+        $otp->attempt       = 0;
+        $otp->save();
 
-            $token = Auth::user()->createToken('TutsForWeb')->accessToken;
+        $code = [
+            'name'  => $request->name,
+            'otp'   => $uid,
+        ];
+
+        Mail::to($request->email)->send(new VerifyEmail($code));
+
+        // if(Auth::loginUsingId($user->id)){
+
+        //     $token = Auth::user()->createToken('TutsForWeb')->accessToken;
 
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Registration Successful',
                 'code'      => '200',
-                'token'     => $token,
+                // 'token'     => $token,
             ], 200);
+        // }
+    }
+
+    public function vefifyEmail(Request $request){
+
+        try{
+
+            $rules = [
+                'email' => 'required|email',
+                'otp'   => 'required',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'errors'    => $validate->errors(),
+                ], 400);
+            }
+
+            $otp = Otp::where('email', $request->email)
+            ->where('expiry_status', false)
+            ->first();
+
+            if($otp){
+
+                Otp::where('email', $request->email)
+                ->where('expiry_status', false)
+                ->update([
+                    'attempt'   => $otp->attempt + 1,
+                ]);
+            
+
+                if($otp->attempt > 5){
+
+                    Otp::where('email', $request->email)
+                    ->where('expiry_status', false)
+                    ->update([
+                        'expiry_status'   => true,
+                    ]);
+                    
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'You exceeded your maximum attempt',
+                    ], 200);
+
+                }
+
+                if($otp->otp == $request->otp){
+
+                    Otp::where('email', $request->email)
+                    ->where('expiry_status', false)
+                    ->update([
+                        'expiry_status'   => true,
+                    ]);
+
+                    $user = User::where('email', $request->email)
+                    ->first();
+
+                    if(Auth::loginUsingId($user->id)){
+
+                        $token = Auth::user()->createToken('TutsForWeb')->accessToken;
+
+                        return response()->json([
+                            'status'    => 'success',
+                            'message'   => 'Registration Successful',
+                            'code'      => '200',
+                            'user'      => $user->name,
+                            'token'     => $token,
+                        ], 200);
+                    }
+                }
+                else{
+
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Invalid Otp',
+                    ], 200);
+                }
+            }
+            else{
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Otp expired',
+                ], 200);
+
+            }
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
         }
     }
 

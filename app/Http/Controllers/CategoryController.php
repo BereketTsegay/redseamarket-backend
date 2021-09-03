@@ -14,10 +14,7 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function __construct(){
-        
-    }
-
+    
     public function index(){
 
         $category = Category::orderBy('sort_order')

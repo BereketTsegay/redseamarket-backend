@@ -16,10 +16,12 @@ class CustomFieldController extends Controller
     public function index(){
 
         $field = Fields::where('delete_status', '!=', Status::DELETE)
+        ->orderBy('created_at', 'desc')
         ->get();
         
         $category = Category::where('delete_status', '!=', Status::DELETE)
         ->where('status', Status::ACTIVE)
+        ->orderBy('sort_order')
         ->get();
 
         return view('ads.custom_field.custom_field', compact('field', 'category'));
@@ -328,6 +330,7 @@ class CustomFieldController extends Controller
 
         $option = FieldOptions::where('field_id', $id)
         ->where('delete_status', '!=', Status::DELETE)
+        ->orderBy('created_at', 'desc')
         ->get();
 
         $field = Fields::where('id', $id)
@@ -381,7 +384,7 @@ class CustomFieldController extends Controller
     }
 
     public function addtoCategory(Request $request){
-
+        
         $request->validate([
             'category'  => 'required',
         ]);
@@ -404,6 +407,33 @@ class CustomFieldController extends Controller
         else{
             $category_id    = $category[1];
             $subcategory_id = $category[2];
+        }
+
+        $cateField = CategoryField::where('category_id', $category_id)
+        ->where('field_id', $request->field_id);
+
+        if($subcategory_id != 0 ){
+            $cateField->where('subcategory_id', $subcategory_id);
+        }
+
+        $cateField = $cateField->first();
+
+        if($cateField){
+
+            session()->flash('warning', 'Category has been already assigned');
+            return redirect()->route('custom_field.index');
+        }
+
+        $field = Fields::where('id', $request->field_id)
+        ->first();
+
+        if($field->type == 'radio' || $field->type == 'select'){
+
+            if(count($field->FieldOption) <= 0){
+
+                session()->flash('warning', 'Create atleast on option for this field');
+                return redirect()->route('custom_field.index');
+            }
         }
 
         $categoryField                              = new CategoryField();

@@ -70,4 +70,8 @@ class Ads extends Model
     public function RejectionNote(){
         return $this->hasOne(RejectReason::class, 'id', 'reject_reason_id');
     }
+
+    public function Favourite(){
+        return $this->hasOne(Favorite::class, 'ads_id', 'id');
+    }
 }

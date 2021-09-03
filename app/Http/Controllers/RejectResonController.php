@@ -11,6 +11,7 @@ class RejectResonController extends Controller
     public function index(){
 
         $reson = RejectReason::orderBy('reson')
+        ->orderBy('created_at', 'desc')
         ->get();
 
         return view('other.reject_reson.reject_reson', compact('reson'));

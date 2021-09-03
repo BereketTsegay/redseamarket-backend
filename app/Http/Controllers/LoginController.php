@@ -6,6 +6,8 @@ use App\Common\Status;
 use App\Common\UserType;
 use App\Mail\PasswordReset;
 use App\Models\Ads;
+use App\Models\Favorite;
+use App\Models\FcmClientToken;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,7 +37,7 @@ class LoginController extends Controller
 
         $user = User::where('email', $request->email)
         ->first();
-
+        
         if(!$user){
             
             session()->flash('error', 'Invalid Credentials');
@@ -48,7 +50,7 @@ class LoginController extends Controller
             return redirect()->back();
         }
 
-        if($user->type == UserType::ADMIN){
+        if($user->type == UserType::ADMIN || $user->type == UserType::SUBADMIN){
 
             $remember = $request->remember == 'checked' ? true : false;
             
@@ -222,9 +224,35 @@ class LoginController extends Controller
 
         $user = User::where('status', Status::ACTIVE)
         ->where('type', UserType::USER)
+        ->orderBy('created_at', 'desc')
         ->paginate(10);
 
         return view('user.user_list', compact('user'));
+    }
+
+    public function userView($id){
+
+        $user = User::where('id', $id)
+        ->first();
+
+        $activeAd = Ads::where('customer_id', $id)
+        ->where('status', Status::ACTIVE)
+        ->where('delete_status','!=', Status::DELETE)
+        ->count();
+
+        $inactiveAd = Ads::where('customer_id', $id)
+        ->where(function($q){
+            $q->orwhere('status', Status::REQUEST)
+            ->orwhere('status', Status::INACTIVE);
+        })
+        ->where('delete_status','!=', Status::DELETE)
+        ->count();
+
+        $favourite = Favorite::where('customer_id', $id)
+        ->Has('Ads')
+        ->count();
+
+        return view('user.view_user', compact('user', 'activeAd', 'inactiveAd', 'favourite'));
     }
 
     public function userEdit($id){
@@ -260,6 +288,39 @@ class LoginController extends Controller
         return redirect()->route('user.index');
     }
 
+    public function userAds($type, $id){
+
+        if($type == 'active'){
+
+            $ad = Ads::where('delete_status', '!=', Status::DELETE)
+            ->where('customer_id', $id)
+            ->where('status', Status::ACTIVE)
+            ->paginate(10);
+        }
+        elseif($type == 'inactive'){
+
+            $ad = Ads::where('delete_status', '!=', Status::DELETE)
+            ->where('customer_id', $id)
+            ->where(function($a){
+                $a->orwhere('status', Status::REQUEST)
+                ->orwhere('status', Status::INACTIVE);
+            })
+            ->paginate(10);
+
+        }
+        else{
+
+            $ad = Ads::where('delete_status', '!=', Status::DELETE)
+            ->where('status', Status::ACTIVE)
+            ->whereHas('Favourite', function($a) use($id){
+                $a->where('customer_id', $id);
+            })
+            ->paginate(10);
+        }
+
+        return view('user.ad_list', compact('ad', 'id', 'type'));
+    }
+
     public function userChangePassword(Request $request, $id){
         
         $request->validate([
@@ -273,5 +334,100 @@ class LoginController extends Controller
 
         session()->flash('success', 'Password has been changed');
         return redirect()->route('user.index');
+    }
+
+    public function tokenStore(Request $request){
+
+        $user = User::where('email', $request->email)
+        ->first();
+
+        if($user){
+
+            $userToken = FcmClientToken::where('user_id', $user->id)
+            ->first();
+
+            if($userToken){
+                FcmClientToken::where('user_id', $user->id)
+                ->update([
+                    'token' => $request->token,
+                ]);
+            }
+            else{
+                $fcmToken       = new FcmClientToken();
+                $fcmToken->user_id  = $user->id;
+                $fcmToken->token    = $request->token;
+                $fcmToken->save();
+            }
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Token stored',
+            ], 200);
+        }
+        else{
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'No user with this email',
+            ], 400);
+        }
+    }
+
+    public static function sendNotification(){
+        
+        $firebaseToken = FcmClientToken::whereNotNull('token')
+        ->pluck('token')
+        ->all();
+        
+        $SERVER_API_KEY = 'AAAA74ITCps:APA91bEgE_FZKMG43FU0nBdoOv_yfutK_a5DK4GLulG6Q_ZiSl7dWhkJRaQGFQnvlHVbHz8qr5KdZlzVnogvhOjz4uV3XtDwMfyAG3vefpHzYIbFvQ1Pg6SE3pbl8M_zOy7vAFZLoDGN';
+
+        $data = [
+
+            "registration_ids" => $firebaseToken,
+
+            "notification" => [
+
+                "title" => 'New product',
+
+                "body" => 'New Product is created',  
+
+
+            ]
+
+        ];
+
+        $dataString = json_encode($data);
+
+    
+
+        $headers = [
+
+            'Authorization: key=' . $SERVER_API_KEY,
+
+            'Content-Type: application/json',
+
+        ];
+
+    
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+
+        curl_setopt($ch, CURLOPT_POST, true);
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+        $response = curl_exec($ch);
+        
+        curl_close($ch);
+        
+        return response()->json($response);
     }
 }

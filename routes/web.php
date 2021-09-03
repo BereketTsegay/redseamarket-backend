@@ -27,9 +27,33 @@ Route::group(['middleware' => ['revalidate']], function(){
     Route::get('/login', [App\Http\Controllers\LoginController::class, 'index'])->name('login.index');
     Route::post('/login/store', [App\Http\Controllers\LoginController::class, 'store'])->name('login.store');
     
-    // Middleware Prevent Unautherized access
+    Route::post('/fcm/token/store', [App\Http\Controllers\LoginController::class, 'tokenStore'])->name('save.token');
+    Route::get('/fcm/notification/send', [App\Http\Controllers\LoginController::class, 'sendNotification'])->name('send.token');
 
+    // Middleware Prevent Unautherized access
     Route::group(['middleware' => ['adminAuth']], function(){
+
+        Route::group(['middleware' => ['superAdmin']], function(){
+
+            // Admin Users
+
+            Route::get('/roles', [App\Http\Controllers\UserRoleController::class, 'index'])->name('role.index');
+            Route::post('/role/store', [App\Http\Controllers\UserRoleController::class, 'store'])->name('role.store');
+            Route::get('/role/edit/{id}', [App\Http\Controllers\UserRoleController::class, 'edit'])->name('role.edit');
+            Route::post('/role/update', [App\Http\Controllers\UserRoleController::class, 'update'])->name('role.update');
+            Route::post('/role/delete/{id}', [App\Http\Controllers\UserRoleController::class, 'delete'])->name('role.delete');
+
+            Route::post('/task/role/store', [App\Http\Controllers\UserRoleController::class, 'taskRoleStore'])->name('task_role.store');
+            Route::post('/task/role/update/{id}', [App\Http\Controllers\UserRoleController::class, 'taskRoleUpdate'])->name('task_role.update');
+
+            Route::get('/admin/user/index', [App\Http\Controllers\UserRoleController::class, 'adminUserIndex'])->name('admin_user.index');
+            Route::get('/admin/user/create', [App\Http\Controllers\UserRoleController::class, 'adminUserCreate'])->name('admin_user.create');
+            Route::post('/admin/user/store', [App\Http\Controllers\UserRoleController::class, 'adminUserStore'])->name('admin_user.store');
+            Route::get('/admin/user/view/{id}', [App\Http\Controllers\UserRoleController::class, 'adminUserView'])->name('admin_user.view');
+            Route::get('/admin/user/edit/{id}', [App\Http\Controllers\UserRoleController::class, 'adminUserEdit'])->name('admin_user.edit');
+            Route::post('/admin/user/update/{id}', [App\Http\Controllers\UserRoleController::class, 'adminUserUpdate'])->name('admin_user.update');
+            
+        });
 
         // Global
 
@@ -45,13 +69,15 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         Route::get('dashboard', [App\Http\Controllers\LoginController::class, 'dashboard'])->name('dashboard');
 
-
         // Users
 
         Route::get('/users', [App\Http\Controllers\LoginController::class, 'userIndex'])->name('user.index');
+        Route::get('/user/view/{id}', [App\Http\Controllers\LoginController::class, 'userView'])->name('user.view');
         Route::get('/users/edit/{id}', [App\Http\Controllers\LoginController::class, 'userEdit'])->name('user.edit');
         Route::post('/users/update/{id}', [App\Http\Controllers\LoginController::class, 'userUpdate'])->name('user.update');
+        Route::get('/user/ads/{type}/{id}', [App\Http\Controllers\LoginController::class, 'userAds'])->name('user.ads');
         Route::post('/users/change/password/{id}', [App\Http\Controllers\LoginController::class, 'userChangePassword'])->name('user.change.password');
+        Route::post('/user/delete/{id}', [App\Http\Controllers\UserRoleController::class, 'userDelete'])->name('user.delete');
 
         /* ========== Ads ========== */
 

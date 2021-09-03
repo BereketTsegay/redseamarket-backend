@@ -28,9 +28,9 @@
                                 <th>Category</th>
                                 <th>Options</th>
                                 <th>Status</th>
-                                <th>View</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
+                                {{-- <th>Edit</th>
+                                <th>Delete</th> --}}
                                 <th>Add to Category</th>
                                 <th>Option</th>
                             </tr>
@@ -44,11 +44,24 @@
                                     <td><span class="badge badge-primary">{{ count($row->CategoryField) }} Category</span></td>
                                     <td>{!! $row->option == 1 ? '<span class="badge badge-primary mx-2">'. count($row->FieldOption) .'</span>' : 'Null' !!}</td>
                                     <td>{!! $row->status == 1 ? '<span class="text-success">Active<span>' : '<span class="text-secondary">Disabled<span>' !!}</td>
-                                    <td><a href="{{ route('custom_field.view', $row->id) }}"><button type="button" class="btn btn-primary">View</button></a></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                              Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a href="{{ route('custom_field.view', $row->id) }}"><button type="button" class="btn btn-primary">View</button></a>
+                                                <a href="{{ route('custom_field.edit', $row->id) }}"><button type="button" class="btn btn-secondary">Edit</button></a>
+                                                <button type="button" onclick="customFieldDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                                <form id="custom_field_delete_form{{$row->id}}" action="{{ route('custom_field.delete', $row->id) }}" method="POST">@csrf</form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    {{-- <td><a href="{{ route('custom_field.view', $row->id) }}"><button type="button" class="btn btn-primary">View</button></a></td>
                                     <td><a href="{{ route('custom_field.edit', $row->id) }}"><button type="button" class="btn btn-secondary">Edit</button></a></td>
                                     <td><button type="button" onclick="customFieldDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
                                         <form id="custom_field_delete_form{{$row->id}}" action="{{ route('custom_field.delete', $row->id) }}" method="POST">@csrf</form>
-                                    </td>
+                                    </td> --}}
                                     <td><button type="button" onclick="addtoCategory({{$row->id}}, '{{$row->name}}')" class="btn btn-info" data-toggle="modal" data-target="#addtoCategoryModal">Add to Category</button></a></td>
                                     <td>
                                         @if($row->option == 1)
@@ -160,6 +173,15 @@
     Swal.fire({
         icon: 'error',
         text: '{{ Session::get('error') }}',
+    })
+</script>
+@endif
+
+@if (Session::has('warning'))
+<script>
+    Swal.fire({
+        icon: 'warning',
+        text: "{{ Session::get('warning') }}",
     })
 </script>
 @endif

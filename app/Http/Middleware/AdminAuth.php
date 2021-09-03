@@ -20,7 +20,7 @@ class AdminAuth
     {
 
         if(Auth::user()){
-            if(Auth::user()->type == UserType::ADMIN){
+            if(Auth::user()->type == UserType::ADMIN || Auth::user()->type == UserType::SUBADMIN){
                 return $next($request);
             }
         }

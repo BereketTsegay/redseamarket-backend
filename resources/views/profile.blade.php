@@ -26,7 +26,15 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">User    Type :</p>
-                                    <p class="col-md-6">{{ $user->type == 1 ? 'Admin Master' : 'User' }}</p>
+                                    <p class="col-md-6">
+                                    @if ($user->type == 1)
+                                        Master Admin
+                                    @elseif ($user->type == 2)
+                                        User
+                                    @else
+                                        {{ $user->UserRole->Role->name }}
+                                    @endif
+                                    </p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Status :</p>

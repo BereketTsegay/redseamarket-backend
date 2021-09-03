@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class OtherController extends Controller
 {
@@ -208,7 +210,7 @@ class OtherController extends Controller
     public function searchAds(Request $request){
         
         $rules = [
-            'search_key'    => 'required',
+            // 'search_key'    => 'required',
             'latitude'      => 'required',
             'longitude'     => 'required',
         ];
@@ -232,302 +234,110 @@ class OtherController extends Controller
 
             $radius = 10; // Km
 
-            if($request->city && $request->category){
+            $myAds = Ads::where('status', Status::ACTIVE)
+            ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            ->having('distance', '<=', $radius)
+            ->where('delete_status', '!=', Status::DELETE);
 
-                $myAds = tap(Ads::where('category_id', $request->category)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
-                ->where(function($a) use($request){
+            if($request->city){
+
+                $myAds->where('city_id', $request->city);
+            }
+
+            if($request->category){
+                $myAds->where('category_id', $request->category);
+            }
+
+            if($request->subcategory){
+                $myAds->where('subcategory_id', $request->subcategory);
+            }
+
+            if($request->search_key){
+                $myAds->where(function($a) use($request){
                     $a->orwhere('title', 'like', '%'.$request->search_key.'%')
                     ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
-                })
-                ->where('city_id', $request->city)
-                ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->transform(function($a){
+                });
+            }
 
-                        $a->image = array_filter([
-                            $a->Image->map(function($q) use($a){
-                                $q->image;
-                                unset($q->ads_id, $q->img_flag);
-                                return $q;
-                            }),
-                        ]);
+            if(isset($request->seller)){
 
-                        if($a->category_id == 1){
-                            $a->MotoreValue;
-                            $a->make = $a->MotoreValue->Make->name;
-                            $a->model = $a->MotoreValue->Model->name;
-                            $a->MotorFeatures;
-        
-                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                if($request->seller == 0 || $request->seller == '0'){
+                    $myAds->where('sellerinformation_id', 0);
+                }
+                else{
+                    $myAds->where('sellerinformation_id', 1);
+                }
+            }
+
+            if($request->priceFrom){
+                $myAds->where('price', '>=', $request->priceFrom);
+            }
+
+            if($request->priceTo){
+                $myAds->where('price', '<=', $request->priceTo);
+            }
+
+            $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
+                return $paginatedInstance->getCollection()->transform(function($a){
+
+                    $a->image = array_filter([
+                        $a->Image->map(function($q) use($a){
+                            $q->image;
+                            unset($q->ads_id, $q->img_flag);
+                            return $q;
+                        }),
+                    ]);
+
+                    $a->country_name = $a->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                    $a->state_name = $a->State->name;
+                    $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                    $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                    if($a->category_id == 1){
+                        $a->MotoreValue;
+                        $a->make = $a->MotoreValue->Make->name;
+                        $a->model = $a->MotoreValue->Model->name;
+                        $a->MotorFeatures;
+    
+                        unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                    }
+                    elseif($a->category_id == 2){
+                        $a->PropertyRend;
+                    }
+                    elseif($a->category_id ==3){
+                        $a->PropertySale;
+                    }
+
+                    if($a->city_id != 0){
+                        $a->city_name = $a->City->name;
+                    }
+                    else{
+                        $a->city_name = $a->State->name;
+                    }
+                    $a->CustomValue->map(function($c){
+                        
+                        if($c->Field->description_area_flag == 0){
+                            $c->position = 'top';
+                            $c->name = $c->Field->name;
                         }
-                        elseif($a->category_id == 2){
-                            $a->PropertyRend;
-                        }
-                        elseif($a->category_id ==3){
-                            $a->PropertySale;
-                        }
-
-                        $a->country_name = $a->Country->name;
-                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                        $a->state_name = $a->State->name;
-                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
-                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
-
-                        if($a->city_id != 0){
-                            $a->city_name = $a->City->name;
+                        elseif($c->Field->description_area_flag == 1){
+                            $c->position = 'details_page';
+                            $c->name = $c->Field->name;
                         }
                         else{
-                            $a->city_name = $a->State->name;
+                            $c->position = 'none';
+                            $c->name = $c->Field->name;
                         }
-                        $a->CustomValue->map(function($c){
-                            
-                            if($c->Field->description_area_flag == 0){
-                                $c->position = 'top';
-                                $c->name = $c->Field->name;
-                            }
-                            elseif($c->Field->description_area_flag == 1){
-                                $c->position = 'details_page';
-                                $c->name = $c->Field->name;
-                            }
-                            else{
-                                $c->position = 'none';
-                                $c->name = $c->Field->name;
-                            }
-                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
-                            return $c;
-                        });
-
-                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
-                        return $a;
+                        unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                        return $c;
                     });
+
+                    unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                    return $a;
                 });
-
-            }
-            elseif($request->city){
-
-                $myAds = tap(Ads::where('city_id', $request->city)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
-                ->where(function($a) use($request){
-                    $a->orwhere('title', 'like', '%'.$request->search_key.'%')
-                    ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
-                })
-                ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->transform(function($a){
-
-                        $a->image = array_filter([
-                            $a->Image->map(function($q) use($a){
-                                $q->image;
-                                unset($q->ads_id, $q->img_flag);
-                                return $q;
-                            }),
-                        ]);
-
-                        if($a->category_id == 1){
-                            $a->MotoreValue;
-                            $a->make = $a->MotoreValue->Make->name;
-                            $a->model = $a->MotoreValue->Model->name;
-                            $a->MotorFeatures;
-        
-                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
-                        }
-                        elseif($a->category_id == 2){
-                            $a->PropertyRend;
-                        }
-                        elseif($a->category_id ==3){
-                            $a->PropertySale;
-                        }
-
-                        $a->country_name = $a->Country->name;
-                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                        $a->state_name = $a->State->name;
-                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
-                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
-
-                        if($a->city_id != 0){
-                            $a->city_name = $a->City->name;
-                        }
-                        else{
-                            $a->city_name = $a->State->name;
-                        }
-                        $a->CustomValue->map(function($c){
-                            
-                            if($c->Field->description_area_flag == 0){
-                                $c->position = 'top';
-                                $c->name = $c->Field->name;
-                            }
-                            elseif($c->Field->description_area_flag == 1){
-                                $c->position = 'details_page';
-                                $c->name = $c->Field->name;
-                            }
-                            else{
-                                $c->position = 'none';
-                                $c->name = $c->Field->name;
-                            }
-                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
-                            return $c;
-                        });
-
-                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
-                        return $a;
-                    });
-                });
-
-            }
-            elseif($request->category){
-
-                $myAds = tap(Ads::where('category_id', $request->category)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
-                ->where(function($a) use($request){
-                    $a->orwhere('title', 'like', '%'.$request->search_key.'%')
-                    ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
-                })
-                ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->transform(function($a){
-
-                        $a->image = array_filter([
-                            $a->Image->map(function($q) use($a){
-                                $q->image;
-                                unset($q->ads_id, $q->img_flag);
-                                return $q;
-                            }),
-                        ]);
-
-                        if($a->category_id == 1){
-                            $a->MotoreValue;
-                            $a->make = $a->MotoreValue->Make->name;
-                            $a->model = $a->MotoreValue->Model->name;
-                            $a->MotorFeatures;
-        
-                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
-                        }
-                        elseif($a->category_id == 2){
-                            $a->PropertyRend;
-                        }
-                        elseif($a->category_id ==3){
-                            $a->PropertySale;
-                        }
-
-                        $a->country_name = $a->Country->name;
-                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                        $a->state_name = $a->State->name;
-                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
-                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
-
-                        if($a->city_id != 0){
-                            $a->city_name = $a->City->name;
-                        }
-                        else{
-                            $a->city_name = $a->State->name;
-                        }
-                        $a->CustomValue->map(function($c){
-                            
-                            if($c->Field->description_area_flag == 0){
-                                $c->position = 'top';
-                                $c->name = $c->Field->name;
-                            }
-                            elseif($c->Field->description_area_flag == 1){
-                                $c->position = 'details_page';
-                                $c->name = $c->Field->name;
-                            }
-                            else{
-                                $c->position = 'none';
-                                $c->name = $c->Field->name;
-                            }
-                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
-                            return $c;
-                        });
-
-                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
-                        return $a;
-                    });
-                });
-
-            }
-            else{
-
-                $myAds = tap(Ads::where('status', Status::ACTIVE)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
-                ->where(function($a) use($request){
-                    $a->orwhere('title', 'like', '%'.$request->search_key.'%')
-                    ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
-                })
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->transform(function($a){
-
-                        $a->image = array_filter([
-                            $a->Image->map(function($q) use($a){
-                                $q->image;
-                                unset($q->ads_id, $q->img_flag);
-                                return $q;
-                            }),
-                        ]);
-
-                        $a->country_name = $a->Country->name;
-                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                        $a->state_name = $a->State->name;
-                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
-                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
-
-                        if($a->category_id == 1){
-                            $a->MotoreValue;
-                            $a->make = $a->MotoreValue->Make->name;
-                            $a->model = $a->MotoreValue->Model->name;
-                            $a->MotorFeatures;
-        
-                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
-                        }
-                        elseif($a->category_id == 2){
-                            $a->PropertyRend;
-                        }
-                        elseif($a->category_id ==3){
-                            $a->PropertySale;
-                        }
-
-                        if($a->city_id != 0){
-                            $a->city_name = $a->City->name;
-                        }
-                        else{
-                            $a->city_name = $a->State->name;
-                        }
-                        $a->CustomValue->map(function($c){
-                            
-                            if($c->Field->description_area_flag == 0){
-                                $c->position = 'top';
-                                $c->name = $c->Field->name;
-                            }
-                            elseif($c->Field->description_area_flag == 1){
-                                $c->position = 'details_page';
-                                $c->name = $c->Field->name;
-                            }
-                            else{
-                                $c->position = 'none';
-                                $c->name = $c->Field->name;
-                            }
-                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
-                            return $c;
-                        });
-
-                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
-                        return $a;
-                    });
-                });
-
-            }
+            });
 
             return response()->json([
                 'status'    => 'success',
@@ -535,7 +345,6 @@ class OtherController extends Controller
                 'code'      => 200,
                 'ads'       => $myAds,
             ], 200);
-
         }
         catch(\Exception $e){
             return response()->json([
@@ -1473,5 +1282,21 @@ class OtherController extends Controller
                 'message'   => 'Something went wrong',
             ], 301);
         }
+    }
+
+    public function recivePayment(Request $request){
+
+        Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+
+        $intent = PaymentIntent::create([
+            'amount'            => $request->amount,
+            'currency'          => $request->currency,
+            'email'             => $request->email,
+            'billingAddress'    => $request->billingAddress,
+        ]);
+
+        $client_secret = $intent->client_secret;
+
+        return $client_secret;
     }
 }

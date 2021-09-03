@@ -43,11 +43,7 @@
                                 <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
                                 <td>{{ $row->Category->name }}</td>
                                 <td>{{ $row->title }}</td>
-                                @if ($row->customer_id == 0)
-                                <td>Admin</td>
-                                @else
                                 <td>{{ $row->User->name }}</td>
-                                @endif
                                 <td>
                                     @if($row->status == \App\Common\Status::ACTIVE)
                                     <span class="text-success">Active</span>
@@ -56,7 +52,11 @@
                                     @endif
                                 </td>
                                 <td><a href="{{ route('ads.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
-                                <td><a href="{{ route('ads.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
+                                @if($row->customer_id != 1)
+                                    <td><a href="javascript:void(0);"><button class="btn btn-secondary">Edit</button></a></td>
+                                @else
+                                    <td><a href="{{ route('ads.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
+                                @endif
                                 <td><button onclick="adDelete({{$row->id}})" type="button" class="btn btn-danger" data-toggle="modal" data-target="#adDeleteModal">Delete</button>
                                 <form id="ad_delete_form{{$row->id}}" action="{{ route('ads.delete', $row->id) }}" method="POST">@csrf</form>
                                 </td>

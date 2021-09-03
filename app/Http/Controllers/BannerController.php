@@ -11,6 +11,7 @@ class BannerController extends Controller
     public function index(){
 
         $banner = Banner::where('status', Status::ACTIVE)
+        ->orderBy('created_at', 'desc')
         ->get();
 
         return view('other.banner.banner', compact('banner'));

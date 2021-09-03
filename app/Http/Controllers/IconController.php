@@ -82,6 +82,7 @@ class IconController extends Controller
     public function featuredIndex(){
 
         $featured = FeaturedDealers::orderBy('dealer_name')
+        ->orderBy('created_at', 'desc')
         ->get();
 
         return view('other.featured_dealer.dealer', compact('featured'));

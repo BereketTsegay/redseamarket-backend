@@ -146,48 +146,6 @@
 
 @push('script')
 
-<!-- Cropping Modal -->
-
-<div class="modal fade cropModal" tabindex="-1" role="dialog"  id="modal" aria-labelledby="cropModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cropModal">Crop</h5>
-                <button type="button" class="btn-close" onclick="dismissModal()" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="main-card card">
-                            <div class="card-body">
-                                <div class="card-title">Image Cropper</div>
-                                <div>
-                                    <img src="" id="image" alt="Picture">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="main-card card">
-                            <div class="card-body">
-                                <div class="card-title">Preview</div>
-                                    <div class="text-center">
-                                    <div class="preview-container"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                {{-- <button type="button" onclick="resetSupp()" class="btn btn-secondary btn-shadow">Reset</button> --}}
-                <button id="crop" class="btn btn-primary btn-shadow">Crop</button>
-            </div>
-        </div>
-    </div>
-</div>
- 
 
 <script>
 

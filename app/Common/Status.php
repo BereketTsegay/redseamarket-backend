@@ -5,6 +5,7 @@ namespace App\Common;
 class Status{
 
     const DELETE = 1;
+    const UNDELETE = 0;
 
 
     // Ads

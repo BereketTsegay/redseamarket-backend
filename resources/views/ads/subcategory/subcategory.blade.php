@@ -33,13 +33,20 @@
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Active</th>
-                                <th>View</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
+                                {{-- <th>Edit</th>
+                                <th>Delete</th> --}}
                             </tr>
                         </thead>
                         <tbody id="subcategory_list">
-                            
+                            <tr>
+                                <td></td>
+                                <td><h3>Select category to show</h3></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -100,16 +107,38 @@
 
                 for(var i = 0; i < data.length; i++){
 
+                    // tr +=   `<tr>
+                    //             <th scope="row">${i+1}</th>
+                    //             <td>${data[i].name}</td>
+                    //             ${data[i].status == 1 ? '<td class="text-success">Active</td>' :'<td class="text-secondary">disabled</td>' }
+                    //             <td><a href="/subcategory/view/${data[i].id}"><button class="btn btn-primary">View</button></a></td>
+                    //             <td><a href="/subcategory/edit/${data[i].id}"><button class="btn btn-secondary">Edit</button></a></td>
+                    //             <td><button type="button" onclick="subcategoryDelete(${data[i].id})" class="btn btn-danger" data-toggle="modal" data-target="#subcategoryDeleteModal">Delete</button>
+                    //             <form id="delete_subcategory_form${data[i].id}" action="/subcategory/delete/${data[i].id}" method="POST">
+                    //                 @csrf
+                    //             </form>
+                    //             </td>
+                    //         </tr>`;
+
                     tr +=   `<tr>
                                 <th scope="row">${i+1}</th>
                                 <td>${data[i].name}</td>
                                 ${data[i].status == 1 ? '<td class="text-success">Active</td>' :'<td class="text-secondary">disabled</td>' }
-                                <td><a href="/subcategory/view/${data[i].id}"><button class="btn btn-primary">View</button></a></td>
-                                <td><a href="/subcategory/edit/${data[i].id}"><button class="btn btn-secondary">Edit</button></a></td>
-                                <td><button type="button" onclick="subcategoryDelete(${data[i].id})" class="btn btn-danger" data-toggle="modal" data-target="#subcategoryDeleteModal">Delete</button>
-                                <form id="delete_subcategory_form${data[i].id}" action="/subcategory/delete/${data[i].id}" method="POST">
-                                    @csrf
-                                </form>
+                                <td>
+
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu text-center">
+                                            <a href="/subcategory/view/${data[i].id}"><button class="btn btn-primary">View</button></a>
+                                            <a href="/subcategory/edit/${data[i].id}"><button class="btn btn-secondary">Edit</button></a>
+                                            <button type="button" onclick="subcategoryDelete(${data[i].id})" class="btn btn-danger" data-toggle="modal" data-target="#subcategoryDeleteModal">Delete</button>
+                                            <form id="delete_subcategory_form${data[i].id}" action="/subcategory/delete/${data[i].id}" method="POST">
+                                                @csrf
+                                            </form>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>`;
                 }

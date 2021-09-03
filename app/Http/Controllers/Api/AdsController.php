@@ -145,38 +145,38 @@ class AdsController extends Controller
 
     public function adStore(Request $request){
         
-        $rules = [
-            'category'          => 'required|numeric',
-            // 'subcategory'       => 'required|numeric',
-            'title'             => 'required',
-            'canonical_name'    => 'required',
-            'description'       => 'required',
-            'price'             => 'required|numeric',
-            'country'           => 'required|numeric',
-            'state'             => 'required|numeric',
-            // 'city'              => 'required|numeric',
-            'latitude'          => 'required|numeric',
-            'longitude'         => 'required|numeric',
-            'image.*'           => 'required',
-            'name'              => 'required',
-            'email'             => 'required|email',
-            'phone'             => 'required',
-            'address'           => 'required'
-        ];
-
-        $validate = Validator::make($request->all(), $rules);
-
-        if($validate->fails()){
-
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid request',
-                'code'      => 400,
-                'errors'    => $validate->errors(),
-            ], 200);
-        }
-
         try{
+            
+            $rules = [
+                'category'          => 'required|numeric',
+                // 'subcategory'       => 'required|numeric',
+                'title'             => 'required',
+                'canonical_name'    => 'required',
+                'description'       => 'required',
+                'price'             => 'required|numeric',
+                'country'           => 'required|numeric',
+                'state'             => 'required|numeric',
+                // 'city'              => 'required|numeric',
+                'latitude'          => 'required|numeric',
+                'longitude'         => 'required|numeric',
+                'image.*'           => 'required',
+                'name'              => 'required',
+                'email'             => 'required|email',
+                'phone'             => 'required',
+                'address'           => 'required'
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
 
 
             if($request->phone_hide == true){
@@ -633,7 +633,7 @@ class AdsController extends Controller
 
     public function getCategoryMotors(Request $request){
 
-        try{
+        // try{
 
             $rules = [
                 'latitude'      => 'required|numeric',
@@ -659,7 +659,7 @@ class AdsController extends Controller
             $r = 6371000; // earth's mean radius 6371 for kilometer and 3956 for miles
 
             $motors = Category::where('id', 1)
-            ->with(['Subcategory' => function($a){
+            ->with(['Subcategory' => function($a) use($latitude, $longitude, $radius){
                 $a->withCount('Ads');
             }])
             ->first();
@@ -736,15 +736,15 @@ class AdsController extends Controller
                     'testimonial'   => $testimonial,
                 ],
             ], 200);
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
     
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function getProperty(Request $request){

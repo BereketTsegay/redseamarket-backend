@@ -22,5 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CitySeeder::class);
         $this->call(ReservedCategorySeeder::class);
         $this->call(IconSeeder::class);
+        $this->call(TaskSeeder::class);
+        $this->call(CurrencySeeder::class);
     }
 }

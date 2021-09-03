@@ -49,109 +49,145 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                Users
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseUsers" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('user.index') }}">Users</a>
-                                </nav>
-                            </div>
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_AUTHORITY)
+
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAuthority" aria-expanded="false" aria-controls="collapseUsers">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-university"></i></div>
+                                    Authority
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseAuthority" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('role.index') }}">Roles</a>
+                                    </nav>
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('admin_user.index') }}">Admin Users</a>
+                                    </nav>
+                                </div>
+
+                            @endif
+                            
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_USER)
+                                
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                    Users
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseUsers" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('user.index') }}">Users</a>
+                                    </nav>
+                                </div>
+
+                            @endif
+                            
                             {{-- <a class="nav-link" href="{{ route('banner.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
                                 Banners
                             </a> --}}
-                            <a class="nav-link" href="{{ route('testimonial.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
-                                Testimonials
-                            </a>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseAds">
-                                <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
-                                Category
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseCategory" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('category.index') }}">Category</a>
-                                    <a class="nav-link" href="{{ route('custom_field.index') }}">Custom Field</a>
-                                </nav>
-                            </div>
-                            <a class="nav-link" href="{{ route('subcategory.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
-                                Subcategory
-                            </a>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAds" aria-expanded="false" aria-controls="collapseAds">
-                                <div class="sb-nav-link-icon"><i class="fas fa-ad"></i></div>
-                                Ads
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseAds" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('ads.index') }}">Ads</a>
-                                    <a class="nav-link" href="{{ route('ad_request.index') }}">Ad Request</a>
-                                </nav>
-                            </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePayment" aria-expanded="false" aria-controls="collapseAds">
-                                <div class="sb-nav-link-icon"><i class="fas fa-dollar-sign"></i></div>
-                                Payment
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapsePayment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('payment.aproved') }}">Approved</a>
-                                    <a class="nav-link" href="{{ route('payment.declined') }}">Declined</a>
-                                </nav>
-                            </div>
-                            {{-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Pages
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Authentication
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="login.html">Login</a>
-                                            <a class="nav-link" href="register.html">Register</a>
-                                            <a class="nav-link" href="password.html">Forgot Password</a>
-                                        </nav>
-                                    </div>
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                        Error
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="401.html">401 Page</a>
-                                            <a class="nav-link" href="404.html">404 Page</a>
-                                            <a class="nav-link" href="500.html">500 Page</a>
-                                        </nav>
-                                    </div>
-                                </nav>
-                            </div> --}}
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_TESTIMONIAL)
+
+                                <a class="nav-link" href="{{ route('testimonial.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
+                                    Testimonials
+                                </a>
+
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_CATEGORY)
+
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseAds">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                                    Category
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseCategory" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('category.index') }}">Category</a>
+                                        <a class="nav-link" href="{{ route('custom_field.index') }}">Custom Field</a>
+                                    </nav>
+                                </div>
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_SUBCATEGORY)
+
+                                <a class="nav-link" href="{{ route('subcategory.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                                    Subcategory
+                                </a>
+
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_ADS)
+
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAds" aria-expanded="false" aria-controls="collapseAds">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-ad"></i></div>
+                                    Ads
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseAds" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('ads.index') }}">Ads</a>
+                                        <a class="nav-link" href="{{ route('ad_request.index') }}">Ad Request</a>
+                                    </nav>
+                                </div>
+
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_PAYMENT)
+
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePayment" aria-expanded="false" aria-controls="collapseAds">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-dollar-sign"></i></div>
+                                    Payment
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapsePayment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="{{ route('payment.aproved') }}">Approved</a>
+                                        <a class="nav-link" href="{{ route('payment.declined') }}">Declined</a>
+                                    </nav>
+                                </div>
+
+                            @endif
+
                             <div class="sb-sidenav-menu-heading">Others</div>
-                            <a class="nav-link" href="{{ route('dealer.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
-                                Featured Dealer
-                            </a>
-                            <a class="nav-link" href="{{ route('reject.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
-                                Reject Resons
-                            </a>
-                            <a class="nav-link" href="{{ route('icon.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-icons"></i></div>
-                                Icons
-                            </a>
-                            <a class="nav-link" href="{{ route('social.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-thumbs-up"></i></div>
-                                Social Links
-                            </a>
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_FEATURED_DEALER)
+
+                                <a class="nav-link" href="{{ route('dealer.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
+                                    Featured Dealer
+                                </a>
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_REJECT_REASON)
+                                <a class="nav-link" href="{{ route('reject.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                                    Reject Resons
+                                </a>
+                            
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_ICONS)
+                                
+                                <a class="nav-link" href="{{ route('icon.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-icons"></i></div>
+                                    Icons
+                                </a>
+
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_SOCIAL_LINK)
+                                
+                                <a class="nav-link" href="{{ route('social.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-thumbs-up"></i></div>
+                                    Social Links
+                                </a>
+
+                            @endif
+                            
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="false" aria-controls="collapseAds">
                                 <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
                                 Settings
@@ -207,9 +243,59 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
+
     <script>
         let year = new Date().getFullYear();
         document.getElementById('currentYear').innerHTML = year;
+
+        // Your web app's Firebase configuration
+        let firebaseConfig1 = {
+            apiKey: "AIzaSyBrhfC7ZrhEyH_xNGXcR6HQUUGUVBNlnWw",
+
+            authDomain: "interview-6168a.firebaseapp.com",
+
+            projectId: "interview-6168a",
+
+            storageBucket: "interview-6168a.appspot.com",
+
+            messagingSenderId: "1028679469723",
+
+            appId: "1:1028679469723:web:026d079d23d7505744943e",
+
+            measurementId: "G-Z5PT70YBQ2"
+
+
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig1);
+
+        const messaging1 = firebase.messaging();
+
+        messaging1.onMessage(function(payload) {
+            console.log('message get', payload);
+            
+            const noteTitle = payload.notification.title;
+            const noteBody = payload.notification.body;
+
+            const noteOptions = {
+
+                body: payload.notification.body,
+                icon: payload.notification.icon,
+
+            };
+
+            // let note = `<h3>${noteTitle}</h3>
+            // <p>${noteBody}</p>`;
+
+            // $('#notification_value').html(note);
+
+            new Notification(noteTitle, noteOptions);
+
+        });
+            
     </script>
 
 <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">

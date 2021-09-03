@@ -23,6 +23,7 @@
                                 <th>Date</th>
                                 <th>Email</th>
                                 <th>Status</th>
+                                <th>View</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -45,8 +46,13 @@
                                             <span class="text-disable">Disabled</span>
                                         @endif
                                     </td>
+                                    <td><a href="{{ route('user.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
                                     <td><a href="{{ route('user.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button></td>
+                                    <td><button type="button" onclick="userDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                                        <form id="deleteUserForm{{$row->id}}" action="{{ route('user.delete', $row->id) }}" method="POST">
+                                            @csrf
+                                        </form>
+                                    </td>
                                 </tr>
                                 @php
                                     $i++;
@@ -77,11 +83,27 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Delete</button>
+                <button type="button" onclick="deleteUser()" class="btn btn-primary">Delete</button>
             </div>
         </div>
     </div>
-  </div>
+</div>
+
+  <script>
+
+    let user_id = '';
+
+    userDelete = (id) => {
+      user_id = id;
+
+    }
+
+    deleteUser = () => {
+      
+        $('#deleteUserForm'+user_id).submit();
+    }
+
+</script>
 
 @if (Session::has('success'))
     <script>

@@ -18,6 +18,7 @@ use App\Models\PropertyRendCustomeValues;
 use App\Models\PropertySaleCustomeValues;
 use App\Models\RejectReason;
 use App\Models\SellerInformation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class AdsController extends Controller
     public function index(){
 
         $ad = Ads::where('delete_status', '!=', Status::DELETE)
+        ->orderBy('created_at', 'desc')
         ->where('status', Status::ACTIVE)
         ->paginate(10);
 
@@ -44,7 +46,10 @@ class AdsController extends Controller
         $country = Country::orderBy('name')
         ->get();
 
-        return view('ads.create_ad', compact('category', 'country'));
+        $user = User::where('id', Auth::user()->id)
+        ->first();
+        
+        return view('ads.create_ad', compact('category', 'country', 'user'));
     }
 
     public function store(Request $request){
@@ -180,6 +185,7 @@ class AdsController extends Controller
                 // dd(Storage::getVisibility($image));
                 // Storage::disk('public')->move(public_path('tempfile').$image, 'public/ads/'.$image);
 
+                $row->storeAs('public/ads', $image);
                 $image = 'storage/ads/'.$image;
 
                 $adImage            = new AdsImage();
@@ -256,38 +262,48 @@ class AdsController extends Controller
         foreach($categoryField as $catRow){
             
             if($catRow->Field->type == 'select'){
+
                 $select = $catRow->Field->name;
-                $option_id = $request->$select;
-                
-                $fieldOption = FieldOptions::where('id', $option_id)
-                ->where('field_id', $catRow->field_id)
-                ->first();
-                
-                $optionValue = $fieldOption->value;
-                
-                $customValue            = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = $option_id;
-                $customValue->value     = $optionValue;
-                $customValue->save();
+
+                if($request->$select){
+
+                    $option_id = $request->$select;
+                    
+                    $fieldOption = FieldOptions::where('id', $option_id)
+                    ->where('field_id', $catRow->field_id)
+                    ->first();
+                    
+                    $optionValue = $fieldOption->value;
+                    
+                    $customValue            = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = $option_id;
+                    $customValue->value     = $optionValue;
+                    $customValue->save();
+                }
             }
             elseif($catRow->Field->type == 'radio'){
+
                 $radio = $catRow->Field->name;
-                $optionValue = $request->$radio;
-                
-                $fieldOption = FieldOptions::where('value', $optionValue)
-                ->where('field_id', $catRow->field_id)
-                ->first();
 
-                $option_id = $fieldOption->id;
+                if($request->$radio){
 
-                $customValue            = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = $option_id;
-                $customValue->value     = $optionValue;
-                $customValue->save();
+                    $optionValue = $request->$radio;
+                    
+                    $fieldOption = FieldOptions::where('value', $optionValue)
+                    ->where('field_id', $catRow->field_id)
+                    ->first();
+
+                    $option_id = $fieldOption->id;
+
+                    $customValue            = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = $option_id;
+                    $customValue->value     = $optionValue;
+                    $customValue->save();
+                }
 
             }
             // elseif($catRow->Field->type == 'checkbox_multiple'){
@@ -311,20 +327,23 @@ class AdsController extends Controller
 
                 $field_name = $catRow->Field->name;
 
-                if($request->$field_name == 'checked'){
-                    if($catRow->Field->default_value){
-                        $val = $catRow->Field->default_value;
-                    }
-                    else{
-                        $val = 1;
-                    }
+                if($request->$field_name){
 
-                    $customValue = new AdsCustomValue();
-                    $customValue->ads_id    = $ad->id;
-                    $customValue->field_id  = $catRow->field_id;
-                    $customValue->option_id = 0;
-                    $customValue->value     = $val;
-                    $customValue->save();
+                    if($request->$field_name == 'checked'){
+                        if($catRow->Field->default_value){
+                            $val = $catRow->Field->default_value;
+                        }
+                        else{
+                            $val = 1;
+                        }
+
+                        $customValue = new AdsCustomValue();
+                        $customValue->ads_id    = $ad->id;
+                        $customValue->field_id  = $catRow->field_id;
+                        $customValue->option_id = 0;
+                        $customValue->value     = $val;
+                        $customValue->save();
+                    }
                 }
             }
             elseif($catRow->Field->type == 'date'){
@@ -332,32 +351,37 @@ class AdsController extends Controller
                 $field_name = $catRow->Field->name;
 
                 // $date = Carbon::createFromFormat('d/m/Y', $request->$field_name)->format('Y-m-d');
-
-                $customValue = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = 0;
-                $customValue->value     = $request->$field_name;
-                $customValue->save();
-            }
-            elseif($catRow->Field->type == 'file'){
-
-                $field_name = $catRow->Field->name;
-
-                if($request->hasFile($field_name)){
-                    $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
-                
-                    $request->$field_name->storeAs('public/custom_file', $file);
-
-                    $file = 'storage/custom_file/'.$file;
+                if($request->$field_name){
 
                     $customValue = new AdsCustomValue();
                     $customValue->ads_id    = $ad->id;
                     $customValue->field_id  = $catRow->field_id;
                     $customValue->option_id = 0;
-                    $customValue->value     = $file;
-                    $customValue->file      = 1;
+                    $customValue->value     = $request->$field_name;
                     $customValue->save();
+                }
+            }
+            elseif($catRow->Field->type == 'file'){
+
+                $field_name = $catRow->Field->name;
+
+                if($request->$field_name){
+
+                    if($request->hasFile($field_name)){
+                        $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
+                    
+                        $request->$field_name->storeAs('public/custom_file', $file);
+
+                        $file = 'storage/custom_file/'.$file;
+
+                        $customValue = new AdsCustomValue();
+                        $customValue->ads_id    = $ad->id;
+                        $customValue->field_id  = $catRow->field_id;
+                        $customValue->option_id = 0;
+                        $customValue->value     = $file;
+                        $customValue->file      = 1;
+                        $customValue->save();
+                    }
                 }
             }
             elseif($catRow->Field->type == 'dependency'){
@@ -366,12 +390,15 @@ class AdsController extends Controller
             else{
                 $field_name = $catRow->Field->name;
 
-                $customValue = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = 0;
-                $customValue->value     = $request->$field_name;
-                $customValue->save();
+                if($request->$field_name){
+
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $request->$field_name;
+                    $customValue->save();
+                }
             }
         }
 
@@ -675,37 +702,44 @@ class AdsController extends Controller
             
             if($catRow->Field->type == 'select'){
                 $select = $catRow->Field->name;
-                $option_id = $request->$select;
-                
-                $fieldOption = FieldOptions::where('id', $option_id)
-                ->where('field_id', $catRow->field_id)
-                ->first();
-                
-                $optionValue = $fieldOption->value;
-                
-                $customValue            = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = $option_id;
-                $customValue->value     = $optionValue;
-                $customValue->save();
+
+                if($request->$select){
+
+                    $option_id = $request->$select;
+                    
+                    $fieldOption = FieldOptions::where('id', $option_id)
+                    ->where('field_id', $catRow->field_id)
+                    ->first();
+                    
+                    $optionValue = $fieldOption->value;
+                    
+                    $customValue            = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = $option_id;
+                    $customValue->value     = $optionValue;
+                    $customValue->save();
+                }
             }
             elseif($catRow->Field->type == 'radio'){
                 $radio = $catRow->Field->name;
-                $optionValue = $request->$radio;
-                
-                $fieldOption = FieldOptions::where('value', $optionValue)
-                ->where('field_id', $catRow->field_id)
-                ->first();
 
-                $option_id = $fieldOption->id;
+                if($request->$radio){
+                    $optionValue = $request->$radio;
+                    
+                    $fieldOption = FieldOptions::where('value', $optionValue)
+                    ->where('field_id', $catRow->field_id)
+                    ->first();
 
-                $customValue            = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = $option_id;
-                $customValue->value     = $optionValue;
-                $customValue->save();
+                    $option_id = $fieldOption->id;
+
+                    $customValue            = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = $option_id;
+                    $customValue->value     = $optionValue;
+                    $customValue->save();
+                }
 
             }
             // elseif($catRow->Field->type == 'checkbox_multiple'){
@@ -729,20 +763,22 @@ class AdsController extends Controller
 
                 $field_name = $catRow->Field->name;
 
-                if($request->$field_name == 'checked'){
-                    if($catRow->Field->default_value){
-                        $val = $catRow->Field->default_value;
-                    }
-                    else{
-                        $val = 1;
-                    }
+                if($request->$field_name){
+                    if($request->$field_name == 'checked'){
+                        if($catRow->Field->default_value){
+                            $val = $catRow->Field->default_value;
+                        }
+                        else{
+                            $val = 1;
+                        }
 
-                    $customValue = new AdsCustomValue();
-                    $customValue->ads_id    = $ad->id;
-                    $customValue->field_id  = $catRow->field_id;
-                    $customValue->option_id = 0;
-                    $customValue->value     = $val;
-                    $customValue->save();
+                        $customValue = new AdsCustomValue();
+                        $customValue->ads_id    = $ad->id;
+                        $customValue->field_id  = $catRow->field_id;
+                        $customValue->option_id = 0;
+                        $customValue->value     = $val;
+                        $customValue->save();
+                    }
                 }
             }
             elseif($catRow->Field->type == 'date'){
@@ -751,32 +787,38 @@ class AdsController extends Controller
 
                 // $date = Carbon::createFromFormat('d/m/Y', $request->$field_name)->format('Y-m-d');
 
-                $customValue = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = 0;
-                $customValue->value     = $request->$field_name;
-                $customValue->save();
-            }
-            elseif($catRow->Field->type == 'file'){
-
-                $field_name = $catRow->Field->name;
-
-                if($request->hasFile($field_name)){
-
-                    $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
-                
-                    $request->$field_name->storeAs('public/custom_file', $file);
-
-                    $file = 'storage/custom_file/'.$file;
+                if($request->$field_name){
 
                     $customValue = new AdsCustomValue();
                     $customValue->ads_id    = $ad->id;
                     $customValue->field_id  = $catRow->field_id;
                     $customValue->option_id = 0;
-                    $customValue->value     = $file;
-                    $customValue->file      = 1;
+                    $customValue->value     = $request->$field_name;
                     $customValue->save();
+                }
+            }
+            elseif($catRow->Field->type == 'file'){
+
+                $field_name = $catRow->Field->name;
+
+                if($request->$field_name){
+
+                    if($request->hasFile($field_name)){
+
+                        $file = uniqid().'.'.$request->$field_name->getClientOriginalExtension();
+                    
+                        $request->$field_name->storeAs('public/custom_file', $file);
+
+                        $file = 'storage/custom_file/'.$file;
+
+                        $customValue = new AdsCustomValue();
+                        $customValue->ads_id    = $ad->id;
+                        $customValue->field_id  = $catRow->field_id;
+                        $customValue->option_id = 0;
+                        $customValue->value     = $file;
+                        $customValue->file      = 1;
+                        $customValue->save();
+                    }
                 }
             }
             elseif($catRow->Field->type == 'dependency'){
@@ -785,12 +827,14 @@ class AdsController extends Controller
             else{
                 $field_name = $catRow->Field->name;
 
-                $customValue = new AdsCustomValue();
-                $customValue->ads_id    = $ad->id;
-                $customValue->field_id  = $catRow->field_id;
-                $customValue->option_id = 0;
-                $customValue->value     = $request->$field_name;
-                $customValue->save();
+                if($request->field_name){
+                    $customValue = new AdsCustomValue();
+                    $customValue->ads_id    = $ad->id;
+                    $customValue->field_id  = $catRow->field_id;
+                    $customValue->option_id = 0;
+                    $customValue->value     = $request->$field_name;
+                    $customValue->save();
+                }
             }
         }
 
@@ -933,6 +977,27 @@ class AdsController extends Controller
             //     ->groupBy('field_id');
             // }]);
         }])
+        ->whereHas('Field', function($a){
+            $a->where('delete_status', '!=', Status::DELETE)
+            ->where(function($b){
+                $b->orwhere(function($c){
+                    $c->where('option', 1)
+                    ->whereHas('FieldOption', function($e){
+                        $e->where('delete_status', '!=', Status::DELETE)
+                        ->where('status', Status::ACTIVE);
+                    });
+                })
+                ->orwhere(function($d){
+                    $d->where('option', 2)
+                    ->wherehas('Dependency', function($f){
+                        $f->where('delete_status', '!=', Status::DELETE);
+                    });
+                })
+                ->orwhere(function($d){
+                    $d->where('option', 0);
+                });
+            });
+        })
         ->get()
         ->map(function($p){
             

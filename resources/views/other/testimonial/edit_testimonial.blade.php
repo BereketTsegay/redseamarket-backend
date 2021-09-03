@@ -16,13 +16,19 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="container">
-                        <form action="{{ route('testimonial.update', $testimonial->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('testimonial.update', $testimonial->id) }}" method="POST" enctype="multipart/form-data" id="testimonial">
                             <div class="row">
                                 <div class="col-md-6">
                                     @csrf
                                     <div class="form-group my-2">
                                         <label for="SortOrder">Name</label>
-                                        <input type="text" name="name" value="{{ $testimonial->name }}" class="form-control @error('name') is-invalid @enderror" placeholder="Name" autocomplete="off">
+                                        <select name="name" id="" class="form-control">
+                                            <option value="">Select User</option>
+                                            @foreach ($user as $row1)
+                                                <option {{ $testimonial->name == $row1->name ? 'selected' : ''}} value="{{ $row1->name }}">{{ $row1->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        {{-- <input type="text" name="name" value="{{ $testimonial->name }}" class="form-control @error('name') is-invalid @enderror" placeholder="Name" autocomplete="off"> --}}
                                         <div class="invalid-feedback">
                                             @error('name')
                                                 {{ $message }}
@@ -68,3 +74,25 @@
         </div>
     </main> 
 @endsection
+
+@push('script')
+    <script>
+        $('form[id="testimonial"]').validate({
+            rules : {
+                name: {
+                        required : true,
+                    },
+                designation: {
+                        required: true,
+                    },
+                description: {
+                        required: true,
+                    },
+                },
+
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+    </script>
+@endpush
