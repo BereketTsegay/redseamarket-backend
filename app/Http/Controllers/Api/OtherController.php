@@ -5,17 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\Common\Status;
 use App\Http\Controllers\Controller;
 use App\Mail\Enquiry;
+use App\Mail\Payment as MailPayment;
 use App\Models\Ads;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\CurrencyCode;
 use App\Models\Favorite;
 use App\Models\FeaturedDealers;
+use App\Models\Payment;
 use App\Models\SocialLink;
 use App\Models\State;
+use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
@@ -1288,15 +1293,122 @@ class OtherController extends Controller
 
         Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
 
+        $customer = Customer::create([
+            'name'  => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => [
+                'line1'         => $request->address,
+                'postal_code'   => $request->zipcode,
+                'city'          => $request->city,
+                'state'         => $request->state,
+                'country'       => $request->country,
+            ],
+        ]);
+
         $intent = PaymentIntent::create([
-            'amount'            => $request->amount,
-            'currency'          => $request->currency,
-            'email'             => $request->email,
-            'billingAddress'    => $request->billingAddress,
+            'amount'                => $request->amount,
+            'currency'              => $request->currency,
+            'customer'              => $customer->id,
+            'payment_method_types'  => ['card'],
+            'description'           => 'Featured Ad payment',
         ]);
 
         $client_secret = $intent->client_secret;
 
+        
+        $payment                = new Payment();
+        $payment->payment_id    = $intent->id;
+        $payment->amount        = $request->amount;
+        $payment->ads_id        = 0;
+        $payment->name          = $request->name;
+        $payment->email         = $request->email;
+        $payment->phone         = $request->phone;
+        $payment->payment_type  = 0; // 0 for Payment through stripe
+        $payment->status        = 'Payment started';
+        $payment->save();
+
+        $details = [
+            'name'      => $request->name,
+            'amount'    => $request->amount,
+            'id'        => $intent->id,
+            'date'      => $payment->created_at,
+        ];
+
+        Mail::to($request->email)->send(new MailPayment($details));
+
         return $client_secret;
+    }
+
+    public function getCurrency(Request $request){
+
+        try{
+            $currency = CurrencyCode::where('country_id', $request->country)
+            ->first();
+
+            return response()->json([
+                'status'    => 'success',
+                'code'      => '200',
+                'currency'  => $currency,
+            ]);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function paymentStatusUpdate(Request $request){
+
+        $rules = [
+            'payment_id'    => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+    
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        Payment::where('payment_id', $request->payment_id)
+        ->update([
+            'status'    => 'Success',
+        ]);
+    }
+
+    public function getFeaturedAmount(Request $request){
+
+        $rules = [
+            'subcategory'    => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+    
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        $subcategory = Subcategory::where('id', $request->subcategory)
+        ->first();
+
+        return response()->json([
+            'status'    => 'success',
+            'code'      => '200',
+            'subcategory'   => $subcategory,
+        ]);
     }
 }

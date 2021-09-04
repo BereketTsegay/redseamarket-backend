@@ -195,8 +195,9 @@ Route::group(['middleware' => ['revalidate']], function(){
 
             // Payment
 
-        Route::view('payment/aproved', 'other.payment.aproved_payment')->name('payment.aproved');
-        Route::view('payment/declined', 'other.payment.declined_payment')->name('payment.declined');
+        Route::get('/payment', [App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
+        Route::get('/payment/view/{id}', [App\Http\Controllers\PaymentController::class, 'view'])->name('payment.view');
+        Route::post('/payment/update/{id}', [App\Http\Controllers\PaymentController::class, 'update'])->name('payment.update');
 
             // Featured Dealer
 

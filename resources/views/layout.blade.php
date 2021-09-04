@@ -145,8 +145,7 @@
                                 </a>
                                 <div class="collapse" id="collapsePayment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="{{ route('payment.aproved') }}">Approved</a>
-                                        <a class="nav-link" href="{{ route('payment.declined') }}">Declined</a>
+                                        <a class="nav-link" href="{{ route('payment.index') }}">Approved</a>
                                     </nav>
                                 </div>
 

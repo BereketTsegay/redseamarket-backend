@@ -19,6 +19,7 @@ use App\Models\MakeMst;
 use App\Models\ModelMst;
 use App\Models\MotorCustomeValues;
 use App\Models\MotorFeatures;
+use App\Models\Payment;
 use App\Models\PropertyRendCustomeValues;
 use App\Models\PropertySaleCustomeValues;
 use App\Models\SellerInformation;
@@ -241,6 +242,40 @@ class AdsController extends Controller
             $ad->longitude             = $request->longitude;
             $ad->status                = Status::REQUEST;
             $ad->save();
+
+            if($featured == Status::ACTIVE){
+
+                if($request->paymentMethod == 'stripe'){
+
+                    Payment::where('payment_id', $request->paymentId)
+                    ->update([
+                        'ads_id'    => $ad->id,
+                    ]);
+                }
+                else{
+
+                    $subcategory = Subcategory::where('id', $request->subcategory)
+                    ->first();
+
+                    if($subcategory->type == 0){
+                        $amount = $subcategory->percentage;
+                    }
+                    else{
+                        $amount = $request->price * ($subcategory->percentage / 100);
+                    }
+
+                    $payment                = new Payment();
+                    $payment->payment_id    = $ad->id . uniqid();
+                    $payment->amount        = $amount;
+                    $payment->ads_id        = $ad->id;
+                    $payment->name          = $request->name;
+                    $payment->email         = $request->email;
+                    $payment->phone         = $request->phone;
+                    $payment->payment_type  = 1; // 1 for Payment through account or direct
+                    $payment->status        = 'Payment pending';
+                    $payment->save();
+                }
+            }
 
             if($request->category == 1){
                 $motor                      = new MotorCustomeValues();

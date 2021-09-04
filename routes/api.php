@@ -47,6 +47,11 @@ Route::post('/customer/ads/view/countupdate', [\App\Http\Controllers\Api\AdsCont
 Route::post('/customer/get/featured/dealer', [\App\Http\Controllers\Api\OtherController::class,'featuredDealer']);
 
 Route::post('/stripe/payment', [\App\Http\Controllers\Api\OtherController::class,'recivePayment']);
+
+Route::post('/get/currency', [\App\Http\Controllers\Api\OtherController::class,'getCurrency']);
+Route::post('/payment/status/update', [\App\Http\Controllers\Api\OtherController::class,'paymentStatusUpdate']);
+Route::post('/subcategory/featured/amount', [\App\Http\Controllers\Api\OtherController::class,'getFeaturedAmount']);
+
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
 
