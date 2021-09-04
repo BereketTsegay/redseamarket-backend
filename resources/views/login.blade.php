@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <meta name="_csrf-token" content="{{ csrf_token() }}">
         <title>LOGIN | JAMAL AL BAHR GENERAL TRADING</title>
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
@@ -53,7 +52,7 @@
                                             @endif
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                                                 <a class="small" href="{{ route('forgotpassword.index') }}">Forgot Password?</a>
-                                                <button type="submit" onclick="generateClientToken()" class="btn btn-primary">Login</button>
+                                                <button type="submit" class="btn btn-primary">Login</button>
                                             </div>
                                         </form>
                                     </div>
@@ -89,107 +88,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="{{ asset('js/scripts.js') }}"></script>
 
-        <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
-
-        <script>
-            let year = new Date().getFullYear();
-            document.getElementById('currentYear').innerHTML = year;
-
-            // Your web app's Firebase configuration
-            let firebaseConfig = {
-                apiKey: "AIzaSyBrhfC7ZrhEyH_xNGXcR6HQUUGUVBNlnWw",
-
-                authDomain: "interview-6168a.firebaseapp.com",
-
-                projectId: "interview-6168a",
-
-                storageBucket: "interview-6168a.appspot.com",
-
-                messagingSenderId: "1028679469723",
-
-                appId: "1:1028679469723:web:026d079d23d7505744943e",
-
-                measurementId: "G-Z5PT70YBQ2"
-
-
-            };
-
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            // firebase.analytics();
-
-            const messaging = firebase.messaging();
-
-            generateClientToken = () => {
-                let email = $('#inputEmail').val();
-
-                messaging
-
-                .requestPermission()
-
-                .then(function () {
-                    
-                    return messaging.getToken()
-
-                })
-
-                .then(function(token) {
-            
-                    // console.log(token);
-
-
-
-                    $.ajaxSetup({
-
-                        headers: {
-
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' //$('meta[name="_csrf-token"]').attr('content')
-
-                        }
-
-                    });
-
-
-
-                    $.ajax({
-
-                        url: '{{ route("save.token") }}',
-
-                        type: 'POST',
-
-                        data: {
-                            // _token: $('meta[name="csrf-token"]').attr('content'),
-                            token: token,
-                            email: email,
-
-                        },
-
-                        dataType: 'JSON',
-
-                        success: function (response) {
-                            
-                            // alert('Token saved successfully.');
-
-                        },
-
-                        error: function (err) {
-
-                            console.log('User Chat Token Error'+ err);
-
-                        },
-
-                    });
-
-
-                }).catch(function (err) {
-
-                    console.log('User Chat Token Error'+ err);
-
-                });
-                
-            }
-
-        </script>
+        
     </body>
 </html>
