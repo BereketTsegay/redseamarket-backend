@@ -47,12 +47,14 @@ class UserRoleController extends Controller
         $role = Roles::where('id', $id)
         ->first();
 
-        $task = Task::with('TaskRole')
+        $task = Task::with(['TaskRole' => function($a) use($role){
+            $a->where('role_id', $role->id);
+        }])
         ->get();
 
-        $task_role = TaskRoleMapping::where('role_id', $id)
+        $task_role = TaskRoleMapping::where('role_id', $role->id)
         ->get();
-        
+
         return view('role.edit_role', compact('role', 'task', 'task_role'));
     }
 

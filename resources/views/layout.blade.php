@@ -138,16 +138,10 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_PAYMENT)
 
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePayment" aria-expanded="false" aria-controls="collapseAds">
+                                <a class="nav-link" href="{{ route('payment.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-dollar-sign"></i></div>
                                     Payment
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapsePayment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="{{ route('payment.index') }}">Approved</a>
-                                    </nav>
-                                </div>
 
                             @endif
 

@@ -29,12 +29,12 @@ Route::group(['middleware' => ['revalidate']], function(){
     
     Route::post('/fcm/token/store', [App\Http\Controllers\LoginController::class, 'tokenStore'])->name('save.token');
     Route::get('/fcm/notification/send', [App\Http\Controllers\LoginController::class, 'sendNotification'])->name('send.token');
-
+    
     // Middleware Prevent Unautherized access
     Route::group(['middleware' => ['adminAuth']], function(){
 
-        Route::group(['middleware' => ['superAdmin']], function(){
-
+        // Route::group(['middleware' => ['superAdmin']], function(){
+            
             // Admin Users
 
             Route::get('/roles', [App\Http\Controllers\UserRoleController::class, 'index'])->name('role.index');
@@ -53,7 +53,7 @@ Route::group(['middleware' => ['revalidate']], function(){
             Route::get('/admin/user/edit/{id}', [App\Http\Controllers\UserRoleController::class, 'adminUserEdit'])->name('admin_user.edit');
             Route::post('/admin/user/update/{id}', [App\Http\Controllers\UserRoleController::class, 'adminUserUpdate'])->name('admin_user.update');
             
-        });
+        // });
 
         // Global
 

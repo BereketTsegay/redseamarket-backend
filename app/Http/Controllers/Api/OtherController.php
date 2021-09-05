@@ -1251,7 +1251,11 @@ class OtherController extends Controller
                 }
             }
 
-            
+            $city = collect($city);
+
+            $city = $city->sortBy('name');
+            $city = array_values($city->toArray());
+
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'City list',
@@ -1312,6 +1316,17 @@ class OtherController extends Controller
             'customer'              => $customer->id,
             'payment_method_types'  => ['card'],
             'description'           => 'Featured Ad payment',
+            'shipping'              => [
+                'name'  => $request->name,
+                'phone' => $request->phone,
+                'address'           => [
+                    'line1'         => $request->address,
+                    'city'          => $request->city,
+                    'state'         => $request->state,
+                    'country'       => $request->country,
+                    'postal_code'   => $request->zipcode,
+                ],
+            ],
         ]);
 
         $client_secret = $intent->client_secret;

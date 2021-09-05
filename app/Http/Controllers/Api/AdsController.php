@@ -179,7 +179,6 @@ class AdsController extends Controller
                 ], 200);
             }
 
-
             if($request->phone_hide == true){
                 $phone_hide = Status::ACTIVE;
             }
@@ -195,7 +194,9 @@ class AdsController extends Controller
             }
 
             if($request->featured == true){
+
                 $featured = Status::ACTIVE;
+
             }
             else{
                 $featured = 0;
