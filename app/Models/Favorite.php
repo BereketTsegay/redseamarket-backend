@@ -13,6 +13,6 @@ class Favorite extends Model
     public function Ads(){
         return $this->hasOne(Ads::class, 'id', 'ads_id')
         ->where('status', Status::ACTIVE)
-        ->where('delete_status', '!=', Status::DELETE);
+        ->where('delete_status', Status::UNDELETE);
     }
 }

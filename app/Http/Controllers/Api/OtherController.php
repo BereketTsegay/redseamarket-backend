@@ -31,8 +31,9 @@ class OtherController extends Controller
         try{
 
             $favourite = tap(Favorite::where('customer_id', Auth::user()->id)
+                ->whereHas('Ads')
                 ->paginate(12), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->transform(function($a){
+                    return $paginatedInstance->getCollection()->map(function($a){
 
                     $a->Ads;
                     $a->Ads->image = array_filter([
@@ -44,7 +45,7 @@ class OtherController extends Controller
                     ]);
 
                     $a->Ads->country_name = $a->Ads->Country->name;
-                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                    $a->currency = $a->Ads->Country->Currency ? $a->Ads->Country->Currency->currency_code : '';
                     $a->Ads->state_name = $a->Ads->State->name;
                     if($a->city_id != 0){
                         $a->city_name = $a->City->name;
