@@ -3148,7 +3148,7 @@ class AdsController extends Controller
         try{
             
             $rules = [
-                'search_key'    => 'required',
+                // 'search_key'    => 'required',
                 'latitude'      => 'required',
                 'longitude'     => 'required',
             ];
