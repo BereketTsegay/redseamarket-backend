@@ -49,7 +49,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
-
+                            {{-- {{dd(Auth::user()->UserRole->TaskRole)}} --}}
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_AUTHORITY)
 
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAuthority" aria-expanded="false" aria-controls="collapseUsers">
@@ -146,6 +146,14 @@
                             @endif
 
                             <div class="sb-sidenav-menu-heading">Others</div>
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_FEATURED_DEALER)
+
+                                <a class="nav-link" href="{{ route('privacy.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-shield-alt"></i></div>
+                                    Privacy & Policy
+                                </a>
+                            @endif
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_FEATURED_DEALER)
 

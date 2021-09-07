@@ -19,6 +19,7 @@ use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
@@ -97,7 +98,7 @@ class OtherController extends Controller
         try{
 
             $myAds = tap(Ads::where('customer_id', Auth::user()->id)
-            ->where('status', Status::ACTIVE)
+            ->where('status', '!=', Status::REJECTED)
             ->where('delete_status', '!=', Status::DELETE)
             ->paginate(12), function ($paginatedInstance){
                 return $paginatedInstance->getCollection()->transform(function($a){
@@ -109,6 +110,8 @@ class OtherController extends Controller
                             return $q;
                         }),
                     ]);
+
+                    $a->Payment;
 
                     $a->country_name = $a->Country->name;
                     $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
@@ -137,7 +140,7 @@ class OtherController extends Controller
                         return $c;
                     });
 
-                    unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                    unset($a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
                     return $a;
                 });
             });
@@ -1425,6 +1428,54 @@ class OtherController extends Controller
             'status'    => 'success',
             'code'      => '200',
             'subcategory'   => $subcategory,
+        ]);
+    }
+
+    public function paymentDocument(Request $request){
+
+        $rules = [
+            'id'                => 'required|numeric',
+            'transaction_id'    => 'required',
+            'payment_slip'      => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+    
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        if($request->payment_slip){
+
+            $document_part = explode(";base64,", $request->payment_slip);
+            $image_type_aux = explode("image/", $document_part[0]);
+            $image_type = $image_type_aux[1];
+            $image_base64 = base64_decode($document_part[1]);
+
+            $document = uniqid() . '.' .$image_type;
+
+            Storage::put('public/document/'.$document, $image_base64);
+
+            $document = 'storage/document/'.$document;
+
+        }
+
+        Payment::where('ads_id', $request->id)
+        ->update([
+            'payment_id'    => $request->transaction_id,
+            'document'      => $document,
+        ]);
+
+        return response()->json([
+            'status'    => 'success',
+            'code'      => '200',
+            'message'   => 'Document has been uploaded',
         ]);
     }
 }

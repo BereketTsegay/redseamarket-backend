@@ -45,9 +45,7 @@
                                     <th>Category</th>
                                     <th>Title</th>
                                     <th>User</th>
-                                    <th>View</th>
-                                    <th>Accept</th>
-                                    <th>Reject</th>
+                                    <th>Action</th>
                                 </tr>
                             @endif
                         </thead>
@@ -61,10 +59,23 @@
                                     <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
                                     <td>{{ $row->Category->name }}</td>
                                     <td>{{ $row->title }}</td>
-                                    <td>{{ $row->User->name }}</td>
-                                    <td><a href="{{ route('ad_request.details', $row->id) }}"><button class="btn btn-secondary">View</button></a></td>
-                                    <td><form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form></td>
-                                    <td><button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button></td>
+                                    <td>{{ $row->User->name }}{{$row->id}}</td>
+
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a class="mb-2" href="{{ $row->Payment ? asset( $row->Payment->document ) : 'javascript:void(0);' }}"><button class="btn btn-warning">View Document</button></a>
+                                                <a href="{{ route('ad_request.details', $row->id) }}"><button class="btn btn-secondary">View</button></a>
+                                                <form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form>
+                                                <button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             @php
                                 $i++;

@@ -70,6 +70,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/view/myAds', [\App\Http\Controllers\Api\OtherController::class, 'myAds']);
     Route::post('/customer/favourite/adOrRemove', [\App\Http\Controllers\Api\OtherController::class, 'favouriteStoreOrRemove']);
     Route::post('/customer/change/password', [\App\Http\Controllers\Api\LoginController::class, 'changePassword']);
+    Route::post('/customer/uploade/payment_slip', [\App\Http\Controllers\Api\OtherController::class, 'paymentDocument']);
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
 });

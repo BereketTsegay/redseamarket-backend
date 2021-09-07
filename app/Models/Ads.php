@@ -74,4 +74,8 @@ class Ads extends Model
     public function Favourite(){
         return $this->hasOne(Favorite::class, 'ads_id', 'id');
     }
+
+    public function Payment() {
+        return $this->hasOne(Payment::class, 'ads_id', 'id');
+    }
 }

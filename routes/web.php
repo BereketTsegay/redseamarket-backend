@@ -206,6 +206,13 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::post('/featured/dealer/update', [App\Http\Controllers\IconController::class, 'featuredUpdate'])->name('dealer.update');
         Route::post('/featured/dealer/delete/{id}', [App\Http\Controllers\IconController::class, 'featuredDelete'])->name('dealer.delete');
 
+            // Privacy Policy
+
+        Route::get('/privacy', [App\Http\Controllers\PrivacyPolicyController::class, 'index'])->name('privacy.index');
+        Route::post('/privacy/store', [App\Http\Controllers\PrivacyPolicyController::class, 'store'])->name('privacy.store');
+        Route::post('/privacy/update', [App\Http\Controllers\PrivacyPolicyController::class, 'update'])->name('privacy.update');
+        Route::post('/privacy/delete/{id}', [App\Http\Controllers\PrivacyPolicyController::class, 'delete'])->name('privacy.delete');
+
         Route::get('/admin/logout', function(){
             Auth::logout();
     

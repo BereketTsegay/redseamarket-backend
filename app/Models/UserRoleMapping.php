@@ -12,4 +12,8 @@ class UserRoleMapping extends Model
     public function Role(){
         return $this->hasOne(Roles::class, 'id', 'role_id');
     }
+
+    public function TaskRole(){
+        return $this->hasMany(TaskRoleMapping::class, 'role_id', 'role_id');
+    }
 }

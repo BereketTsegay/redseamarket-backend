@@ -86,6 +86,8 @@ class AdsController extends Controller
                 $a->created_on = date('d-M-Y', strtotime($a->created_at));
                 $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
 
+                $a->Payment;
+
                 $a->country_name = $a->Country->name;
                 $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                 $a->state_name = $a->State->name;
@@ -122,7 +124,7 @@ class AdsController extends Controller
 
                 $a->SellerInformation;
 
-                unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                unset($a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
                 return $a;
             });
 
