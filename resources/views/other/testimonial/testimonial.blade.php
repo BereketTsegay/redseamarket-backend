@@ -25,9 +25,7 @@
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Designation</th>
-                                <th>View</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,12 +34,20 @@
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $row->name }}</td>
                                     <td>{{ $row->designation }}</td>
-                                    <td><a href="{{ route('testimonial.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
-                                    <td><a href="{{ route('testimonial.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
-                                    <form id="delete_banner_form{{$row->id}}" action="#" method="POST">
-                                        @csrf
-                                    </form>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a href="{{ route('testimonial.view', $row->id) }}"><button class="btn btn-primary">View</button></a>
+                                                <a href="{{ route('testimonial.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                <button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
+                                                <form id="delete_banner_form{{$row->id}}" action="#" method="POST">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

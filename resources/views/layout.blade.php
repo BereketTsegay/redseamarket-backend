@@ -70,16 +70,10 @@
                             
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_USER)
                                 
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+                                <a class="nav-link" href="{{ route('user.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                    Users
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    Subscribed Users
                                 </a>
-                                <div class="collapse" id="collapseUsers" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="{{ route('user.index') }}">Users</a>
-                                    </nav>
-                                </div>
 
                             @endif
                             

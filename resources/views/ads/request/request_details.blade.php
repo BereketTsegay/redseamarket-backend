@@ -43,7 +43,7 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">City :</p>
-                                    <p class="col-md-6">{{ $ad->City->name }}</p>
+                                    <p class="col-md-6">{{ $ad->City ? $ad->City->name : $ad->State->name }}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Price :</p>

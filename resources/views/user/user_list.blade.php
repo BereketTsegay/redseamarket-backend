@@ -3,16 +3,16 @@
 @section('content')
     <main>
         <div class="container-fluid px-4">
-            <h1 class="mt-4">Users</h1>
+            <h1 class="mt-4">Subscribed Users</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Users</li>
+                <li class="breadcrumb-item active">Subscribed Users</li>
             </ol>
             
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    Users
+                    Subscribed Users
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple" class="table table-striped table-bordered">
@@ -23,9 +23,7 @@
                                 <th>Date</th>
                                 <th>Email</th>
                                 <th>Status</th>
-                                <th>View</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,12 +44,20 @@
                                             <span class="text-disable">Disabled</span>
                                         @endif
                                     </td>
-                                    <td><a href="{{ route('user.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
-                                    <td><a href="{{ route('user.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" onclick="userDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
-                                        <form id="deleteUserForm{{$row->id}}" action="{{ route('user.delete', $row->id) }}" method="POST">
-                                            @csrf
-                                        </form>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a href="{{ route('user.view', $row->id) }}"><button class="btn btn-primary">View</button></a>
+                                                <a href="{{ route('user.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                <button type="button" onclick="userDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                                                <form id="deleteUserForm{{$row->id}}" action="{{ route('user.delete', $row->id) }}" method="POST">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @php

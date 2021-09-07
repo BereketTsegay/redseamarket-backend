@@ -26,9 +26,7 @@
                                 <th>Date</th>
                                 <th>Email</th>
                                 <th>Status</th>
-                                <th>View</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,12 +43,20 @@
                                             <span class="text-disable">Disabled</span>
                                         @endif
                                     </td>
-                                    <td><a href="{{ route('admin_user.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
-                                    <td><a href="{{ route('admin_user.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" onclick="userDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
-                                        <form id="deleteUserForm{{$row->id}}" action="{{ route('user.delete', $row->id) }}" method="POST">
-                                            @csrf
-                                        </form>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a href="{{ route('admin_user.view', $row->id) }}"><button class="btn btn-primary">View</button></a>
+                                                <a href="{{ route('admin_user.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                <button type="button" onclick="userDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                                                <form id="deleteUserForm{{$row->id}}" action="{{ route('user.delete', $row->id) }}" method="POST">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

@@ -59,7 +59,7 @@
                                     <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
                                     <td>{{ $row->Category->name }}</td>
                                     <td>{{ $row->title }}</td>
-                                    <td>{{ $row->User->name }}{{$row->id}}</td>
+                                    <td>{{ $row->User->name }}</td>
 
                                     <td>
                                         <div class="btn-group">
@@ -74,8 +74,6 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td></td>
-                                    <td></td>
                                 </tr>
                             @php
                                 $i++;
