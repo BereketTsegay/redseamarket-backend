@@ -1062,6 +1062,12 @@ class AdsController extends Controller
         ->paginate(10);
 
         $reason = RejectReason::where('status', Status::ACTIVE)
+        ->where('type', 0)
+        ->orderBy('reson')
+        ->get();
+
+        $refund = RejectReason::where('status', Status::ACTIVE)
+        ->where('type', 1)
         ->orderBy('reson')
         ->get();
 
@@ -1069,7 +1075,11 @@ class AdsController extends Controller
         ->orderBy('created_at', 'desc')
         ->paginate(10, '*', 'rejected');
 
-        return view('ads.request.ad_request', compact('adsRequest', 'reason', 'adsRejected'));
+        $adsRefund = Ads::where('status', Status::REFUND)
+        ->orderBy('created_at', 'desc')
+        ->paginate(10, '*', 'refund');
+
+        return view('ads.request.ad_request', compact('adsRequest', 'reason', 'adsRejected', 'refund', 'adsRefund'));
     }
 
     public function adRequestDetails($id){
@@ -1107,6 +1117,18 @@ class AdsController extends Controller
         ->get();
 
         return response()->json($feature);
+    }
+
+    public function adRefund(Request $request){
+
+        Ads::where('id', $request->ad_id)
+        ->update([
+            'status'            => Status::REFUND,
+            'reject_reason_id'  => $request->reason,
+        ]);
+
+        session()->flash('success', 'Ad refund initiated');
+        return redirect()->route('ad_request.index');
     }
 
 

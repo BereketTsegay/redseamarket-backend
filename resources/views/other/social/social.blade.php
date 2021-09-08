@@ -27,8 +27,7 @@
                                 <th>Url</th>
                                 <th>Image / Icon</th>
                                 <th>Active</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,11 +48,19 @@
                                     @else
                                     <td class="text-secondary">Disabled</td>
                                     @endif
-                                    <td><a href="{{ route('social.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" onclick="socialDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteSocialModal">Delete</button>
-                                    <form id="delete_social_form{{$row->id}}" action="{{ route('social.delete', $row->id) }}" method="POST">
-                                        @csrf
-                                    </form>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a href="{{ route('social.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                <button type="button" onclick="socialDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteSocialModal">Delete</button>
+                                                <form id="delete_social_form{{$row->id}}" action="{{ route('social.delete', $row->id) }}" method="POST">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

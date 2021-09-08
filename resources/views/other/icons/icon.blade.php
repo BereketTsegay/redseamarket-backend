@@ -27,8 +27,7 @@
                                 <th>Icon</th>
                                 <th>Sort Order</th>
                                 <th>Active</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,11 +42,19 @@
                                     @else
                                     <td class="text-secondary">Disabled</td>
                                     @endif
-                                    <td><button type="button" onclick="iconEdit({{$row->id}}, '{{$row->name}}', {{$row->sort_order}})" class="btn btn-secondary" data-toggle="modal" data-target="#editIconModal">Edit</button></td>
-                                    <td><button type="button" onclick="iconDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteIconModal">Delete</button>
-                                    <form id="delete_icon_form{{$row->id}}" action="{{ route('icon.delete', $row->id) }}" method="POST">
-                                        @csrf
-                                    </form>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <button type="button" onclick="iconEdit({{$row->id}}, '{{$row->name}}', {{$row->sort_order}})" class="btn btn-secondary" data-toggle="modal" data-target="#editIconModal">Edit</button>
+                                                <button type="button" onclick="iconDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteIconModal">Delete</button>
+                                                <form id="delete_icon_form{{$row->id}}" action="{{ route('icon.delete', $row->id) }}" method="POST">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

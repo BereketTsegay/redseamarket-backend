@@ -14,6 +14,7 @@ class Status{
     const ACTIVE = 1;
     const REJECTED = 2;
     const INACTIVE = 3;
+    const REFUND = 4;
 
     // Image
     

@@ -162,6 +162,7 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         Route::get('/get/reject/reson', [App\Http\Controllers\AdsController::class, 'getRejectReson']);
         Route::post('/ad/reject', [App\Http\Controllers\AdsController::class, 'adReject'])->name('reject.ads');
+        Route::post('/ad/refund', [App\Http\Controllers\AdsController::class, 'adRefund'])->name('refund.ads');
 
             // Banner
 

@@ -160,7 +160,7 @@
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_REJECT_REASON)
                                 <a class="nav-link" href="{{ route('reject.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
-                                    Reject Resons
+                                    Resons
                                 </a>
                             
                             @endif

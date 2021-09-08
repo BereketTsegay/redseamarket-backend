@@ -20,7 +20,8 @@ class RejectResonController extends Controller
     public function store(Request $request){
         
         $request->validate(([
-            'reson' => 'required',
+            'type'          => 'required',
+            'reson'         => 'required',
             'description'   => 'required',
         ]));
 
@@ -33,6 +34,7 @@ class RejectResonController extends Controller
 
         $reson                  = new RejectReason();
         $reson->reson           = $request->reson;
+        $reson->type            = $request->type;
         $reson->description     = $request->description;
         $reson->status          = $status;
         $reson->save();
@@ -44,7 +46,8 @@ class RejectResonController extends Controller
     public function update(Request $request){
 
         $request->validate(([
-            'reson' => 'required',
+            'type'          => 'required',
+            'reson'         => 'required',
             'description'   => 'required',
         ]));
 
@@ -58,6 +61,7 @@ class RejectResonController extends Controller
         RejectReason::where('id', $request->reject_id)
         ->update([
             'reson'         => $request->reson,
+            'type'          => $request->type,
             'description'   => $request->description,
             'status'        => $status,
         ]);
