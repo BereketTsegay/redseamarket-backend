@@ -18,9 +18,9 @@ class CreateAdsTable extends Migration
             $table->id();
             $table->integer('category_id')->default(0);
             $table->integer('subcategory_id')->default(0);
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->string('canonical_name');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->double('price');
             $table->boolean('negotiable_flag');
             $table->integer('country_id');

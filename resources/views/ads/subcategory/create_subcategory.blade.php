@@ -30,10 +30,12 @@
                                                 @endif
                                                 <option value="category_{{ $row->id }}">{{ $row->name }}</option>
                                                 @foreach ($row->Subcategory as $item)
-                                                @if (old('category') == 'subcategory_{{ $row->id }}_{{ $item->id }}')
-                                                    <option selected value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
+                                                @if($item->parent_id == 0)
+                                                    @if (old('category') == 'subcategory_{{ $row->id }}_{{ $item->id }}')
+                                                        <option selected value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
+                                                    @endif
+                                                        <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                 @endif
-                                                    <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                 @endforeach
                                             @endforeach
                                         </select>

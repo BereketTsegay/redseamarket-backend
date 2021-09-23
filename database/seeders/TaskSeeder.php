@@ -57,5 +57,13 @@ class TaskSeeder extends Seeder
         $task           = new Task();
         $task->name     = 'Manage Social Links';
         $task->save();
+
+        $task           = new Task();
+        $task->name     = 'Manage Terms & Conditions';
+        $task->save();
+
+        $task           = new Task();
+        $task->name     = 'Manage Privacy Policy';
+        $task->save();
     }
 }

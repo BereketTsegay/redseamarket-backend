@@ -102,6 +102,7 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::post('/subcategory/delete/{id}', [App\Http\Controllers\SubcategoryController::class, 'delete'])->name('subcategory.delete');
 
         Route::get('/change/subcategory', [App\Http\Controllers\SubcategoryController::class, 'subcategoryAjaxfetch']);
+        Route::get('/change/subcategory/category', [App\Http\Controllers\SubcategoryController::class, 'subcategoryChange']);
 
             // Icons
         
@@ -214,6 +215,13 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::post('/privacy/update', [App\Http\Controllers\PrivacyPolicyController::class, 'update'])->name('privacy.update');
         Route::post('/privacy/delete/{id}', [App\Http\Controllers\PrivacyPolicyController::class, 'delete'])->name('privacy.delete');
 
+            // Terms Conditions
+
+        Route::get('/terms', [App\Http\Controllers\TermsConditionsController::class, 'index'])->name('terms.index');
+        Route::post('/terms/store', [App\Http\Controllers\TermsConditionsController::class, 'store'])->name('terms.store');
+        Route::post('/terms/update', [App\Http\Controllers\TermsConditionsController::class, 'update'])->name('terms.update');
+        Route::post('/terms/delete/{id}', [App\Http\Controllers\TermsConditionsController::class, 'delete'])->name('terms.delete');
+
         Route::get('/admin/logout', function(){
             Auth::logout();
     
@@ -222,3 +230,5 @@ Route::group(['middleware' => ['revalidate']], function(){
     });
     
 });
+
+Route::view('/test', 'payment_mail');

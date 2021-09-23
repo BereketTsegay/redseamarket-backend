@@ -56,14 +56,14 @@ class AdsController extends Controller
         
         $request->validate([
             'category'          => 'required|numeric',
-            'title'             => 'required',
+            // 'title'             => 'required',
             'price'             => 'required|numeric',
             'state'             => 'required|numeric',
             // 'subcategory'       => 'numeric',
             'canonical_name'    => 'required',
             'country'           => 'required|numeric',
             // 'city'              => 'required|numeric',
-            'description'       => 'required',
+            // 'description'       => 'required',
             'seller_name'       => 'required',
             'Phone'             => 'required|numeric',
             'email'             => 'required|email',
@@ -71,6 +71,16 @@ class AdsController extends Controller
             'image.*'           => 'required|mimes:png,jpg,jpeg',
         ]);
         
+
+        if(!$request->title && !$request->arabic_title){
+            session()->flash('title_error', 'Please fill any of the title field');
+            return redirect()->back();
+        }
+
+        if(!$request->description && !$request->description_arabic){
+            session()->flash('description_error', 'Please fill any of the description field');
+            return redirect()->back();
+        }
 
         if($request->category == 1){
             $request->validate([
@@ -487,7 +497,7 @@ class AdsController extends Controller
         
         $request->validate([
             'category'          => 'required|numeric',
-            'title'             => 'required',
+            // 'title'             => 'required',
             'price'             => 'required|numeric',
             'state'             => 'required|numeric',
             // 'subcategory'       => 'numeric',

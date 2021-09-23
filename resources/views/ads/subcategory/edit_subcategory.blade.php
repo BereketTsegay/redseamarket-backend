@@ -25,18 +25,20 @@
                                         <select name="category" id="" class="form-control @error('category') is-invalid @enderror" autocomplete="off">
                                             
                                             @foreach ($category as $row)
-                                                @if($subcategory->id == $row->id)
+                                                @if($subcategory->category_id == $row->id)
                                                 <option selected value="category_{{ $row->id }}">{{ $row->name }}</option>
                                                 @else
                                                 <option value="category_{{ $row->id }}">{{ $row->name }}</option>
                                                 @endif
 
                                                 @foreach ($row->Subcategory as $item)
+                                                @if($item->parent_id == 0)
                                                     @if($subcategory->parent_id == $item->id)
                                                     <option selected value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                     @else
                                                     <option value="subcategory_{{ $row->id }}_{{ $item->id }}">----| {{ $item->name }}</option>
                                                     @endif
+                                                @endif
                                                 @endforeach
                                             @endforeach
                                         </select>

@@ -24,7 +24,12 @@
                             <select name="category" id="category" class="form-control w-50 ">
                                 <option value="">Select Category</option>
                                 @foreach ($category as $row)
-                                    <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                    <option value="category_{{ $row->id }}">{{ $row->name }}</option>
+                                    @foreach ($row->Subcategory as $item)
+                                        @if ($item->parent_id == 0)
+                                            <option value="subcategory_{{ $item->id }}">-----| {{ $item->name }}</option>
+                                        @endif
+                                    @endforeach
                                 @endforeach
                             </select>
                         </div>
@@ -94,12 +99,14 @@
 
     $('#category').on('change', function(){
         let id = $(this).val();
+        let split = id.split('_');
+        type = split[0];
+        id = split[1]
         let tr = '';
-        
         $.ajax({
-            url : '/change/subcategory',
+            url : '/change/subcategory/category',
             type : 'get',
-            data : {id:id},
+            data : {id:id, type:type},
             success:function(data){
                 if(data.length == 0){
                     tr += 'No data found';

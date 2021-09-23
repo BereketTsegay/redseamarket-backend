@@ -40,11 +40,20 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Title">Title</label>
-                                        <input type="text" name="title" value="{{ $ad->title }}" class="slug form-control @error('title') is-invalid @enderror" placeholder="Title" autocomplete="off">
+                                        <input type="text" name="title" value="{{ $ad->title }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' }}r" placeholder="Title" autocomplete="off">
                                         <div class="invalid-feedback">
-                                            @error('title')
-                                                {{ $message }}
-                                            @enderror
+                                            @if (Session::has('title_error'))
+                                                {{ Session::get('{{ $message }}') }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="Title">Title in Arabic</label>
+                                        <input type="text" name="arabic_title" value="{{ $ad->title_arabic }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' }}" placeholder="Title in Arabic" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @if (Session::has('title_error'))
+                                                {{ Session::get('{{ $message }}') }}
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="form-group my-2">
@@ -148,11 +157,20 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="Description">Description</label>
-                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ $ad->description }}</textarea>
+                                        <textarea name="description" class="form-control {{ Session::has('description_error') ? 'is-invalid' }}" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ $ad->description }}</textarea>
                                         <div class="invalid-feedback">
-                                            @error('description')
-                                                {{ $message }}
-                                            @enderror
+                                            @if (Session::has('description_error'))
+                                                {{ Session::get('{{ $message }}') }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label for="Description">Description in Arabic</label>
+                                        <textarea name="description_arabic" class="form-control {{ Session::has('description_error') ? 'is-invalid' }}" cols="30" rows="3" placeholder="Description in Arabic" autocomplete="off">{{ $ad->description_arabic }}</textarea>
+                                        <div class="invalid-feedback">
+                                            @if (Session::has('description_error'))
+                                                {{ Session::get('{{ $message }}') }}
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

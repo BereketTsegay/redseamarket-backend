@@ -59,6 +59,12 @@ Route::post('/customer/get/variant', [\App\Http\Controllers\Api\AdsController::c
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
 
+Route::post('/privacy/policy', [\App\Http\Controllers\Api\OtherController::class, 'privacyPolicy']);
+Route::post('/terms/conditions', [\App\Http\Controllers\Api\OtherController::class, 'termsConditions']);
+
+Route::post('/search/autocomplete', [\App\Http\Controllers\Api\AdsController::class, 'searchAutoComplete']);
+
+
 Route::middleware('auth:api')->group( function () {
 
     Route::post('/customer/loged/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'LogedDashboard']);

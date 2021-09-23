@@ -208,11 +208,32 @@ class SubcategoryController extends Controller
 
     public function subcategoryAjaxfetch(Request $request){
         
-        $subcategory = Subcategory::where('category_id', $request->id)
-        ->where('delete_status', '!=', Status::DELETE)
-        ->where('status', Status::ACTIVE)
-        ->orderBy('sort_order')
-        ->get();
+            $subcategory = Subcategory::where('category_id', $request->id)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->where('status', Status::ACTIVE)
+            ->orderBy('sort_order')
+            ->get();
+
+        return response()->json($subcategory);
+    }
+
+    public function subcategoryChange(Request $request){
+        
+        if($request->type == 'category'){
+            $subcategory = Subcategory::where('category_id', $request->id)
+            ->where('parent_id', 0)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->where('status', Status::ACTIVE)
+            ->orderBy('sort_order')
+            ->get();
+        }
+        else{
+            $subcategory = Subcategory::where('parent_id', $request->id)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->where('status', Status::ACTIVE)
+            ->orderBy('sort_order')
+            ->get();
+        }
 
         return response()->json($subcategory);
     }

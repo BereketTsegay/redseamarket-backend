@@ -15,4 +15,6 @@ class Task{
     const MANAGE_REJECT_REASON      = 9;
     const MANAGE_ICONS              = 10;
     const MANAGE_SOCIAL_LINK        = 11;
+    const TERMS_CONDITIONS          = 12;
+    const PRIVACYPOLICY             = 13;
 }

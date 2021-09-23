@@ -13,9 +13,11 @@ use App\Models\CurrencyCode;
 use App\Models\Favorite;
 use App\Models\FeaturedDealers;
 use App\Models\Payment;
+use App\Models\PrivacyPolicy;
 use App\Models\SocialLink;
 use App\Models\State;
 use App\Models\Subcategory;
+use App\Models\TermsConditions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -1476,6 +1478,30 @@ class OtherController extends Controller
             'status'    => 'success',
             'code'      => '200',
             'message'   => 'Document has been uploaded',
-        ]);
+        ], 200);
+    }
+
+    public function privacyPolicy(){
+
+        $privacy = PrivacyPolicy::orderBy('created_at')
+        ->get();
+
+        return response()->json([
+            'status'    => 'success',
+            'code'      => '200',
+            'privacy'   => $privacy,
+        ], 200);
+    }
+
+    public function termsConditions(){
+
+        $terms = TermsConditions::orderBy('created_at')
+        ->get();
+
+        return response()->json([
+            'status'    => 'success',
+            'code'      => '200',
+            'terms'     => $terms,
+        ], 200);
     }
 }

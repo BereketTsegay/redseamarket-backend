@@ -49,8 +49,8 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
-                            {{-- {{dd(Auth::user()->UserRole->TaskRole)}} --}}
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_AUTHORITY)
+                            
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_AUTHORITY))
 
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAuthority" aria-expanded="false" aria-controls="collapseUsers">
                                     <div class="sb-nav-link-icon"><i class="fas fa-university"></i></div>
@@ -68,7 +68,7 @@
 
                             @endif
                             
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_USER)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_USER))
                                 
                                 <a class="nav-link" href="{{ route('user.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
@@ -81,7 +81,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
                                 Banners
                             </a> --}}
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_TESTIMONIAL)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_TESTIMONIAL))
 
                                 <a class="nav-link" href="{{ route('testimonial.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
@@ -90,7 +90,7 @@
 
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_CATEGORY)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_CATEGORY))
 
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseAds">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
@@ -105,7 +105,7 @@
                                 </div>
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_SUBCATEGORY)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_SUBCATEGORY))
 
                                 <a class="nav-link" href="{{ route('subcategory.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
@@ -114,7 +114,7 @@
 
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_ADS)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_ADS))
 
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAds" aria-expanded="false" aria-controls="collapseAds">
                                     <div class="sb-nav-link-icon"><i class="fas fa-ad"></i></div>
@@ -130,7 +130,7 @@
 
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_PAYMENT)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_PAYMENT))
 
                                 <a class="nav-link" href="{{ route('payment.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-dollar-sign"></i></div>
@@ -141,7 +141,7 @@
 
                             <div class="sb-sidenav-menu-heading">Others</div>
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_FEATURED_DEALER)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_FEATURED_DEALER))
 
                                 <a class="nav-link" href="{{ route('privacy.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-shield-alt"></i></div>
@@ -149,7 +149,15 @@
                                 </a>
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_FEATURED_DEALER)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::TERMS_CONDITIONS))
+
+                                <a class="nav-link" href="{{ route('terms.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-shield-alt"></i></div>
+                                    Terms & Conditions
+                                </a>
+                            @endif
+
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_FEATURED_DEALER))
 
                                 <a class="nav-link" href="{{ route('dealer.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
@@ -157,7 +165,7 @@
                                 </a>
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_REJECT_REASON)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_REJECT_REASON))
                                 <a class="nav-link" href="{{ route('reject.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
                                     Resons
@@ -165,7 +173,7 @@
                             
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_ICONS)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_ICONS))
                                 
                                 <a class="nav-link" href="{{ route('icon.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-icons"></i></div>
@@ -174,7 +182,7 @@
 
                             @endif
 
-                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->role_id == \App\Common\Task::MANAGE_SOCIAL_LINK)
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_SOCIAL_LINK))
                                 
                                 <a class="nav-link" href="{{ route('social.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-thumbs-up"></i></div>

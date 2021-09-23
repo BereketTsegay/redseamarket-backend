@@ -153,9 +153,9 @@ class AdsController extends Controller
             $rules = [
                 'category'          => 'required|numeric',
                 // 'subcategory'       => 'required|numeric',
-                'title'             => 'required',
+                // 'title'             => 'required',
                 'canonical_name'    => 'required',
-                'description'       => 'required',
+                // 'description'       => 'required',
                 'price'             => 'required|numeric',
                 'country'           => 'required|numeric',
                 'state'             => 'required|numeric',
@@ -218,6 +218,22 @@ class AdsController extends Controller
                 $subcategory = 0;
             }
 
+            if(!$request->titleinArabic && !$request->title){
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Please enter title in any one of the language',
+                    'code'      => 400,
+                ], 200);
+            }
+
+            if(!$request->descriptioninArabic && !$request->description){
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Please enter description in any one of the language',
+                    'code'      => 400,
+                ], 200);
+            }
+
             $customer                   = new SellerInformation();
             $customer->name             = $request->name;
             $customer->email            = $request->email;
@@ -230,8 +246,10 @@ class AdsController extends Controller
             $ad->category_id           = $request->category;
             $ad->subcategory_id        = $subcategory;
             $ad->title                 = $request->title;
+            $ad->title_arabic          = $request->titleinArabic;
             $ad->canonical_name        = $request->canonical_name;
             $ad->description           = $request->description;
+            $ad->description_arabic    = $request->descriptioninArabic;
             $ad->price                 = $request->price;
             $ad->negotiable_flag       = $negotiable;
             $ad->country_id            = $request->country;
@@ -3404,6 +3422,105 @@ class AdsController extends Controller
                 'status'    => 'success',
                 'message'   => 'View added',
                 'code'      => 200,
+            ]);
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function searchAutoComplete(Request $request){
+
+        try{
+
+            $rules = [
+                'search_key'    => 'required',
+                'latitude'      => 'required',
+                'longitude'     => 'required',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+    
+            if($validate->fails()){
+    
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 10; // Km
+
+            $ads = Ads::where(function($a) use($request){
+                $a->orwhere('title', 'like', '%'. $request->search_key .'%')
+                ->orwhere('title_arabic', 'like', '%'. $request->search_key .'%')
+                ->orwhere('canonical_name', 'like', '%'. $request->search_key .'%');
+            })
+            ->where('status', Status::ACTIVE)
+            ->where('delete_status', Status::UNDELETE)
+            ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            ->having('distance', '<=', $radius);
+
+            if($request->category){
+                $ads->where('category_id', $request->category);
+            }
+            if($request->city){
+                $ads->where('city_id', $request->city);
+            }
+            if($request->subcategory){
+                $ads->where('subcategory_id', $request->subcategory);
+            }
+            if($request->seller){
+                $ads->where('sellerinformation_id', $request->seller);
+            }
+            if($request->price_from){
+                $ads->where('price', '>=', $request->price_from);
+            }
+            if($request->price_to){
+                $ads->where('price', '<=', $request->price_to);
+            }
+            if($request->condition){
+                $ads->where('category_id', 1)
+                ->whereHas('MotoreValue', function($a) use($request){
+                    $a->where('condition', $request->condition);
+                });
+            }
+            if($request->transmission){
+                $ads->where('category_id', 1)
+                ->whereHas('MotoreValue', function($a) use($request){
+                    $a->where('transmission', $request->transmission);
+                });
+            }
+            if($request->mileage_from){
+                $ads->where('category_id', 1)
+                ->whereHas('MotoreValue', function($a) use($request){
+                    $a->where('milage', '>=', $request->mileage_from);
+                });
+            }
+            if($request->mileage_to){
+                $ads->where('category_id', 1)
+                ->whereHas('MotoreValue', function($a) use($request){
+                    $a->where('milage', '<=', $request->mileage_to);
+                });
+            }
+
+            $ads = $ads->get();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Result for '. $request->search_key,
+                'code'      => 200,
+                'ads'       => $ads,
             ]);
         }
         catch (\Exception $e) {
