@@ -40,7 +40,7 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                <button class="btn btn-secondary" onclick="editBanner({{$row->id}}, '{{$row->title}}', '{{$row->terms}}')" data-toggle="modal" data-target="#editBannerModal">Edit</button>
+                                                <button class="btn btn-secondary" onclick="editBanner({{$row->id}}, `{{$row->title}}`, `{{$row->terms}}`)" data-toggle="modal" data-target="#editBannerModal">Edit</button>
                                                 <button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
                                                 <form id="delete_Banner_form{{$row->id}}" action="{{ route('terms.delete', $row->id) }}" method="POST">
                                                     @csrf

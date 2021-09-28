@@ -39,30 +39,39 @@
                 </li>
             </ul>
         </nav>
+
+        @php
+            
+            $adsCount = \App\Models\Ads::where('status', \App\Common\Status::REQUEST)
+            ->where('created_at', \Carbon\Carbon::today())
+            ->count();
+
+        @endphp
+
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="{{ route('dashboard') }}">
+                            <a class="nav-link {{ request()->is('*dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
                             
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_AUTHORITY))
 
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAuthority" aria-expanded="false" aria-controls="collapseUsers">
+                                <a class="nav-link collapsed {{ request()->is('*role*') ? 'active' : '' }} {{ request()->is('*admin/user*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAuthority" aria-expanded="false" aria-controls="collapseUsers">
                                     <div class="sb-nav-link-icon"><i class="fas fa-university"></i></div>
                                     Authority
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapseAuthority" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <div class="collapse {{ request()->is('*role*') ? 'show' : '' }} {{ request()->is('*admin/user*') ? 'show' : '' }}" id="collapseAuthority" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="{{ route('role.index') }}">Roles</a>
+                                        <a class="nav-link {{ request()->is('*role*') ? 'active' : '' }}" href="{{ route('role.index') }}">Roles</a>
                                     </nav>
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="{{ route('admin_user.index') }}">Admin Users</a>
+                                        <a class="nav-link {{ request()->is('*admin/user*') ? 'active' : '' }}" href="{{ route('admin_user.index') }}">Admin Users</a>
                                     </nav>
                                 </div>
 
@@ -70,7 +79,7 @@
                             
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_USER))
                                 
-                                <a class="nav-link" href="{{ route('user.index') }}">
+                                <a class="nav-link {{ request()->is('*users*') ? 'active' : '' }}" href="{{ route('user.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                     Subscribed Users
                                 </a>
@@ -83,7 +92,7 @@
                             </a> --}}
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_TESTIMONIAL))
 
-                                <a class="nav-link" href="{{ route('testimonial.index') }}">
+                                <a class="nav-link {{ request()->is('*testimonial*') ? 'active' : '' }}" href="{{ route('testimonial.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
                                     Testimonials
                                 </a>
@@ -92,22 +101,22 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_CATEGORY))
 
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseAds">
+                                <a class="nav-link collapsed {{ request()->is('category*') ? 'active' : '' }} {{ request()->is('*custom_field*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseAds">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
                                     Category
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapseCategory" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <div class="collapse {{ request()->is('category*') ? 'show' : '' }} {{ request()->is('*custom_field*') ? 'show' : '' }}" id="collapseCategory" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="{{ route('category.index') }}">Category</a>
-                                        <a class="nav-link" href="{{ route('custom_field.index') }}">Custom Field</a>
+                                        <a class="nav-link {{ request()->is('category*') ? 'active' : '' }}" href="{{ route('category.index') }}">Category</a>
+                                        <a class="nav-link {{ request()->is('*custom_field*') ? 'active' : '' }}" href="{{ route('custom_field.index') }}">Custom Field</a>
                                     </nav>
                                 </div>
                             @endif
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_SUBCATEGORY))
 
-                                <a class="nav-link" href="{{ route('subcategory.index') }}">
+                                <a class="nav-link {{ request()->is('subcategory*') ? 'active' : '' }}" href="{{ route('subcategory.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
                                     Subcategory
                                 </a>
@@ -116,15 +125,22 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_ADS))
 
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAds" aria-expanded="false" aria-controls="collapseAds">
+                                <a class="nav-link collapsed {{ request()->is('ad_list*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAds" aria-expanded="false" aria-controls="collapseAds">
                                     <div class="sb-nav-link-icon"><i class="fas fa-ad"></i></div>
                                     Ads
+                                    @if ($adsCount != 0)
+                                        <div class="badge text-danger">{{$adsCount}}</div>
+                                    @endif
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapseAds" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <div class="collapse {{ request()->is('ad*') ? 'show' : '' }}" id="collapseAds" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="{{ route('ads.index') }}">Ads</a>
-                                        <a class="nav-link" href="{{ route('ad_request.index') }}">Ad Request</a>
+                                        <a class="nav-link {{ request()->is('ad_list*') ? 'active' : '' }}" href="{{ route('ads.index') }}">Ads</a>
+                                        <a class="nav-link {{ request()->is('ad_request*') ? 'active' : '' }}" href="{{ route('ad_request.index') }}">Ad Request
+                                            @if ($adsCount != 0)
+                                                <div class="badge badge-primary">{{$adsCount}}</div>
+                                            @endif
+                                        </a>
                                     </nav>
                                 </div>
 
@@ -132,7 +148,7 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_PAYMENT))
 
-                                <a class="nav-link" href="{{ route('payment.index') }}">
+                                <a class="nav-link {{ request()->is('payment*') ? 'active' : '' }}" href="{{ route('payment.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-dollar-sign"></i></div>
                                     Payment
                                 </a>
@@ -143,7 +159,7 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_FEATURED_DEALER))
 
-                                <a class="nav-link" href="{{ route('privacy.index') }}">
+                                <a class="nav-link {{ request()->is('privacy*') ? 'active' : '' }}" href="{{ route('privacy.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-shield-alt"></i></div>
                                     Privacy & Policy
                                 </a>
@@ -151,22 +167,23 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::TERMS_CONDITIONS))
 
-                                <a class="nav-link" href="{{ route('terms.index') }}">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-shield-alt"></i></div>
+                                <a class="nav-link {{ request()->is('terms*') ? 'active' : '' }}" href="{{ route('terms.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-balance-scale-right"></i></div>
                                     Terms & Conditions
                                 </a>
                             @endif
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_FEATURED_DEALER))
 
-                                <a class="nav-link" href="{{ route('dealer.index') }}">
+                                <a class="nav-link {{ request()->is('featured*') ? 'active' : '' }}" href="{{ route('dealer.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
                                     Featured Dealer
                                 </a>
                             @endif
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_REJECT_REASON))
-                                <a class="nav-link" href="{{ route('reject.index') }}">
+                                
+                                <a class="nav-link {{ request()->is('reject*') ? 'active' : '' }}" href="{{ route('reject.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
                                     Resons
                                 </a>
@@ -175,7 +192,7 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_ICONS))
                                 
-                                <a class="nav-link" href="{{ route('icon.index') }}">
+                                <a class="nav-link {{ request()->is('icons*') ? 'active' : '' }}" href="{{ route('icon.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-icons"></i></div>
                                     Icons
                                 </a>
@@ -184,21 +201,21 @@
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_SOCIAL_LINK))
                                 
-                                <a class="nav-link" href="{{ route('social.index') }}">
+                                <a class="nav-link {{ request()->is('social*') ? 'active' : '' }}" href="{{ route('social.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-thumbs-up"></i></div>
                                     Social Links
                                 </a>
 
                             @endif
                             
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="false" aria-controls="collapseAds">
+                            <a class="nav-link collapsed {{ request()->is('*profile*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="false" aria-controls="collapseAds">
                                 <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
                                 Settings
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapseSettings" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <div class="collapse {{ request()->is('*profile*') ? 'show' : '' }}" id="collapseSettings" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('admin.profile') }}">Porfile</a>
+                                    <a class="nav-link {{ request()->is('*profile*') ? 'active' : '' }}" href="{{ route('admin.profile') }}">Porfile</a>
                                     <a class="nav-link" href="#" onclick="changePassword()">Change Password</a>
                                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                                 </nav>

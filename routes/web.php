@@ -37,7 +37,7 @@ Route::group(['middleware' => ['revalidate']], function(){
             
             // Admin Users
 
-            Route::get('/roles', [App\Http\Controllers\UserRoleController::class, 'index'])->name('role.index');
+            Route::get('/role', [App\Http\Controllers\UserRoleController::class, 'index'])->name('role.index');
             Route::post('/role/store', [App\Http\Controllers\UserRoleController::class, 'store'])->name('role.store');
             Route::get('/role/edit/{id}', [App\Http\Controllers\UserRoleController::class, 'edit'])->name('role.edit');
             Route::post('/role/update', [App\Http\Controllers\UserRoleController::class, 'update'])->name('role.update');
@@ -72,12 +72,12 @@ Route::group(['middleware' => ['revalidate']], function(){
         // Users
 
         Route::get('/users', [App\Http\Controllers\LoginController::class, 'userIndex'])->name('user.index');
-        Route::get('/user/view/{id}', [App\Http\Controllers\LoginController::class, 'userView'])->name('user.view');
+        Route::get('/users/view/{id}', [App\Http\Controllers\LoginController::class, 'userView'])->name('user.view');
         Route::get('/users/edit/{id}', [App\Http\Controllers\LoginController::class, 'userEdit'])->name('user.edit');
         Route::post('/users/update/{id}', [App\Http\Controllers\LoginController::class, 'userUpdate'])->name('user.update');
-        Route::get('/user/ads/{type}/{id}', [App\Http\Controllers\LoginController::class, 'userAds'])->name('user.ads');
+        Route::get('/users/ads/{type}/{id}', [App\Http\Controllers\LoginController::class, 'userAds'])->name('user.ads');
         Route::post('/users/change/password/{id}', [App\Http\Controllers\LoginController::class, 'userChangePassword'])->name('user.change.password');
-        Route::post('/user/delete/{id}', [App\Http\Controllers\UserRoleController::class, 'userDelete'])->name('user.delete');
+        Route::post('/users/delete/{id}', [App\Http\Controllers\UserRoleController::class, 'userDelete'])->name('user.delete');
 
         /* ========== Ads ========== */
 

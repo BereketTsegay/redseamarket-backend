@@ -23,7 +23,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Image;
 
 class AdsController extends Controller
 {
@@ -1145,18 +1144,18 @@ class AdsController extends Controller
 
     public static function imageWatermark($image, $fileName){
 
-        $img = Image::make($image);
+        // $img = Image::make($image);
 
-        $newImg = Image::make(public_path('brand.png'));
+        // $newImg = Image::make(public_path('brand.png'));
 
-        $newImg->resize(113, 24);
+        // $newImg->resize(113, 24);
         
-        $newImg->opacity(50);
+        // $newImg->opacity(50);
 
-        $img->insert($newImg, 'center-left', 10, 10);
+        // $img->insert($newImg, 'center-left', 10, 10);
 
-        $img->save(public_path('tempfile/'.$fileName));
+        // $img->save(public_path('tempfile/'.$fileName));
 
-        return $img;
+        // return $img;
     }
 }

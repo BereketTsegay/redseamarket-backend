@@ -62,12 +62,15 @@ class AdsController extends Controller
 
                 if($a->category_id == 1){
                     $a->MotoreValue;
-                    $a->make = $a->MotoreValue->Make ? $a->MotoreValue->Make->name : '';
-                    $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
-                    $a->variant = $a->MotoreValue->Variant ? $a->MotoreValue->Variant->name : '';
+                    if($a->MotoreValue){
+                        $a->make = $a->MotoreValue->Make ? $a->MotoreValue->Make->name : '';
+                        $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
+                        $a->variant = $a->MotoreValue->Variant ? $a->MotoreValue->Variant->name : '';
+
+                        unset($a->MotoreValue->Make, $a->MotoreValue->Model, $a->MotoreValue->Variant);
+                    }
                     $a->MotorFeatures;
 
-                    unset($a->MotoreValue->Make, $a->MotoreValue->Model, $a->MotoreValue->Variant);
                 }
                 elseif($a->category_id == 2){
                     $a->PropertyRend;
@@ -311,25 +314,33 @@ class AdsController extends Controller
                 $motor->milage              = $request->mileage;
                 $motor->save();
 
-                $motorFeature           = new MotorFeatures();
-                $motorFeature->ads_id   = $ad->id;
-                $motorFeature->value    = $request->aircondition;
-                $motorFeature->save();
+                if($request->aircondition){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ad->id;
+                    $motorFeature->value    = $request->aircondition;
+                    $motorFeature->save();
+                }
 
-                $motorFeature           = new MotorFeatures();
-                $motorFeature->ads_id   = $ad->id;
-                $motorFeature->value    = $request->gps;
-                $motorFeature->save();
+                if($request->gps){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ad->id;
+                    $motorFeature->value    = $request->gps;
+                    $motorFeature->save();
+                }
 
-                $motorFeature           = new MotorFeatures();
-                $motorFeature->ads_id   = $ad->id;
-                $motorFeature->value    = $request->security;
-                $motorFeature->save();
+                if($request->security){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ad->id;
+                    $motorFeature->value    = $request->security;
+                    $motorFeature->save();
+                }
 
-                $motorFeature           = new MotorFeatures();
-                $motorFeature->ads_id   = $ad->id;
-                $motorFeature->value    = $request->tire;
-                $motorFeature->save();
+                if($request->tire){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ad->id;
+                    $motorFeature->value    = $request->tire;
+                    $motorFeature->save();
+                }
             }
             elseif($request->category == 2){
 
@@ -689,7 +700,7 @@ class AdsController extends Controller
 
     public function getCategoryMotors(Request $request){
 
-        // try{
+        try{
 
             $rules = [
                 'latitude'      => 'required|numeric',
@@ -716,7 +727,8 @@ class AdsController extends Controller
 
             $motors = Category::where('id', 1)
             ->with(['Subcategory' => function($a) use($latitude, $longitude, $radius){
-                $a->withCount('Ads');
+                $a->where('parent_id', 0)
+                ->withCount('Ads');
             }])
             ->first();
 
@@ -767,13 +779,17 @@ class AdsController extends Controller
                 ->map(function($a){
                     $a->state_name = $a->State->name;
                     $a->city_name = $a->City ? $a->City->name : $a->State->name;
-                    $a->make = $a->MotoreValue->Make->name;
-                    $a->model = $a->MotoreValue->Model->name;
+                    if($a->MotoreValue){
+                        $a->make = $a->MotoreValue->Make->name;
+                        $a->model = $a->MotoreValue->Model->name;
+                        $a->year = $a->MotoreValue->registration_year;
+                        $a->milage = $a->MotoreValue->milage;
+
+                        unset($a->MotoreValue);
+                    }
                     $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                    $a->year = $a->MotoreValue->registration_year;
-                    $a->milage = $a->MotoreValue->milage;
                     $a->image = $a->Image;
-                    unset($a->MotoreValue, $a->State, $a->City, $a->Country);
+                    unset($a->State, $a->City, $a->Country);
                     return $a;
                 });
 
@@ -792,15 +808,15 @@ class AdsController extends Controller
                     'testimonial'   => $testimonial,
                 ],
             ], 200);
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
     
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function getProperty(Request $request){
@@ -3326,11 +3342,14 @@ class AdsController extends Controller
 
                     if($a->category_id == 1){
                         $a->MotoreValue;
-                        $a->make = $a->MotoreValue->Make->name;
-                        $a->model = $a->MotoreValue->Model->name;
+                        if($a->MotoreValue){
+                            $a->make = $a->MotoreValue->Make ? $a->MotoreValue->Make->name : '';
+                            $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        }
                         // $a->MotorFeatures;
     
-                        unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                        
                     }
                     elseif($a->category_id == 2){
                         $a->PropertyRend;

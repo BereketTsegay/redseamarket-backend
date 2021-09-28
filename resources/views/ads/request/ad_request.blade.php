@@ -68,11 +68,13 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                <a class="mb-2" href="{{ $row->Payment ? asset( $row->Payment->document ) : 'javascript:void(0);' }}"><button class="btn btn-warning">View Document</button></a>
-                                                <a href="{{ route('ad_request.details', $row->id) }}"><button class="btn btn-secondary">View</button></a>
+                                                @if ($row->featured_flag && $row->Payment->payment_type != 0)
+                                                    <a class="mb-2" href="{{ $row->Payment->document ? asset( $row->Payment->document ) : 'no-document' }}" target="blank"><button class="btn btn-warning">View Document</button></a>
+                                                @endif
+                                                <a href="{{ route('ad_request.details', $row->id) }}" ><button class="btn btn-secondary my-1">View</button></a>
                                                 <form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form>
-                                                <button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button>
-                                                <button type="button" onclick="refundAd({{$row->id}})" class="btn btn-success" data-toggle="modal" data-target="#refundModal">Refund</button>
+                                                <button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger my-1" data-toggle="modal" data-target="#rejectModal">Reject</button>
+                                                <button type="button" onclick="refundAd({{$row->id}})" class="btn btn-success my-1" data-toggle="modal" data-target="#refundModal">Refund</button>
                                             </div>
                                         </div>
                                     </td>

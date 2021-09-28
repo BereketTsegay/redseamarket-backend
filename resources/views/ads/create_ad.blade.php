@@ -46,19 +46,19 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Title">Title</label>
-                                        <input type="text" name="title" value="{{ old('title') }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' }}" placeholder="Title" autocomplete="off">
+                                        <input type="text" name="title" value="{{ old('title') }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' : '' }}" placeholder="Title" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @if (Session::has('title_error'))
-                                                {{ Session::get('{{ $message }}') }}
+                                                {{ Session::get('title_error') }}
                                             @endif
                                         </div>
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Title">Title in Arabic</label>
-                                        <input type="text" name="arabic_title" value="{{ old('arabic_title') }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' }}" placeholder="Title in Arabic" autocomplete="off">
+                                        <input type="text" name="arabic_title" value="{{ old('arabic_title') }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' : '' }}" placeholder="Title in Arabic" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @if (Session::has('title_error'))
-                                                {{ Session::get('{{ $message }}') }}
+                                                {{ Session::get('title_error') }}
                                             @endif
                                         </div>
                                     </div>
@@ -162,19 +162,19 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Description">Description</label>
-                                        <textarea name="description" class="form-control {{ Session::has('description_error') ? 'is-invalid' }}" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ old('description') }}</textarea>
+                                        <textarea name="description" class="form-control {{ Session::has('description_error') ? 'is-invalid' : '' }}" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ old('description') }}</textarea>
                                         <div class="invalid-feedback">
                                             @if (Session::has('description_error'))
-                                                {{ Session::get('{{ $message }}') }}
+                                                {{ Session::get('description_error') }}
                                             @endif
                                         </div>
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Description">Description in Arabic</label>
-                                        <textarea name="description_arabic" class="form-control {{ Session::has('description_error') ? 'is-invalid' }}" cols="30" rows="3" placeholder="Description in Arabic" autocomplete="off">{{ old('description_arabic') }}</textarea>
+                                        <textarea name="description_arabic" class="form-control {{ Session::has('description_error') ? 'is-invalid' : '' }}" cols="30" rows="3" placeholder="Description in Arabic" autocomplete="off">{{ old('description_arabic') }}</textarea>
                                         <div class="invalid-feedback">
                                             @if (Session::has('description_error'))
-                                                {{ Session::get('{{ $message }}') }}
+                                                {{ Session::get('description_error') }}
                                             @endif
                                                 
                                         </div>
