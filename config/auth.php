@@ -46,6 +46,12 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+
+        'otp' => [
+            'driver' => 'passport',
+            'provider' => 'otps',
+            'hash' => false,
+        ],
     ],
 
     /*
@@ -69,6 +75,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'otps' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Otp::class,
         ],
 
         // 'users' => [

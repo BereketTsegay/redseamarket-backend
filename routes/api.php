@@ -20,6 +20,9 @@ Route::post('/user/forgot/send/password/toMail', [\App\Http\Controllers\Api\Logi
 Route::post('/customer/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'dashboard']);
 Route::post('/customer/city/list', [\App\Http\Controllers\Api\OtherController::class, 'cityList']);
 Route::post('/verify/email', [\App\Http\Controllers\Api\LoginController::class, 'vefifyEmail']);
+Route::post('/vefify/opt', [\App\Http\Controllers\Api\LoginController::class, 'verifyOtp']);
+Route::post('/forgotpassword/password/reset', [\App\Http\Controllers\Api\LoginController::class, 'passwordReset']);
+
     // Ads Section
     
 Route::post('/customer/ads/custom_field_and_dependency', [\App\Http\Controllers\Api\AdsController::class, 'customFieldsAndDependency']);
@@ -56,6 +59,8 @@ Route::post('/customer/get/make', [\App\Http\Controllers\Api\AdsController::clas
 Route::post('/customer/get/model', [\App\Http\Controllers\Api\AdsController::class, 'getModel']);
 Route::post('/customer/get/variant', [\App\Http\Controllers\Api\AdsController::class, 'getVarieant']);
 
+Route::post('/customer/get/home/banner', [\App\Http\Controllers\Api\OtherController::class, 'getHomeBanner']);
+
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
 
@@ -66,7 +71,7 @@ Route::post('/search/autocomplete', [\App\Http\Controllers\Api\AdsController::cl
 
 
 Route::middleware('auth:api')->group( function () {
-
+   
     Route::post('/customer/loged/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'LogedDashboard']);
 
     Route::post('/customer/ads/store', [\App\Http\Controllers\Api\AdsController::class, 'adStore']);

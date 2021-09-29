@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Common\Status;
 use App\Models\Banner;
+use App\Models\Country;
 use Illuminate\Http\Request;
 
 class BannerController extends Controller
@@ -14,15 +15,18 @@ class BannerController extends Controller
         ->orderBy('created_at', 'desc')
         ->get();
 
-        return view('other.banner.banner', compact('banner'));
+        $country = Country::orderBy('name')
+        ->get();
+
+        return view('other.banner.banner', compact('banner', 'country'));
     }
 
     public function store(Request $request){
 
         $request->validate([
             'name'      => 'required',
-            'position'   => 'required',
-            'image'     => 'required|mimes:png,jpg,jpeg',
+            'country'   => 'required',
+            'image'     => 'required|mimes:png,jpg,jpeg|dimensions:width=1920,height=506',
         ]);
 
         if($request->hasFile('image')){
@@ -40,11 +44,11 @@ class BannerController extends Controller
             $status = Status::INACTIVE;
         }
 
-        $banner     = new Banner();
-        $banner->name   = $request->name;
-        $banner->type   = $request->position;
-        $banner->image  = $image;
-        $banner->status = $status;
+        $banner             = new Banner();
+        $banner->name       = $request->name;
+        $banner->country_id = $request->country;
+        $banner->image      = $image;
+        $banner->status     = $status;
         $banner->save();
 
         session()->flash('success', 'Banner has been stored');
@@ -63,8 +67,8 @@ class BannerController extends Controller
         
         $request->validate([
             'name'      => 'required',
-            'position'  => 'required',
-            'image'     => 'mimes:png,jpg,jpeg',
+            'country'   => 'required',
+            'image'     => 'mimes:png,jpg,jpeg|dimensions:width=1920,height=506',
         ]);
 
         if($request->hasFile('image')){
@@ -91,10 +95,10 @@ class BannerController extends Controller
 
         Banner::where('id', $request->id)
         ->update([
-            'name'      => $request->name,
-            'type'      => $request->position,
-            'image'     => $image,
-            'status'    => $status,
+            'name'          => $request->name,
+            'country_id'    => $request->country,
+            'image'         => $image,
+            'status'        => $status,
         ]);
 
         session()->flash('success', 'Banner has been updated');

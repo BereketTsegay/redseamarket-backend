@@ -262,8 +262,9 @@ class LoginController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Invalid request',
+                'code'      => '400',
                 'errors'    => $validate->errors(),
-            ], 400);
+            ], 200);
         }
 
         try{
@@ -280,24 +281,152 @@ class LoginController extends Controller
                 ], 200);
             }
 
-            $newPassword = uniqid();
+            $uid = rand(000000, 999999);
+
+            $otp                = new Otp();
+            $otp->email         = $request->email;
+            $otp->otp           = $uid;
+            $otp->expiry_status = false;
+            $otp->attempt       = 0;
+            $otp->save();
+
+            // $newPassword = uniqid();
 
             $details = [
-                'name'      => $user->name,
-                'password'  => $newPassword,
+                'name'  => $user->name,
+                'otp'   => $uid,
             ];
 
-            User::where('email', $request->email)
-            ->update([
-                'password'  => Hash::make($newPassword),
-            ]);
+            // User::where('email', $request->email)
+            // ->update([
+            //     'password'  => Hash::make($newPassword),
+            // ]);
 
             Mail::to($request->email)->send(new PasswordReset($details));
 
             return response()->json([
                 'status'    => 'success',
-                'message'   => 'Password has been sended to your registered email',
+                'message'   => 'Otp has been sended to your registered email',
                 'code'      => 200,
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function verifyOtp(Request $request){
+
+            $rules = [
+                'email' => 'required|email',
+                'otp'   => 'required|numeric',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'errors'    => $validate->errors(),
+                    'code'      => '200',
+                ], 200);
+            }
+
+            $otp = Otp::where('email', $request->email)
+            ->where('expiry_status', false)
+            ->first();
+
+            if($otp){
+
+                Otp::where('email', $request->email)
+                ->where('expiry_status', false)
+                ->update([
+                    'attempt'   => $otp->attempt + 1,
+                ]);
+            
+
+                if($otp->attempt > 5){
+
+                    Otp::where('email', $request->email)
+                    ->where('expiry_status', false)
+                    ->update([
+                        'expiry_status'   => true,
+                    ]);
+                    
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'You exceeded your maximum attempt',
+                    ], 200);
+
+                }
+
+                if($otp->otp == $request->otp){
+
+                    Otp::where('email', $request->email)
+                    ->where('expiry_status', false)
+                    ->update([
+                        'expiry_status'   => true,
+                    ]);
+
+                    return response()->json([
+                        'status'    => 'success',
+                        'message'   => 'Otp has been verified',
+                        'code'      => '200',
+                        'token'     => '#4t5o9ke0n6_#'
+                    ], 200);
+                }
+                else{
+
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Invalid Otp',
+                    ], 200);
+                }
+            }
+            else{
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Otp expired',
+                ], 200);
+
+            }
+    }
+
+    public function passwordReset(Request $request){
+
+        try{
+
+            $rules = [
+                'password'  => 'required|confirmed',
+                'email'     => 'required|email',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'errors'    => $validate->errors(),
+                    'code'      => '200',
+                ], 200);
+            }
+
+            User::where('email', $request->email)
+            ->update([
+                'password'  => Hash::make($request->password),
+            ]);
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Password has been updated',
             ], 200);
         }
         catch(\Exception $e){
@@ -310,7 +439,7 @@ class LoginController extends Controller
 
     public function myProfile(){
         
-        // try {
+        try {
             $user = User::where('id', Auth::user()->id)
             ->where('type', UserType::USER)
             ->first();
@@ -338,13 +467,13 @@ class LoginController extends Controller
                     'adsView'       => $viewCount,
                 ],
             ], 200);
-        // }
-        // catch(\Exception $e){
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function logout(){

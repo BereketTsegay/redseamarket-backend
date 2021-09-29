@@ -22,8 +22,8 @@
                                     <p class="col-md-6">{{ $banner->name }}</p>
                                 </div>
                                 <div class="row">
-                                    <p class="col-md-6">Position :</p>
-                                    <p class="col-md-6">{{ $banner->type }}</p>
+                                    <p class="col-md-6">Country :</p>
+                                    <p class="col-md-6">{{ $banner->Country->name }}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Status :</p>

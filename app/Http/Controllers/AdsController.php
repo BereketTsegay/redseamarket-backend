@@ -1140,6 +1140,22 @@ class AdsController extends Controller
         return redirect()->route('ad_request.index');
     }
 
+    public function adNotification(){
+
+        $ad = Ads::where('notification_status', 0)
+        ->count();
+
+        return response()->json($ad);
+    }
+
+    public function readNotification(){
+
+        Ads::where('notification_status', 0)
+        ->update([
+            'notification_status'   => 1,
+        ]);
+    }
+
 
 
     public static function imageWatermark($image, $fileName){

@@ -96,17 +96,18 @@
                             <input type="text" name="name" class="form-control" id="Name" placeholder="Name">
                         </div>
                         <div class="form-group my-2">
-                            <label for="Type">Postion</label>
-                            <Select name="position" class="form-control">
-                                <option value="">Select</option>
-                                <option {{ old('position') == 'Top' ? 'selected' : '' }} value="Top">Top</option>
-                                <option {{ old('position') == 'Middle' ? 'selected' : ''}} value="Middle">Middle</option>
-                                <option {{ old('position') == 'Bottom' ? 'selected' : ''}} value="Bottom">Bottom</option>
+                            <label for="Type">Country</label>
+                            <Select name="country" class="form-control">
+                                <option value="">Select Country</option>
+                                @foreach ($country as $row1)
+                                    <option value="{{ $row1->id }}">{{ $row1->name }}</option>
+                                @endforeach
                             </Select>
                         </div>
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
                             <input type="file" name="image" class="form-control" id="Image">
+                            <div class="text-danger">Image Width: 1920px, Height: 506px </div>
                         </div>
                         <div class="form-group my-2">
                             <label for="Status">Status</label>
@@ -141,12 +142,10 @@
                             <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="editName" placeholder="Name">
                         </div>
                         <div class="form-group my-2">
-                            <label for="Type">Postion</label>
-                            <Select name="position" id="editPosition" class="form-control">
-                                <option value="">Select</option>
-                                <option {{ old('position') == 'Top' ? 'selected' : '' }} value="Top">Top</option>
-                                <option {{ old('position') == 'Middle' ? 'selected' : ''}} value="Middle">Middle</option>
-                                <option {{ old('position') == 'Bottom' ? 'selected' : ''}} value="Bottom">Bottom</option>
+                            <label for="Type">Country</label>
+                            <Select name="country" id="editPosition" class="form-control">
+                                <option value="">Select Country</option>
+                                
                             </Select>
                         </div>
                         <div class="form-group my-2">
@@ -195,24 +194,30 @@
                 editStatus = `<label for="Status">Status</label>
                             <input type="checkbox" name="status">`;
             }
-
-            if(position == 'Top'){
-                option = `<option selected value="Top">Top</option>
-                <option value="Middle">Middle</option>
-                <option value="Bottom">Bottom</option>`;
-            }
-            else if(position == 'Middle'){
-                option = `<option value="Top">Top</option>
-                <option selected value="Middle">Middle</option>
-                <option value="Bottom">Bottom</option>`;
-            }
-            else{
-                option = `<option value="Top">Top</option>
-                <option value="Middle">Middle</option>
-                <option selected value="Bottom">Bottom</option>`;
-            }
-
-            $('#editPosition').html(option);
+            let country = [];
+            $.ajax({
+                url: '/api/customer/get/country',
+                method: 'post',
+                success:function(data){
+                    
+                    if(data.status == 'success'){
+                        country = data.country;
+                    }
+                    
+                    for(let i = 0; i < country.length; i++){
+                        
+                        if(country[i].id == id){
+                            option += `<option selected value="${country[i].id}">${country[i].name}</option>`;
+                        }
+                        else{
+                            option += `<option value="${country[i].id}">${country[i].name}</option>`;
+                        }
+                    }
+                    $('#editPosition').html(option);
+                }
+            })
+            
+            
             $('#editStatus').html(editStatus);
         }
 
@@ -224,6 +229,19 @@
         icon: 'success',
         text: '{{ Session::get('success') }}',
     })
+</script>
+@endif
+
+@if ($errors->any())
+<script>
+    Swal.fire({
+        icon: 'error',
+        html: '<ul>'+
+                @foreach ($errors->all() as $error)
+                    `<li>{{ $error }}</li>`
+                @endforeach
+            +'</ul>',
+    });
 </script>
 @endif
 

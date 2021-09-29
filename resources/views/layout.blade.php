@@ -14,6 +14,7 @@
         @stack('style')
     </head>
     <body class="sb-nav-fixed">
+        <input type="hidden" name="" id="csrf_toke" value="{{ csrf_token() }}">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3" href="#">JAMAL AL BAHR </a>
@@ -27,6 +28,15 @@
                 </div> --}}
             </div>
             <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown" onclick="readNotification()">
+                    <a class="nav-link dropdown-toggle notification-icon" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-bell fa-fw"></i>
+                        <span id="notification_counts">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="notifications">
+                    </ul>
+                </li>
+            </ul>
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
@@ -86,10 +96,10 @@
 
                             @endif
                             
-                            {{-- <a class="nav-link" href="{{ route('banner.index') }}">
+                            <a class="nav-link" href="{{ route('banner.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
                                 Banners
-                            </a> --}}
+                            </a>
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_TESTIMONIAL))
 
                                 <a class="nav-link {{ request()->is('*testimonial*') ? 'active' : '' }}" href="{{ route('testimonial.index') }}">
@@ -378,6 +388,72 @@
             }
             
     });
+</script>
+
+<script>
+
+    $(document).ready(function(){
+
+        let notification = `<li class="dropdown-item">`;
+
+        $.ajax({
+            url: '/get/notification',
+            method: 'get',
+            success:function(data){
+                $('#notification_counts').html(data);
+
+                notification += `<span class="notification_counts">${data}</span> Notifications</li>
+                        <li><hr class="dropdown-divider" /></li>`
+                for(let i = 0; i < data; i++){
+
+                    notification += `<li class="dropdown-item" >New Ad request</li>`;
+                }
+
+                $('#notifications').html(notification);
+            }
+        });
+
+        readNotification = () => {
+            
+            let _token = $('#csrf_toke').val();
+            $.ajax({
+                url: '/read/notification',
+                data: {_token: _token},
+                method: 'post',
+                success:function(){
+
+                    $('#notification_counts').html(0);
+                    $('#notifications').html(`<li class="dropdown-item"><span class="notification_counts">0</span> Notifications</li>
+                        <li><hr class="dropdown-divider" /></li>`);
+                }
+            });
+
+        }
+
+    });
+
+    setInterval(function(){
+
+        let notification = `<li class="dropdown-item">`;
+
+        $.ajax({
+            url: '/get/notification',
+            method: 'get',
+            success:function(data){
+                $('#notification_counts').html(data);
+
+                notification += `<span class="notification_counts">${data}</span> Notifications</li>
+                        <li><hr class="dropdown-divider" /></li>`
+                for(let i = 0; i < data; i++){
+
+                    notification += `<li class="dropdown-item" >New Ad request</li>`;
+                }
+
+                $('#notifications').html(notification);
+            }
+        });
+    }, 10000);
+
 </script>
 
 @stack('script')    

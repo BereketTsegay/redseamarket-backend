@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\Enquiry;
 use App\Mail\Payment as MailPayment;
 use App\Models\Ads;
+use App\Models\Banner;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\CurrencyCode;
@@ -1503,5 +1504,42 @@ class OtherController extends Controller
             'code'      => '200',
             'terms'     => $terms,
         ], 200);
+    }
+
+    public function getHomeBanner(Request $request){
+
+        try{
+
+            $rules = [
+                'country'   => 'required|numeric',
+            ];
+    
+            $validate = Validator::make($request->all(), $rules);
+        
+            if($validate->fails()){
+    
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $banner = Banner::where('country_id', $request->country)
+            ->first();
+
+            return response()->json([
+                'status'    => 'success',
+                'code'      => '200',
+                'banner'    => $banner,
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 }

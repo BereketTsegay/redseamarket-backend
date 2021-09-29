@@ -265,6 +265,7 @@ class AdsController extends Controller
             $ad->latitude              = $request->latitude;
             $ad->longitude             = $request->longitude;
             $ad->status                = Status::REQUEST;
+            $ad->notification_status   = 0;
             $ad->save();
 
             if($featured == Status::ACTIVE){
@@ -3486,7 +3487,7 @@ class AdsController extends Controller
             })
             ->where('status', Status::ACTIVE)
             ->where('delete_status', Status::UNDELETE)
-            ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+            ->selectRaw('id, title as name, latitude, longitude, category_id, sellerinformation_id, subcategory_id, price, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                 sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<=', $radius);
 
@@ -3533,7 +3534,13 @@ class AdsController extends Controller
                 });
             }
 
-            $ads = $ads->get();
+            $ads = $ads->get()->map(function($a){
+
+                $a->images = $a->Image ? $a->Image[0]->image : '';
+
+                unset($a->Image);
+                return $a;
+            });
 
             return response()->json([
                 'status'    => 'success',

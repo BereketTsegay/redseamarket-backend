@@ -11271,3 +11271,10 @@ body {
 .error{
   color: red;
 }
+
+.notification-icon::after{
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+}
