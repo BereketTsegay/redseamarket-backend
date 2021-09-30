@@ -221,25 +221,25 @@ class OtherController extends Controller
 
     public function searchAds(Request $request){
         
-        $rules = [
-            // 'search_key'    => 'required',
-            'latitude'      => 'required',
-            'longitude'     => 'required',
-        ];
-
-        $validate = Validator::make($request->all(), $rules);
-
-        if($validate->fails()){
-
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid request',
-                'code'      => 400,
-                'errors'    => $validate->errors(),
-            ], 200);
-        }
-
         try{
+            
+            $rules = [
+                // 'search_key'    => 'required',
+                'latitude'      => 'required',
+                'longitude'     => 'required',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;

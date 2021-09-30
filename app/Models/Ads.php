@@ -78,4 +78,8 @@ class Ads extends Model
     public function Payment() {
         return $this->hasOne(Payment::class, 'ads_id', 'id');
     }
+
+    public function Currency(){
+        return $this->hasOne(CurrencyCode::class, 'id', 'country_id');
+    }
 }

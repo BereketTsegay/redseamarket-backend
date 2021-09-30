@@ -3461,6 +3461,7 @@ class AdsController extends Controller
                 'search_key'    => 'required',
                 'latitude'      => 'required',
                 'longitude'     => 'required',
+                'country'       => 'required',
             ];
 
             $validate = Validator::make($request->all(), $rules);
@@ -3485,9 +3486,10 @@ class AdsController extends Controller
                 ->orwhere('title_arabic', 'like', '%'. $request->search_key .'%')
                 ->orwhere('canonical_name', 'like', '%'. $request->search_key .'%');
             })
+            ->where('country_id', $request->country)
             ->where('status', Status::ACTIVE)
             ->where('delete_status', Status::UNDELETE)
-            ->selectRaw('id, title as name, latitude, longitude, category_id, sellerinformation_id, subcategory_id, price, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+            ->selectRaw('id, title as name, latitude, longitude, category_id, sellerinformation_id, subcategory_id, price, country_id, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                 sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<=', $radius);
 
@@ -3536,9 +3538,10 @@ class AdsController extends Controller
 
             $ads = $ads->get()->map(function($a){
 
-                $a->images = $a->Image ? $a->Image[0]->image : '';
+                $a->images = count($a->Image) != 0 ? $a->Image[0]->image : '';
+                $a->currency = $a->Currency->currency_code;
 
-                unset($a->Image);
+                unset($a->Image, $a->Currency);
                 return $a;
             });
 
