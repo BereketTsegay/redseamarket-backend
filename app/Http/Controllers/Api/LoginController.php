@@ -281,6 +281,11 @@ class LoginController extends Controller
                 ], 200);
             }
 
+            Otp::where('email', $request->email)
+            ->update([
+                'expiry_status' => true,
+            ]);
+
             $uid = rand(000000, 999999);
 
             $otp                = new Otp();
