@@ -69,6 +69,8 @@ Route::post('/terms/conditions', [\App\Http\Controllers\Api\OtherController::cla
 
 Route::post('/search/autocomplete', [\App\Http\Controllers\Api\AdsController::class, 'searchAutoComplete']);
 
+Route::post('/contactus/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'contactEnquiry']);
+
 
 Route::middleware('auth:api')->group( function () {
    

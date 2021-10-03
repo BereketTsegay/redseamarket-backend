@@ -7,12 +7,6 @@
     <title>Ad Enquiry</title>
 </head>
 <body>
-    <hr>
-    <h3>Ad Details</h3>
-    <hr>
-    <p>Ad Title : {{ $enquiry['title'] }}</p>
-    <p>Category : {{ $enquiry['category'] }}</p>
-    <hr>
     <h3>Customer detaisl</h3>
     <hr>
     <p>Name : {{ $enquiry['customer_name'] }}</p>

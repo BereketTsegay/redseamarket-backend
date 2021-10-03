@@ -729,6 +729,11 @@ class AdsController extends Controller
             $motors = Category::where('id', 1)
             ->with(['Subcategory' => function($a) use($latitude, $longitude, $radius){
                 $a->where('parent_id', 0)
+                ->whereHas('Ads', function($a) use($latitude, $longitude, $radius){
+                    $a->selectRaw('*, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                })
                 ->withCount('Ads');
             }])
             ->first();

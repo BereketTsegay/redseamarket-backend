@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Common\Status;
 use App\Http\Controllers\Controller;
+use App\Mail\ContactUs;
 use App\Mail\Enquiry;
 use App\Mail\Payment as MailPayment;
 use App\Models\Ads;
@@ -1536,6 +1537,55 @@ class OtherController extends Controller
             ], 200);
         }
         catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function contactEnquiry(Request $request){
+
+        try{
+
+            $rules = [
+                'message'   => 'required',
+                'name'      => 'required',
+                'email'     => 'required|email',
+                'phone'     => 'required|numeric',
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $enquiry = [
+                'customer_name' => $request->name,
+                'email'         => $request->email,
+                'phone'         => $request->phone,
+                'message'       => $request->message,
+            ];
+
+            Mail::to('anasmk0313@gmail.com')->send(new ContactUs($enquiry));
+
+            return response()->json([
+                'status'    => 'success',
+                'code'      => 200,
+                'message'   => 'Your enquiry has been plced.',
+            ], 200);
+
+        }
+        catch (\Exception $e) {
+            
+    
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Something went wrong',
