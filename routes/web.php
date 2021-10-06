@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('test', [\App\Http\Controllers\Api\LoginController::class, 'newTest']);
+// Route::get('test', [\App\Http\Controllers\Api\LoginController::class, 'newTest']);
 
 Route::get('/', function(){
     return redirect()->route('login.index');
@@ -234,4 +234,4 @@ Route::group(['middleware' => ['revalidate']], function(){
     
 });
 
-Route::view('/test', 'payment_mail');
+// Route::view('/test', 'ads_enquiry');
