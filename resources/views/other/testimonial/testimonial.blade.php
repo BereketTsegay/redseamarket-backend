@@ -40,8 +40,8 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                <a href="{{ route('testimonial.view', $row->id) }}"><button class="btn btn-primary">View</button></a>
-                                                <a href="{{ route('testimonial.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                <a href="{{ route('testimonial.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
+                                                <a href="{{ route('testimonial.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                                 <button type="button" onclick="categoryDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">Delete</button>
                                                 <form id="delete_banner_form{{$row->id}}" action="#" method="POST">
                                                     @csrf

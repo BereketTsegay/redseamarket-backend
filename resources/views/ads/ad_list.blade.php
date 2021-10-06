@@ -55,11 +55,11 @@
                                             Action
                                         </button>
                                         <div class="dropdown-menu text-center">
-                                            <a href="{{ route('ads.view', $row->id) }}"><button class="btn btn-primary">View</button></a>
+                                            <a href="{{ route('ads.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
                                             @if($row->customer_id != 1)
-                                                <a href="javascript:void(0);"><button class="btn btn-secondary">Edit</button></a>
+                                                <a href="javascript:void(0);"><button class="btn btn-secondary my-2">Edit</button></a>
                                             @else
-                                                <a href="{{ route('ads.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                <a href="{{ route('ads.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                             @endif
                                             <button onclick="adDelete({{$row->id}})" type="button" class="btn btn-danger" data-toggle="modal" data-target="#adDeleteModal">Delete</button>
                                             <form id="ad_delete_form{{$row->id}}" action="{{ route('ads.delete', $row->id) }}" method="POST">@csrf</form>

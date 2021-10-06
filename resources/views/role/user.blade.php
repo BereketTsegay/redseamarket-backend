@@ -49,8 +49,8 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                <a href="{{ route('admin_user.view', $row->id) }}"><button class="btn btn-primary">View</button></a>
-                                                <a href="{{ route('admin_user.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                <a href="{{ route('admin_user.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
+                                                <a href="{{ route('admin_user.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                                 <button type="button" onclick="userDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
                                                 <form id="deleteUserForm{{$row->id}}" action="{{ route('user.delete', $row->id) }}" method="POST">
                                                     @csrf

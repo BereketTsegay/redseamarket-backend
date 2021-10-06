@@ -65,5 +65,9 @@ class TaskSeeder extends Seeder
         $task           = new Task();
         $task->name     = 'Manage Privacy Policy';
         $task->save();
+
+        $task           = new Task();
+        $task->name     = 'Manage Banners';
+        $task->save();
     }
 }

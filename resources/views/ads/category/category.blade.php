@@ -48,12 +48,12 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                <a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary" class="">View</button></a>
+                                                <a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary my-2" class="">View</button></a>
                                                 
                                                 @if ($row->reserved_flag == 1)
                                                     <a href="#" title="Can't delete, reserved category"><button class="btn btn-secondary my-1">Can't edit, reserved category</button></a>
                                                 @else
-                                                    <a href="{{ route('category.edit', $row->id) }}"><button class="btn btn-secondary">Edit</button></a>
+                                                    <a href="{{ route('category.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                                 @endif
                                                 
                                                 @if ($row->reserved_flag == 1)

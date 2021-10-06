@@ -24,10 +24,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Active</th>
-                                <th>View</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,12 +38,18 @@
                                     @else
                                     <td class="text-secondary">Disabled</td>
                                     @endif
-                                    <td><a href="{{ route('banner.view', $row->id) }}"><button class="btn btn-primary">View</button></a></td>
-                                    <td><button class="btn btn-secondary" onclick="editBanner({{$row->id}}, '{{$row->name}}', '{{$row->type}}', {{$row->status}})" data-toggle="modal" data-target="#editBannerModal">Edit</button></td>
-                                    <td><button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
-                                    <form id="delete_Banner_form{{$row->id}}" action="{{ route('banner.delete', $row->id) }}" method="POST">
-                                        @csrf
-                                    </form>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu text-center">
+                                                <a href="{{ route('banner.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
+                                                <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->name}}', '{{$row->type}}', {{$row->status}})" data-toggle="modal" data-target="#editBannerModal">Edit</button>
+                                                <button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
+                                                <form id="delete_Banner_form{{$row->id}}" action="{{ route('banner.delete', $row->id) }}" method="POST">
+                                                    @csrf
+                                                </form>
                                     </td>
                                 </tr>
                             @endforeach

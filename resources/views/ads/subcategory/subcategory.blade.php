@@ -138,8 +138,8 @@
                                             Action
                                         </button>
                                         <div class="dropdown-menu text-center">
-                                            <a href="/subcategory/view/${data[i].id}"><button class="btn btn-primary">View</button></a>
-                                            <a href="/subcategory/edit/${data[i].id}"><button class="btn btn-secondary">Edit</button></a>
+                                            <a href="/subcategory/view/${data[i].id}"><button class="btn btn-primary my-2">View</button></a>
+                                            <a href="/subcategory/edit/${data[i].id}"><button class="btn btn-secondary my-2">Edit</button></a>
                                             <button type="button" onclick="subcategoryDelete(${data[i].id})" class="btn btn-danger" data-toggle="modal" data-target="#subcategoryDeleteModal">Delete</button>
                                             <form id="delete_subcategory_form${data[i].id}" action="/subcategory/delete/${data[i].id}" method="POST">
                                                 @csrf

@@ -96,10 +96,14 @@
 
                             @endif
                             
-                            <a class="nav-link" href="{{ route('banner.index') }}">
+                            @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGEBANNERS))
+
+                            <a class="nav-link {{ request()->is('*banner*') ? 'active' : '' }}" href="{{ route('banner.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
                                 Banners
                             </a>
+                            @endif
+
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_TESTIMONIAL))
 
                                 <a class="nav-link {{ request()->is('*testimonial*') ? 'active' : '' }}" href="{{ route('testimonial.index') }}">

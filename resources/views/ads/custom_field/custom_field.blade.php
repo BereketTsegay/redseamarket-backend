@@ -50,8 +50,8 @@
                                               Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                <a href="{{ route('custom_field.view', $row->id) }}"><button type="button" class="btn btn-primary">View</button></a>
-                                                <a href="{{ route('custom_field.edit', $row->id) }}"><button type="button" class="btn btn-secondary">Edit</button></a>
+                                                <a href="{{ route('custom_field.view', $row->id) }}"><button type="button" class="btn btn-primary my-2">View</button></a>
+                                                <a href="{{ route('custom_field.edit', $row->id) }}"><button type="button" class="btn btn-secondary my-2">Edit</button></a>
                                                 <button type="button" onclick="customFieldDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
                                                 <form id="custom_field_delete_form{{$row->id}}" action="{{ route('custom_field.delete', $row->id) }}" method="POST">@csrf</form>
                                             </div>
