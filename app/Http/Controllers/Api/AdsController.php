@@ -827,26 +827,26 @@ class AdsController extends Controller
 
     public function getProperty(Request $request){
 
-        $rules = [
-            'category_id'   => 'required|numeric',
-            'latitude'      => 'required|numeric',
-            'longitude'     => 'required|numeric',
-
-        ];
-
-        $validate = Validator::make($request->all(), $rules);
-
-        if($validate->fails()){
-
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid request',
-                'code'      => 400,
-                'errors'    => $validate->errors(),
-            ], 200);
-        }
-
         try{
+            
+            $rules = [
+                'category_id'   => 'required|numeric',
+                'latitude'      => 'required|numeric',
+                'longitude'     => 'required|numeric',
+
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;
@@ -915,7 +915,7 @@ class AdsController extends Controller
 
                         $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                         $b->state_name = $b->State->name;
-                        $b->city_name = $b->City->name;
+                        $b->city_name = $b->city_id ? $b->City->name : $b->State->name;
                         $b->Image;
 
                         unset($b->State, $b->City, $b->Country->Currency);
@@ -968,7 +968,7 @@ class AdsController extends Controller
 
                         $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                         $b->state_name = $b->State->name;
-                        $b->city_name = $b->City->name;
+                        $b->city_name = $b->city_id ? $b->City->name : $b->State->name;
                         $b->Image;
 
                         unset($b->State, $b->City, $b->Country->Currency);

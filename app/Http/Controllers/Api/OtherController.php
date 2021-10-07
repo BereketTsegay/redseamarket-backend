@@ -102,6 +102,7 @@ class OtherController extends Controller
         try{
 
             $myAds = tap(Ads::where('customer_id', Auth::user()->id)
+            ->orderBy('created_at', 'desc')
             ->where('status', '!=', Status::REJECTED)
             ->where('delete_status', '!=', Status::DELETE)
             ->paginate(12), function ($paginatedInstance){
@@ -1026,6 +1027,17 @@ class OtherController extends Controller
             ], 200);
         }
 
+        $subcategory = Subcategory::where('parent_id', $request->subcategory_id)
+        ->select('id')
+        ->get();
+
+        $array = [$request->subcategory_id];
+
+        foreach($subcategory as $row){
+
+            $array[] = $row->id;
+        }
+
         try{
 
             $latitude = $request->latitude;
@@ -1038,7 +1050,7 @@ class OtherController extends Controller
                 $city = City::where('id', $request->city)
                 ->first();
             
-                $myAds = tap(Ads::where('subcategory_id', $request->subcategory_id)
+                $myAds = tap(Ads::where('subcategory_id', $array)
                 ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 ->having('distance', '<=', $radius)
