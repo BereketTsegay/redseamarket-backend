@@ -1123,7 +1123,7 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = tap(Ads::where('subcategory_id', $request->subcategory_id)
+                $myAds = tap(Ads::where('subcategory_id', $array)
                 ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 ->having('distance', '<=', $radius)
