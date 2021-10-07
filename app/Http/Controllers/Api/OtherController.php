@@ -1037,6 +1037,7 @@ class OtherController extends Controller
 
             $array[] = $row->id;
         }
+        
 
         try{
 
@@ -1050,7 +1051,7 @@ class OtherController extends Controller
                 $city = City::where('id', $request->city)
                 ->first();
             
-                $myAds = tap(Ads::where('subcategory_id', $array)
+                $myAds = tap(Ads::whereIn('subcategory_id', [array_values($array)])
                 ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 ->having('distance', '<=', $radius)
@@ -1123,7 +1124,7 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = tap(Ads::where('subcategory_id', $array)
+                $myAds = tap(Ads::whereIn('subcategory_id', [array_values($array)])
                 ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 ->having('distance', '<=', $radius)
