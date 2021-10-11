@@ -1605,4 +1605,5 @@ class OtherController extends Controller
             ], 301);
         }
     }
+
 }

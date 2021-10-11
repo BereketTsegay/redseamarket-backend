@@ -749,13 +749,15 @@ class DashboardController extends Controller
         try{
 
             $subcategory = Subcategory::where('category_id', $request->category)
+            ->where('parent_id', 0)
             ->where('status', Status::ACTIVE)
             ->where('delete_status', '!=', Status::DELETE)
             ->orderBy('sort_order')
+            ->with('SubcategoryChild')
             ->get()
             ->map(function($a){
                 
-                unset($a->delete_status, $a->status, $a->parent_id, $a->category_id, $a->type, $a->sort_order, $a->percentage);
+                unset($a->delete_status, $a->status, $a->category_id, $a->type, $a->sort_order, $a->percentage);
                 return $a;
             });
 

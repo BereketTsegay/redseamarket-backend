@@ -104,6 +104,7 @@ class LoginController extends Controller
         }
 
         $user = User::where('email', $request->email)
+        ->where('email_verified_flag', '!=', Status::REQUEST)
         ->first();
 
         if($user){
@@ -117,13 +118,33 @@ class LoginController extends Controller
 
         $uid = rand(000000, 999999);
 
-        $user                       = new User();
-        $user->name                 = $request->name;
-        $user->email                = $request->email;
-        $user->password             = Hash::make($request->password);
-        $user->type                 = UserType::USER;
-        $user->email_verified_flag  = Status::REQUEST;
-        $user->save();
+        $existingUser = User::where('email', $request->email)
+        ->where('email_verified_flag', Status::REQUEST)
+        ->first();
+
+        if(!$existingUser){
+
+            $user                       = new User();
+            $user->name                 = $request->name;
+            $user->email                = $request->email;
+            $user->password             = Hash::make($request->password);
+            $user->type                 = UserType::USER;
+            $user->email_verified_flag  = Status::REQUEST;
+            $user->save();
+        }
+        else{
+
+            User::where('email', $request->email)
+            ->update([
+                'name'      => $request->name,
+                'password'  => Hash::make($request->password),
+            ]);
+        }
+
+        Otp::where('email', $request->email)
+        ->update([
+            'expiry_status' => true,
+        ]);
 
         $otp                = new Otp();
         $otp->email         = $request->email;
@@ -208,7 +229,13 @@ class LoginController extends Controller
                         'expiry_status'   => true,
                     ]);
 
+                    User::where('email', $request->email)
+                    ->update([
+                        'email_verified_flag'   => Status::ACTIVE,
+                    ]);
+
                     $user = User::where('email', $request->email)
+                    ->where('email_verified_flag', Status::ACTIVE)
                     ->first();
 
                     if(Auth::loginUsingId($user->id)){

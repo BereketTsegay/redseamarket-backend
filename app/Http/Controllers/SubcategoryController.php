@@ -210,7 +210,9 @@ class SubcategoryController extends Controller
         
             $subcategory = Subcategory::where('category_id', $request->id)
             ->where('delete_status', '!=', Status::DELETE)
+            ->where('parent_id', 0)
             ->where('status', Status::ACTIVE)
+            ->with('SubcategoryChild')
             ->orderBy('sort_order')
             ->get();
 

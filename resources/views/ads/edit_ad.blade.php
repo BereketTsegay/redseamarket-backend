@@ -78,7 +78,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Image">Image (Multiple)</label>
-                                        <input type="file" name="image[]" autocomplete="off" class="form-control @error('image') is-invalid @enderror" multiple>
+                                        <input type="file" name="image[]" autocomplete="off" class="form-control @error('image') is-invalid @enderror" accept=".png, .jpeg, .jpg" multiple>
                                         <div class="invalid-feedback">
                                             @error('image')
                                                 {{ $message }}
@@ -636,6 +636,9 @@
 
                     for(let i = 0; i < data.length; i++){
                         option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                        for(let j = 0; j < data[i].subcategory_child.length; j++){
+                            option += `<option value="${data[i].subcategory_child[j].id}"> -----| ${data[i].subcategory_child[j].name}</option>`;
+                        }
                     }
 
                     $('#subcategory').html(option);
@@ -1493,9 +1496,18 @@
                             
                             if(data[i].id == subcategory){
                                 option += `<option selected value="${data[i].id}">${data[i].name}</option>`;
+                                
                             }
                             else{
                                 option += `<option value="${data[i].id}">${data[i].name}</option>`;
+                                for(let j = 0; j < data[i].subcategory_child.length; j++){
+                                    if(data[i].id == data[i].subcategory_child[j].id){
+                                        option += `<option selected value="${data[i].subcategory_child[j].id}"> -----| ${data[i].subcategory_child[j].name}</option>`;
+                                    }
+                                    else{
+                                        option += `<option value="${data[i].subcategory_child[j].id}"> -----| ${data[i].subcategory_child[j].name}</option>`;
+                                    }
+                                }
                             }
                         }
 
