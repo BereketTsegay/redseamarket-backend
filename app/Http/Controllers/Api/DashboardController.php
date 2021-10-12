@@ -199,7 +199,7 @@ class DashboardController extends Controller
 
                 if($request->country){
 
-                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                    $categoryDefault->whereHas('Ads', function($b) use($request, $city){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country)
                         ->where(function($q) use($request, $city){
