@@ -38,5 +38,17 @@ class IconSeeder extends Seeder
         $icon->status       = Status::ACTIVE;
         $icon->sort_order   = 4;
         $icon->save();
+
+        $icon               = new IconClass();
+        $icon->name         = 'fa fa-whatsapp';
+        $icon->status       = Status::ACTIVE;
+        $icon->sort_order   = 4;
+        $icon->save();
+
+        $icon               = new IconClass();
+        $icon->name         = 'fas fa-envelope';
+        $icon->status       = Status::ACTIVE;
+        $icon->sort_order   = 4;
+        $icon->save();
     }
 }

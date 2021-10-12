@@ -225,23 +225,23 @@ class OtherController extends Controller
         
         try{
             
-            $rules = [
-                // 'search_key'    => 'required',
-                'latitude'      => 'required',
-                'longitude'     => 'required',
-            ];
+            // $rules = [
+            //     // 'search_key'    => 'required',
+            //     'latitude'      => 'required',
+            //     'longitude'     => 'required',
+            // ];
 
-            $validate = Validator::make($request->all(), $rules);
+            // $validate = Validator::make($request->all(), $rules);
 
-            if($validate->fails()){
+            // if($validate->fails()){
 
-                return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Invalid request',
-                    'code'      => 400,
-                    'errors'    => $validate->errors(),
-                ], 200);
-            }
+            //     return response()->json([
+            //         'status'    => 'error',
+            //         'message'   => 'Invalid request',
+            //         'code'      => 400,
+            //         'errors'    => $validate->errors(),
+            //     ], 200);
+            // }
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;
@@ -249,10 +249,17 @@ class OtherController extends Controller
             $radius = 10; // Km
 
             $myAds = Ads::where('status', Status::ACTIVE)
-            ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-            ->having('distance', '<=', $radius)
+            // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+            //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            // ->having('distance', '<=', $radius)
             ->where('delete_status', '!=', Status::DELETE);
+
+            if($latitude != 0 && $longitude != 0){
+
+                $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                ->having('distance', '<=', $radius);
+            }
 
             if($request->city){
 
@@ -371,22 +378,23 @@ class OtherController extends Controller
     public function getMototList(Request $request){
 
         try{
-            $rules = [
-                'latitude'      => 'required',
-                'longitude'     => 'required',
-            ];
+
+            // $rules = [
+            //     'latitude'      => 'required',
+            //     'longitude'     => 'required',
+            // ];
     
-            $validate = Validator::make($request->all(), $rules);
+            // $validate = Validator::make($request->all(), $rules);
     
-            if($validate->fails()){
+            // if($validate->fails()){
     
-                return response()->json([
-                    'status'    => 'error',
-                    'message'   => 'Invalid request',
-                    'code'      => 400,
-                    'errors'    => $validate->errors(),
-                ], 200);
-            }
+            //     return response()->json([
+            //         'status'    => 'error',
+            //         'message'   => 'Invalid request',
+            //         'code'      => 400,
+            //         'errors'    => $validate->errors(),
+            //     ], 200);
+            // }
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;
@@ -395,15 +403,23 @@ class OtherController extends Controller
 
             if($request->city && $request->subcategory){
 
-                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                $myAds = Ads::where('status', Status::ACTIVE)
                 ->where('category_id', 1)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
+                // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
                 ->where('delete_status', '!=', Status::DELETE)
                 ->where('city_id', $request->city)
-                ->where('subcategory_id', $request->subcategory)
-                ->paginate(10), function ($paginatedInstance){
+                ->where('subcategory_id', $request->subcategory);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -465,14 +481,23 @@ class OtherController extends Controller
                 });
             }
             elseif($request->city){
-                $myAds = tap(Ads::where('status', Status::ACTIVE)
+
+                $myAds = Ads::where('status', Status::ACTIVE)
                 ->where('category_id', 1)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
+                // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
                 ->where('delete_status', '!=', Status::DELETE)
-                ->where('city_id', $request->city)
-                ->paginate(10), function ($paginatedInstance){
+                ->where('city_id', $request->city);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -535,14 +560,22 @@ class OtherController extends Controller
             }
             elseif($request->subcategory){
 
-                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                $myAds = Ads::where('status', Status::ACTIVE)
                 ->where('category_id', 1)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
+                // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
                 ->where('delete_status', '!=', Status::DELETE)
-                ->where('subcategory_id', $request->subcategory)
-                ->paginate(10), function ($paginatedInstance){
+                ->where('subcategory_id', $request->subcategory);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -605,13 +638,21 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = tap(Ads::where('status', Status::ACTIVE)
+                $myAds = Ads::where('status', Status::ACTIVE)
                 ->where('category_id', 1)
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
+                // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
+                ->where('delete_status', '!=', Status::DELETE);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -815,8 +856,8 @@ class OtherController extends Controller
 
         $rules = [
             'canonical_name'    => 'required',
-            'latitude'          => 'required',
-            'longitude'         => 'required',
+            // 'latitude'          => 'required',
+            // 'longitude'         => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -843,19 +884,27 @@ class OtherController extends Controller
                 $city = City::where('id', $request->city)
                 ->first();
             
-                $myAds = tap(Ads::selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
-                ->where(function($a) use($request, $city){
+                $myAds = Ads::where(function($a) use($request, $city){
                     $a->where('city_id', $request->city)
                     ->orwhere('state_id', $city->state_id);
                 })
+                // selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
                 ->where('status', Status::ACTIVE)
                 ->whereHas('Category', function($a) use($request){
                     $a->where('canonical_name', $request->canonical_name);
                 })
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
+                ->where('delete_status', '!=', Status::DELETE);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -919,15 +968,23 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = tap(Ads::selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
-                ->where('status', Status::ACTIVE)
+                $myAds = Ads::where('status', Status::ACTIVE)
+                // selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
                 ->whereHas('Category', function($a) use($request){
                     $a->where('canonical_name', $request->canonical_name);
                 })
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
+                ->where('delete_status', '!=', Status::DELETE);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -1011,8 +1068,8 @@ class OtherController extends Controller
 
         $rules = [
             'subcategory_id'    => 'required',
-            'latitude'          => 'required',
-            'longitude'         => 'required',
+            // 'latitude'          => 'required',
+            // 'longitude'         => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -1051,17 +1108,25 @@ class OtherController extends Controller
                 $city = City::where('id', $request->city)
                 ->first();
             
-                $myAds = tap(Ads::whereIn('subcategory_id', array_values($array))
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
+                $myAds = Ads::whereIn('subcategory_id', array_values($array))
+                // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
                 ->where(function($a) use($request, $city){
                     $a->orwhere('city_id', $request->city)
                     ->orwhere('state_id', $city->state);
                 })
                 ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
+                ->where('delete_status', '!=', Status::DELETE);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
@@ -1124,13 +1189,21 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = tap(Ads::whereIn('subcategory_id', array_values($array))
-                ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius)
+                $myAds = Ads::whereIn('subcategory_id', array_values($array))
+                // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
                 ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE)
-                ->paginate(10), function ($paginatedInstance){
+                ->where('delete_status', '!=', Status::DELETE);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([

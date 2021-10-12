@@ -20,22 +20,22 @@ class DashboardController extends Controller
 
     public function dashboard(Request $request){
 
-        $rules = [
-            'latitude'      => 'required|numeric',
-            'longitude'     => 'required|numeric',
-        ];
+        // $rules = [
+        //     'latitude'      => 'required|numeric',
+        //     'longitude'     => 'required|numeric',
+        // ];
 
-        $validate = Validator::make($request->all(), $rules);
+        // $validate = Validator::make($request->all(), $rules);
 
-        if($validate->fails()){
+        // if($validate->fails()){
 
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid request',
-                'code'      => 200,
-                'errors'    => $validate->errors(),
-            ], 200);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Invalid request',
+        //         'code'      => 200,
+        //         'errors'    => $validate->errors(),
+        //     ], 200);
+        // }
 
         try{
                 
@@ -72,35 +72,55 @@ class DashboardController extends Controller
                     ->orderby('sort_order')
                     ->take(4);
                 }])
-                ->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
-                    $b->where('status', Status::ACTIVE)
-                    ->where(function($q) use($request, $city){
-                        $q->orwhere('city_id', $request->city)
-                        ->orwhere('state_id', $city->state_id);
-                    })
-                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                        // ->with(['CustomValue' => function($c){
-                        //     $c->with(['Field' => function($d){
-                        //         $d->where('status', Status::ACTIVE)
-                        //         ->where('delete_status', '!=', Status::DELETE);
-                        //     }]);
-                        // }]);
-                }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
-                    $b->where('status', Status::ACTIVE)
-                    ->where(function($q) use($request, $city){
-                        $q->orwhere('city_id', $request->city)
-                        ->orwhere('state_id', $city->state_id);
-                    })
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
-                ->map(function($a){
+                // ->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->where(function($q) use($request, $city){
+                //         $q->orwhere('city_id', $request->city)
+                //         ->orwhere('state_id', $city->state_id);
+                //     })
+                //     ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                //         // ->with(['CustomValue' => function($c){
+                //         //     $c->with(['Field' => function($d){
+                //         //         $d->where('status', Status::ACTIVE)
+                //         //         ->where('delete_status', '!=', Status::DELETE);
+                //         //     }]);
+                //         // }]);
+                // }])
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->where(function($q) use($request, $city){
+                //         $q->orwhere('city_id', $request->city)
+                //         ->orwhere('state_id', $city->state_id);
+                //     })
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($request->country){
+
+                    $category->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere('state_id', $city->state_id);
+                        });
+                    }])
+                    ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere('state_id', $city->state_id);
+                        });
+                    });
+                }
+
+                $category = $category->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
 
@@ -165,19 +185,31 @@ class DashboardController extends Controller
                     ->where('parent_id', 0)
                     ->orderby('sort_order');
                 }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
-                    $b->where('status', Status::ACTIVE)
-                    ->where(function($q) use($request, $city){
-                        $q->orwhere('city_id', $request->city)
-                        ->orwhere('state_id', $city->state_id);
-                    })
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
-                ->map(function($a){
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->where(function($q) use($request, $city){
+                //         $q->orwhere('city_id', $request->city)
+                //         ->orwhere('state_id', $city->state_id);
+                //     })
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($request->country){
+
+                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere('state_id', $city->state_id);
+                        });
+                    });
+                }
+
+                $categoryDefault = $categoryDefault->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
                         $c->SubcategoryChild->map(function($d){
@@ -208,26 +240,52 @@ class DashboardController extends Controller
                     ->orderby('sort_order')
                     ->take(4);
                 }])
-                ->with(['Ads' => function($b) use($latitude, $longitude, $radius){
-                    $b->where('status', Status::ACTIVE)
-                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                        // ->with(['CustomValue' => function($c){
-                        //     $c->with(['Field' => function($d){
-                        //         $d->where('status', Status::ACTIVE)
-                        //         ->where('delete_status', '!=', Status::DELETE);
-                        //     }]);
-                        // }]);
-                }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
-                    $b->where('status', Status::ACTIVE)
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
+                // ->with(['Ads' => function($b) use($latitude, $longitude, $radius){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                //         // ->with(['CustomValue' => function($c){
+                //         //     $c->with(['Field' => function($d){
+                //         //         $d->where('status', Status::ACTIVE)
+                //         //         ->where('delete_status', '!=', Status::DELETE);
+                //         //     }]);
+                //         // }]);
+                // }])
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+                
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $category->with(['Ads' => function($b) use($latitude, $longitude, $radius){
+                            $b->where('status', Status::ACTIVE)
+                            ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                                ->having('distance', '<=', $radius);
+                        }])
+                        ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                            $b->where('status', Status::ACTIVE)
+                            ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                                ->having('distance', '<=', $radius);
+                    });
+                }
+
+                if($request->country){
+
+                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    });
+                }
+
+                $category = $category->get()
                 ->map(function($a){
 
                     $a->Subcategory->map(function($c){
@@ -293,15 +351,32 @@ class DashboardController extends Controller
                     ->where('parent_id', 0)
                     ->orderby('sort_order');
                 }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
-                    $b->where('status', Status::ACTIVE)
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
-                ->map(function($a){
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $categoryDefault->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                        $b->where('status', Status::ACTIVE)
+                        ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                            sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                            ->having('distance', '<=', $radius);
+                    });
+                }
+
+                if($request->country){
+                    $categoryDefault->whereHas('Ads',function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    });
+                }
+
+                $categoryDefault = $categoryDefault->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
                         $c->SubcategoryChild->map(function($d){
@@ -343,22 +418,22 @@ class DashboardController extends Controller
 
     public function LogedDashboard(Request $request){
 
-        $rules = [
-            'latitude'      => 'required|numeric',
-            'longitude'     => 'required|numeric',
-        ];
+        // $rules = [
+        //     'latitude'      => 'required|numeric',
+        //     'longitude'     => 'required|numeric',
+        // ];
 
-        $validate = Validator::make($request->all(), $rules);
+        // $validate = Validator::make($request->all(), $rules);
 
-        if($validate->fails()){
+        // if($validate->fails()){
 
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid request',
-                'code'      => 400,
-                'errors'    => $validate->errors(),
-            ], 200);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Invalid request',
+        //         'code'      => 400,
+        //         'errors'    => $validate->errors(),
+        //     ], 200);
+        // }
 
         try{
 
@@ -394,37 +469,58 @@ class DashboardController extends Controller
                     $a->where('delete_status', '!=', Status::DELETE)
                     ->where('status', Status::ACTIVE)
                     ->where('parent_id', 0)
-                    ->orderby('sort_order');
+                    ->orderby('sort_order')
+                    ->take(4);
                 }])
-                ->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
-                    $b->where('status', Status::ACTIVE)
-                    ->where(function($q) use($request, $city){
-                        $q->orwhere('city_id', $request->city)
-                        ->orwhere('state_id', $city->state_id);
-                    })
-                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                        // ->with(['CustomValue' => function($c){
-                        //     $c->with(['Field' => function($d){
-                        //         $d->where('status', Status::ACTIVE)
-                        //         ->where('delete_status', '!=', Status::DELETE);
-                        //     }]);
-                        // }]);
-                }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
-                    $b->where('status', Status::ACTIVE)
-                    ->where(function($q) use($request, $city){
-                        $q->orwhere('city_id', $request->city)
-                        ->orwhere('state_id', $city->state_id);
-                    })
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
-                ->map(function($a){
+                // ->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->where(function($q) use($request, $city){
+                //         $q->orwhere('city_id', $request->city)
+                //         ->orwhere('state_id', $city->state_id);
+                //     })
+                //     ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                //         // ->with(['CustomValue' => function($c){
+                //         //     $c->with(['Field' => function($d){
+                //         //         $d->where('status', Status::ACTIVE)
+                //         //         ->where('delete_status', '!=', Status::DELETE);
+                //         //     }]);
+                //         // }]);
+                // }])
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->where(function($q) use($request, $city){
+                //         $q->orwhere('city_id', $request->city)
+                //         ->orwhere('state_id', $city->state_id);
+                //     })
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($request->country){
+
+                    $category->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere('state_id', $city->state_id);
+                        });
+                    }])
+                    ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere('state_id', $city->state_id);
+                        });
+                    });
+                }
+
+                $category = $category->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
 
@@ -489,19 +585,31 @@ class DashboardController extends Controller
                     ->where('parent_id', 0)
                     ->orderby('sort_order');
                 }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
-                    $b->where('status', Status::ACTIVE)
-                    ->where(function($q) use($request, $city){
-                        $q->orwhere('city_id', $request->city)
-                        ->orwhere('state_id', $city->state_id);
-                    })
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
-                ->map(function($a){
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->where(function($q) use($request, $city){
+                //         $q->orwhere('city_id', $request->city)
+                //         ->orwhere('state_id', $city->state_id);
+                //     })
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($request->country){
+
+                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere('state_id', $city->state_id);
+                        });
+                    });
+                }
+
+                $categoryDefault = $categoryDefault->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
 
@@ -530,29 +638,54 @@ class DashboardController extends Controller
                     $a->where('delete_status', '!=', Status::DELETE)
                     ->where('status', Status::ACTIVE)
                     ->where('parent_id', 0)
-                    ->orderby('sort_order');
+                    ->orderby('sort_order')
+                    ->take(4);
                 }])
-                ->with(['Ads' => function($b) use($latitude, $longitude, $radius){
-                    $b->where('status', Status::ACTIVE)
-                    ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                        // ->with(['CustomValue' => function($c){
-                        //     $c->with(['Field' => function($d){
-                        //         $d->where('status', Status::ACTIVE)
-                        //         ->where('delete_status', '!=', Status::DELETE);
-                        //     }]);
-                        // }]);
-                }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
-                    $b->where('status', Status::ACTIVE)
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
-                ->map(function($a){
+                // ->with(['Ads' => function($b) use($latitude, $longitude, $radius){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                //         // ->with(['CustomValue' => function($c){
+                //         //     $c->with(['Field' => function($d){
+                //         //         $d->where('status', Status::ACTIVE)
+                //         //         ->where('delete_status', '!=', Status::DELETE);
+                //         //     }]);
+                //         // }]);
+                // }])
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $category->with(['Ads' => function($b) use($latitude, $longitude, $radius){
+                            $b->where('status', Status::ACTIVE)
+                            ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                                ->having('distance', '<=', $radius);
+                        }])
+                        ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                            $b->where('status', Status::ACTIVE)
+                            ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                                ->having('distance', '<=', $radius);
+                    });
+                }
+
+                if($request->country){
+
+                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    });
+                }
+
+                $category = $category->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
 
@@ -617,15 +750,32 @@ class DashboardController extends Controller
                     ->where('parent_id', 0)
                     ->orderby('sort_order');
                 }])
-                ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
-                    $b->where('status', Status::ACTIVE)
-                    ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                })
-                ->take(5)
-                ->get()
-                ->map(function($a){
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $categoryDefault->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                        $b->where('status', Status::ACTIVE)
+                        ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                            sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                            ->having('distance', '<=', $radius);
+                    });
+                }
+
+                if($request->country){
+                    $categoryDefault->whereHas('Ads',function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    });
+                }
+
+                $categoryDefault = $categoryDefault->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
 
@@ -669,22 +819,22 @@ class DashboardController extends Controller
 
     public function getCategory(Request $request){
         
-        $rules = [
-            'latitude'      => 'required|numeric',
-            'longitude'     => 'required|numeric',
-        ];
+        // $rules = [
+        //     'latitude'      => 'required|numeric',
+        //     'longitude'     => 'required|numeric',
+        // ];
 
-        $validate = Validator::make($request->all(), $rules);
+        // $validate = Validator::make($request->all(), $rules);
 
-        if($validate->fails()){
+        // if($validate->fails()){
 
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid request',
-                'code'      => 200,
-                'errors'    => $validate->errors(),
-            ], 200);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Invalid request',
+        //         'code'      => 200,
+        //         'errors'    => $validate->errors(),
+        //     ], 200);
+        // }
 
         try{
 

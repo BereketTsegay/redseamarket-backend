@@ -65,15 +65,13 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="form-group my-2">
-                                        <label for="state">State</label>
-                                        <select name="state" id="state" class="select2 form-control @error('state') is-invalid @enderror" autocomplete="off">
-                                            <option value="{{ $ad->state_id }}">Select State</option>
-                                        </select>
+                                    <div class="form-group">
+                                        <label for="Description">Description</label>
+                                        <textarea name="description" class="form-control {{ Session::has('description_error') ? 'is-invalid' : '' }}" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ $ad->description }}</textarea>
                                         <div class="invalid-feedback">
-                                            @error('state')
-                                                {{ $message }}
-                                            @enderror
+                                            @if (Session::has('description_error'))
+                                                {{ Session::get('description_error') }}
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="form-group my-2">
@@ -144,6 +142,7 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    
                                     <div class="form-group my-2">
                                         <label for="city">City</label>
                                         <select name="city" id="city" class="select2  form-control @error('city') is-invalid @enderror" autocomplete="off">
@@ -153,15 +152,6 @@
                                             @error('city')
                                                 {{ $message }}
                                             @enderror
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Description">Description</label>
-                                        <textarea name="description" class="form-control {{ Session::has('description_error') ? 'is-invalid' : '' }}" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ $ad->description }}</textarea>
-                                        <div class="invalid-feedback">
-                                            @if (Session::has('description_error'))
-                                                {{ Session::get('description_error') }}
-                                            @endif
                                         </div>
                                     </div>
                                     <div class="form-group my-2">
