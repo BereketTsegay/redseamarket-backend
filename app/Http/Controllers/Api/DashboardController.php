@@ -56,7 +56,7 @@ class DashboardController extends Controller
             $r = 6371000; // earth's mean radius 6371 for kilometer and 3956 for miles
             
 
-            if($request->city){
+            if(isset($request->city)){
 
                 $city = City::where('id', $request->city)
                 ->first();
@@ -100,14 +100,17 @@ class DashboardController extends Controller
                 // })
                 ->take(5);
 
-                if($request->country){
+                if(isset($request->country)){
 
                     $category->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country)
                         ->where(function($q) use($request, $city){
                             $q->orwhere('city_id', $request->city)
-                            ->orwhere('state_id', $city->state_id);
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
                         });
                     }])
                     ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
@@ -115,7 +118,10 @@ class DashboardController extends Controller
                         ->where('country_id', $request->country)
                         ->where(function($q) use($request, $city){
                             $q->orwhere('city_id', $request->city)
-                            ->orwhere('state_id', $city->state_id);
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
                         });
                     });
                 }
@@ -197,14 +203,28 @@ class DashboardController extends Controller
                 // })
                 ->take(5);
 
-                if($request->country){
+                if(isset($request->country)){
 
-                    $categoryDefault->whereHas('Ads', function($b) use($request, $city){
+                    $categoryDefault->with(['Ads' => function($b) use($request, $city){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country)
                         ->where(function($q) use($request, $city){
                             $q->orwhere('city_id', $request->city)
-                            ->orwhere('state_id', $city->state_id);
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
+                        });
+                    }])
+                    ->whereHas('Ads', function($b) use($request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
                         });
                     });
                 }
@@ -277,9 +297,13 @@ class DashboardController extends Controller
                     });
                 }
 
-                if($request->country){
-
-                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request){
+                if(isset($request->country)){
+                    
+                    $category->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    }])
+                    ->whereHas('Ads', function($b) use($request){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country);
                     });
@@ -369,8 +393,13 @@ class DashboardController extends Controller
                     });
                 }
 
-                if($request->country){
-                    $categoryDefault->whereHas('Ads',function($b) use($request){
+                if(isset($request->country)){
+                   
+                    $categoryDefault->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    }])
+                    ->whereHas('Ads',function($b) use($request){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country);
                     });
@@ -456,7 +485,7 @@ class DashboardController extends Controller
             $r = 6371000; // earth's mean radius 6371 for kilometer and 3956 for miles
             //id, user_id, name, address_line, city, longitude, latitude, mobile, email, profile_image
 
-            if($request->city){
+            if(isset($request->city)){
 
                 $city = City::where('id', $request->city)
                 ->first();
@@ -500,14 +529,17 @@ class DashboardController extends Controller
                 // })
                 ->take(5);
 
-                if($request->country){
+                if(isset($request->country)){
 
                     $category->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country)
                         ->where(function($q) use($request, $city){
                             $q->orwhere('city_id', $request->city)
-                            ->orwhere('state_id', $city->state_id);
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
                         });
                     }])
                     ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
@@ -515,7 +547,10 @@ class DashboardController extends Controller
                         ->where('country_id', $request->country)
                         ->where(function($q) use($request, $city){
                             $q->orwhere('city_id', $request->city)
-                            ->orwhere('state_id', $city->state_id);
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
                         });
                     });
                 }
@@ -597,14 +632,28 @@ class DashboardController extends Controller
                 // })
                 ->take(5);
 
-                if($request->country){
+                if(isset($request->country)){
 
-                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                    $category->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request, $city){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country)
                         ->where(function($q) use($request, $city){
                             $q->orwhere('city_id', $request->city)
-                            ->orwhere('state_id', $city->state_id);
+                            ->where(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
+                        });
+                    }])
+                    ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->where(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
                         });
                     });
                 }
@@ -677,9 +726,13 @@ class DashboardController extends Controller
                     });
                 }
 
-                if($request->country){
+                if(isset($request->country)){
 
-                    $category->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request){
+                    $category->with(['Ads' => function($b) use($latitude, $longitude, $radius, $request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    }])
+                    ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country);
                     });
@@ -768,8 +821,12 @@ class DashboardController extends Controller
                     });
                 }
 
-                if($request->country){
-                    $categoryDefault->whereHas('Ads',function($b) use($request){
+                if(isset($request->country)){
+                    $categoryDefault->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    }])
+                    ->whereHas('Ads',function($b) use($request){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country);
                     });

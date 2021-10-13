@@ -885,8 +885,11 @@ class OtherController extends Controller
                 ->first();
             
                 $myAds = Ads::where(function($a) use($request, $city){
-                    $a->where('city_id', $request->city)
-                    ->orwhere('state_id', $city->state_id);
+                    $a->orwhere('city_id', $request->city)
+                    ->where(function($a) use($city){
+                        $a->where('city_id', 0)
+                        ->where('state_id', $city->state_id);
+                    });
                 })
                 // selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                 //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
@@ -1114,7 +1117,10 @@ class OtherController extends Controller
                 // ->having('distance', '<=', $radius)
                 ->where(function($a) use($request, $city){
                     $a->orwhere('city_id', $request->city)
-                    ->orwhere('state_id', $city->state);
+                    ->where(function($a) use($city){
+                        $a->where('city_id', 0)
+                        ->where('state_id', $city->state_id);
+                    });
                 })
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE);

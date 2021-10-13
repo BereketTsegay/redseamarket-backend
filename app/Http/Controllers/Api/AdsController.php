@@ -207,14 +207,14 @@ class AdsController extends Controller
                 $featured = 0;
             }
 
-            if($request->city){
+            if(isset($request->city)){
                 $city = $request->city;
             }
             else{
                 $city = 0;
             }
 
-            if($request->subcategory){
+            if(isset($request->subcategory)){
                 $subcategory = $request->subcategory;
             }
             else{
@@ -315,28 +315,28 @@ class AdsController extends Controller
                 $motor->milage              = $request->mileage;
                 $motor->save();
 
-                if($request->aircondition){
+                if(isset($request->aircondition)){
                     $motorFeature           = new MotorFeatures();
                     $motorFeature->ads_id   = $ad->id;
                     $motorFeature->value    = $request->aircondition;
                     $motorFeature->save();
                 }
 
-                if($request->gps){
+                if(isset($request->gps)){
                     $motorFeature           = new MotorFeatures();
                     $motorFeature->ads_id   = $ad->id;
                     $motorFeature->value    = $request->gps;
                     $motorFeature->save();
                 }
 
-                if($request->security){
+                if(isset($request->security)){
                     $motorFeature           = new MotorFeatures();
                     $motorFeature->ads_id   = $ad->id;
                     $motorFeature->value    = $request->security;
                     $motorFeature->save();
                 }
 
-                if($request->tire){
+                if(isset($request->tire)){
                     $motorFeature           = new MotorFeatures();
                     $motorFeature->ads_id   = $ad->id;
                     $motorFeature->value    = $request->tire;
@@ -969,7 +969,10 @@ class AdsController extends Controller
                 ->whereHas('ads', function($a) use($latitude, $longitude, $radius, $request, $city){
                     $a->where(function($b) use($request, $city){
                         $b->orwhere('city_id', $request->city)
-                        ->orwhere('state_id', $city->state_id);
+                        ->where(function($a) use($city){
+                            $a->where('city_id', 0)
+                            ->where('state_id', $city->state_id);
+                        });
                     });
                 });
             }
@@ -3542,7 +3545,10 @@ class AdsController extends Controller
                 
                 $myAds->where(function($a) use($request, $city){
                     $a->orwhere('city_id', $request->city)
-                    ->where('state_id', $city->state_id);
+                    ->where(function($a) use($city){
+                        $a->where('city_id', 0)
+                        ->where('state_id', $city->state_id);
+                    });
                 });
             }
 
