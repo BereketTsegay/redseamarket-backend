@@ -3771,7 +3771,7 @@ class AdsController extends Controller
 
     public function searchAutoComplete(Request $request){
 
-        try{
+        // try{
 
             $rules = [
                 'search_key'    => 'required',
@@ -3804,10 +3804,10 @@ class AdsController extends Controller
             })
             ->where('country_id', $request->country)
             ->where('status', Status::ACTIVE)
-            ->where('delete_status', Status::UNDELETE)
-            ->selectRaw('id, title as name, latitude, longitude, category_id, sellerinformation_id, subcategory_id, price, country_id, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-            ->having('distance', '<=', $radius);
+            ->where('delete_status', Status::UNDELETE);
+            // ->selectRaw('id, title as name, latitude, longitude, category_id, sellerinformation_id, subcategory_id, price, country_id, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+            //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            // ->having('distance', '<=', $radius);
 
             if($latitude != 0 && $longitude != 0){
 
@@ -3874,13 +3874,13 @@ class AdsController extends Controller
                 'code'      => 200,
                 'ads'       => $ads,
             ]);
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 }
