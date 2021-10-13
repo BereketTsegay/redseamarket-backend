@@ -261,6 +261,11 @@ class OtherController extends Controller
                 ->having('distance', '<=', $radius);
             }
 
+            if(isset($request->country)){
+                    
+                $myAds->where('country_id', $request->country);
+            }
+
             if($request->city){
 
                 $myAds->where('city_id', $request->city);
@@ -568,6 +573,11 @@ class OtherController extends Controller
                 ->where('delete_status', '!=', Status::DELETE)
                 ->where('subcategory_id', $request->subcategory);
 
+                if(isset($request->country)){
+                    
+                    $myAds->where('country_id', $request->country);
+                }
+
                 if($latitude != 0 && $longitude != 0){
 
                     $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
@@ -644,6 +654,11 @@ class OtherController extends Controller
                 //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 // ->having('distance', '<=', $radius)
                 ->where('delete_status', '!=', Status::DELETE);
+
+                if(isset($request->country)){
+                    
+                    $myAds->where('country_id', $request->country);
+                }
 
                 if($latitude != 0 && $longitude != 0){
 
@@ -907,6 +922,11 @@ class OtherController extends Controller
                     ->having('distance', '<=', $radius);
                 }
 
+                if(isset($request->country)){
+                    
+                    $myAds->where('country_id', $request->country);
+                }
+
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -985,6 +1005,11 @@ class OtherController extends Controller
                     $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                     ->having('distance', '<=', $radius);
+                }
+
+                if(isset($request->country)){
+                    
+                    $myAds->where('country_id', $request->country);
                 }
 
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
@@ -1132,6 +1157,11 @@ class OtherController extends Controller
                     ->having('distance', '<=', $radius);
                 }
 
+                if(isset($request->country)){
+                    
+                    $myAds->where('country_id', $request->country);
+                }
+
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -1207,6 +1237,11 @@ class OtherController extends Controller
                     $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                     ->having('distance', '<=', $radius);
+                }
+
+                if(isset($request->country)){
+
+                    $myAds->where('country_id', $request->country);
                 }
 
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
