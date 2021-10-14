@@ -171,6 +171,11 @@
 
                             <div class="sb-sidenav-menu-heading">Others</div>
 
+                            <a class="nav-link {{ request()->is('contact*') ? 'active' : '' }}" href="{{ route('contact.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-phone"></i></div>
+                                Contact Us Enquiry
+                            </a>
+
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_FEATURED_DEALER))
 
                                 <a class="nav-link {{ request()->is('privacy*') ? 'active' : '' }}" href="{{ route('privacy.index') }}">
@@ -404,13 +409,13 @@
             url: '/get/notification',
             method: 'get',
             success:function(data){
-                $('#notification_counts').html(data);
+                $('#notification_counts').html(data.length);
 
-                notification += `<span class="notification_counts">${data}</span> Notifications</li>
+                notification += `<span class="notification_counts">${data.length}</span> Notifications</li>
                         <li><hr class="dropdown-divider" /></li>`
-                for(let i = 0; i < data; i++){
+                for(let i = 0; i < data.length; i++){
 
-                    notification += `<li class="dropdown-item" >New Ad request</li>`;
+                    notification += `<li class="dropdown-item">${data[i].message}</li>`;
                 }
 
                 $('#notifications').html(notification);
@@ -426,9 +431,9 @@
                 method: 'post',
                 success:function(){
 
-                    $('#notification_counts').html(0);
-                    $('#notifications').html(`<li class="dropdown-item"><span class="notification_counts">0</span> Notifications</li>
-                        <li><hr class="dropdown-divider" /></li>`);
+                    // $('#notification_counts').html(0);
+                    // $('#notifications').html(`<li class="dropdown-item"><span class="notification_counts">0</span> Notifications</li>
+                    //     <li><hr class="dropdown-divider" /></li>`);
                 }
             });
 
@@ -444,19 +449,19 @@
             url: '/get/notification',
             method: 'get',
             success:function(data){
-                $('#notification_counts').html(data);
+                $('#notification_counts').html(data.length);
 
-                notification += `<span class="notification_counts">${data}</span> Notifications</li>
-                        <li><hr class="dropdown-divider" /></li>`
-                for(let i = 0; i < data; i++){
+                notification += `<span class="notification_counts">${data.length}</span> Notifications</li>
+                        <li><hr class="dropdown-divider"/></li>`
+                for(let i = 0; i < data.length; i++){
 
-                    notification += `<li class="dropdown-item" >New Ad request</li>`;
+                    notification += `<li class="dropdown-item">${data[i].message}</li>`;
                 }
 
                 $('#notifications').html(notification);
             }
         });
-    }, 10000);
+    }, 20000);
 
 </script>
 

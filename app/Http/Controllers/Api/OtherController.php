@@ -10,10 +10,12 @@ use App\Mail\Payment as MailPayment;
 use App\Models\Ads;
 use App\Models\Banner;
 use App\Models\City;
+use App\Models\ContactUs as ModelsContactUs;
 use App\Models\Country;
 use App\Models\CurrencyCode;
 use App\Models\Favorite;
 use App\Models\FeaturedDealers;
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\PrivacyPolicy;
 use App\Models\SocialLink;
@@ -1693,6 +1695,19 @@ class OtherController extends Controller
                     'errors'    => $validate->errors(),
                 ], 200);
             }
+
+            $contactus              = new ModelsContactUs();
+            $contactus->name        = $request->name;
+            $contactus->email       = $request->email;
+            $contactus->phone       = $request->phone;
+            $contactus->message     = $request->message;
+            $contactus->save();
+
+            $notification = new Notification();
+            $notification->title    = 'Contact us enquiry';
+            $notification->message  = 'New Contact Us Enquiry';
+            $notification->status   = 0;
+            $notification->save();
 
             $enquiry = [
                 'customer_name' => $request->name,

@@ -19,6 +19,7 @@ use App\Models\MakeMst;
 use App\Models\ModelMst;
 use App\Models\MotorCustomeValues;
 use App\Models\MotorFeatures;
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\PropertyRendCustomeValues;
 use App\Models\PropertySaleCustomeValues;
@@ -370,7 +371,7 @@ class AdsController extends Controller
 
                 foreach($request->image as $row){
 
-                    $image = $row;
+                    $image = $row['file'];
 
                     $image_parts = explode(";base64,", $image);
                     $image_type_aux = explode("image/", $image_parts[0]);
@@ -503,6 +504,12 @@ class AdsController extends Controller
                 $adsDependency->master_id   = $request->City;
                 $adsDependency->save();
             }
+
+            $notification           = new Notification();
+            $notification->title    = 'New Ad Request';
+            $notification->message  = 'New ad request';
+            $notification->status   = 0;
+            $notification->save();
 
             return response()->json([
                 'status'    => 'success',

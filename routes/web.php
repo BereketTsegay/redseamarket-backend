@@ -222,6 +222,11 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::post('/terms/update', [App\Http\Controllers\TermsConditionsController::class, 'update'])->name('terms.update');
         Route::post('/terms/delete/{id}', [App\Http\Controllers\TermsConditionsController::class, 'delete'])->name('terms.delete');
 
+        // Contact us enquiry
+
+        Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact.index');
+        Route::get('/contact/view/{id}', [App\Http\Controllers\ContactController::class, 'view'])->name('contact.view');
+
         Route::get('/get/notification', [App\Http\Controllers\AdsController::class,'adNotification']);
         Route::post('/read/notification', [App\Http\Controllers\AdsController::class,'readNotification']);
 
