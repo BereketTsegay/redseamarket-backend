@@ -969,8 +969,7 @@ class AdsController extends Controller
             //         ->orwhere('state_id', $city->state_id);
             //     });
             // })
-            ->orderBy('sort_order')
-            ->get();
+            ->orderBy('sort_order');
 
             if($request->city){
 
@@ -1028,7 +1027,7 @@ class AdsController extends Controller
                     });
                 }
 
-                $subcategory = $subcategory->map(function($a){
+                $subcategory = $subcategory->get()->map(function($a){
 
                     $a->Ads->map(function($b){
                         
