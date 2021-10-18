@@ -14,6 +14,7 @@ use App\Models\FieldOptions;
 use App\Models\MakeMst;
 use App\Models\MotorCustomeValues;
 use App\Models\MotorFeatures;
+use App\Models\Notification;
 use App\Models\PropertyRendCustomeValues;
 use App\Models\PropertySaleCustomeValues;
 use App\Models\RejectReason;
@@ -1142,10 +1143,13 @@ class AdsController extends Controller
 
     public function adNotification(){
 
-        $ad = Ads::where('notification_status', 0)
-        ->count();
+        // $ad = Ads::where('notification_status', 0)
+        // ->count();
 
-        return response()->json($ad);
+        $notification = Notification::where('status', 0)
+        ->get();
+
+        return response()->json($notification);
     }
 
     public function readNotification(){
@@ -1153,6 +1157,11 @@ class AdsController extends Controller
         Ads::where('notification_status', 0)
         ->update([
             'notification_status'   => 1,
+        ]);
+
+        Notification::where('status', 0)
+        ->update([
+            'status'    => 1,
         ]);
     }
 

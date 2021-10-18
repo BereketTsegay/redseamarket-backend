@@ -19,6 +19,7 @@ use App\Models\MakeMst;
 use App\Models\ModelMst;
 use App\Models\MotorCustomeValues;
 use App\Models\MotorFeatures;
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\PropertyRendCustomeValues;
 use App\Models\PropertySaleCustomeValues;
@@ -370,7 +371,7 @@ class AdsController extends Controller
 
                 foreach($request->image as $row){
 
-                    $image = $row;
+                    $image = $row['file'];
 
                     $image_parts = explode(";base64,", $image);
                     $image_type_aux = explode("image/", $image_parts[0]);
@@ -503,6 +504,12 @@ class AdsController extends Controller
                 $adsDependency->master_id   = $request->City;
                 $adsDependency->save();
             }
+
+            $notification           = new Notification();
+            $notification->title    = 'New Ad Request';
+            $notification->message  = 'New ad request';
+            $notification->status   = 0;
+            $notification->save();
 
             return response()->json([
                 'status'    => 'success',
@@ -736,7 +743,11 @@ class AdsController extends Controller
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                         ->having('distance', '<=', $radius);
                     })
-                    ->withCount('Ads');
+                    ->withCount(['Ads' => function($a) use($latitude, $longitude, $radius){
+                        $a->selectRaw('*, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                        ->having('distance', '<=', $radius);
+                    }]);
                 }])
                 ->first();
             }
@@ -749,7 +760,9 @@ class AdsController extends Controller
                             $a->where('country_id', $request->country)
                             ->where('city_id', $request->city);
                         })
-                        ->withCount('Ads');
+                        ->withCount(['Ads' => function($a) use($request){
+                            $a->where('country_id', $request->country);
+                        }]);
                     }])
                     ->first();
                 }
@@ -761,7 +774,9 @@ class AdsController extends Controller
                         ->whereHas('Ads', function($a) use($request){
                             $a->where('country_id', $request->country);
                         })
-                        ->withCount('Ads');
+                        ->withCount(['Ads' => function($a) use($request){
+                            $a->where('country_id', $request->country);
+                        }]);
                     }])
                     ->first();
                 }
@@ -772,7 +787,9 @@ class AdsController extends Controller
                         ->whereHas('Ads', function($a) use($request){
                             $a->where('city_id', $request->city);
                         })
-                        ->withCount('Ads');
+                        ->withCount(['Ads' => function($a) use($request){
+                            $a->where('country_id', $request->city);
+                        }]);
                     }])
                     ->first();
                 }
@@ -801,10 +818,8 @@ class AdsController extends Controller
                 // })
                 ->where('status', Status::ACTIVE)
                 ->where('delete_status', '!=', Status::DELETE)
-                ->where('featured_flag', 1)
-                ->where('city_id', $request->city)
-                ->take(30)
-                ->inRandomOrder();
+                // ->where('featured_flag', 1)
+                ->where('city_id', $request->city);
 
                 if($latitude != 0 && $longitude != 0){
 
@@ -817,18 +832,20 @@ class AdsController extends Controller
                     $ads->where('country_id', $request->country);
                 }
 
-                $ads = $ads->get()->map(function($a){
-                    $a->state_name = $a->State ? $a->State->name : '';
-                    $a->city_name = $a->City ? $a->City->name : ($a->State ? $a->State->name : '');
-                    $a->make = $a->MotoreValue ? $a->MotoreValue->Make->name : '';
-                    $a->model = $a->MotoreValue->Model->name;
-                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                    $a->year = $a->MotoreValue->registration_year;
-                    $a->milage = $a->MotoreValue->milage;
-                    $a->image = $a->Image;
-                    unset($a->MotoreValue, $a->State, $a->City, $a->Country);
-                    return $a;
-                });
+                $ads = tap($ads->paginate(20), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->map(function($a){
+                            $a->state_name = $a->State ? $a->State->name : '';
+                            $a->city_name = $a->City ? $a->City->name : ($a->State ? $a->State->name : '');
+                            $a->make = $a->MotoreValue ? $a->MotoreValue->Make->name : '';
+                            $a->model = $a->MotoreValue->Model->name;
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                            $a->year = $a->MotoreValue->registration_year;
+                            $a->milage = $a->MotoreValue->milage;
+                            $a->image = $a->Image;
+                            unset($a->MotoreValue, $a->State, $a->City, $a->Country);
+                            return $a;
+                        });
+                    });
             }
             else{
 
@@ -837,10 +854,8 @@ class AdsController extends Controller
                 //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 // ->having('distance', '<=', $radius)
                 ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE)
-                ->where('featured_flag', 1)
-                ->take(30)
-                ->inRandomOrder();
+                ->where('delete_status', '!=', Status::DELETE);
+                // ->where('featured_flag', 1);
 
                 if($latitude != 0 && $longitude != 0){
 
@@ -853,22 +868,24 @@ class AdsController extends Controller
                     $ads->where('country_id', $request->country);
                 }
 
-                $ads = $ads->get()->map(function($a){
-                    $a->state_name = $a->State->name;
-                    $a->city_name = $a->City ? $a->City->name : $a->State->name;
-                    if($a->MotoreValue){
-                        $a->make = $a->MotoreValue->Make->name;
-                        $a->model = $a->MotoreValue->Model->name;
-                        $a->year = $a->MotoreValue->registration_year;
-                        $a->milage = $a->MotoreValue->milage;
+                $ads = tap($ads->paginate(20), function ($paginatedInstance){
+                    return $paginatedInstance->getCollection()->map(function($a){
+                            $a->state_name = $a->State->name;
+                            $a->city_name = $a->City ? $a->City->name : $a->State->name;
+                            if($a->MotoreValue){
+                                $a->make = $a->MotoreValue->Make->name;
+                                $a->model = $a->MotoreValue->Model->name;
+                                $a->year = $a->MotoreValue->registration_year;
+                                $a->milage = $a->MotoreValue->milage;
 
-                        unset($a->MotoreValue);
-                    }
-                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                    $a->image = $a->Image;
-                    unset($a->State, $a->City, $a->Country);
-                    return $a;
-                });
+                                unset($a->MotoreValue);
+                            }
+                            $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                            $a->image = $a->Image;
+                            unset($a->State, $a->City, $a->Country);
+                            return $a;
+                        });
+                    });
 
             }
 
