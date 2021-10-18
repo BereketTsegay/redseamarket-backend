@@ -898,7 +898,7 @@ class AdsController extends Controller
 
     public function getProperty(Request $request){
 
-        try{
+        // try{
             
             $rules = [
                 'category_id'   => 'required|numeric',
@@ -952,21 +952,20 @@ class AdsController extends Controller
             //         ->orwhere('state_id', $city->state_id);
             //     });
             // })
-            ->orderBy('sort_order')
-            ->get();
+            ->orderBy('sort_order');
 
             if($request->city){
 
                 $city = City::where('id', $request->city)
                 ->first();
 
-                $subcategory->with(['ads' => function($a) use($latitude, $longitude, $radius, $request, $city){
+                $subcategory->with(['ads' => function($a) use($request, $city){
                     $a->where(function($b) use($request, $city){
                         $b->orwhere('city_id', $request->city)
                         ->orwhere('state_id', $city->state_id);
                     });
                 }])
-                ->whereHas('ads', function($a) use($latitude, $longitude, $radius, $request, $city){
+                ->whereHas('ads', function($a) use($request, $city){
                     $a->where(function($b) use($request, $city){
                         $b->orwhere('city_id', $request->city)
                         ->where(function($a) use($city){
@@ -1011,7 +1010,7 @@ class AdsController extends Controller
                     });
                 }
 
-                $subcategory = $subcategory->map(function($a){
+                $subcategory = $subcategory->get()->map(function($a){
 
                     $a->Ads->map(function($b){
                         
@@ -1058,15 +1057,15 @@ class AdsController extends Controller
                 ],
             ], 200);
 
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
     
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function getMake(){
