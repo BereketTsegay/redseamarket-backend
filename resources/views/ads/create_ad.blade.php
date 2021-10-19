@@ -27,9 +27,10 @@
                     <div class="container">
                         <form action="{{ route('ads.store') }}" method="POST" enctype="multipart/form-data" id="adStoreForm">
                             <div class="row">
-                                <div class="col-md-6">
+                                
                                     @csrf
-                                    <div class="form-group my-2">
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
                                         <label for="category">Category</label>
                                         <select name="category" id="category" class="form-control @error('category') is-invalid @enderror" autocomplete="off">
                                             <option value="" >Select</option>
@@ -44,7 +45,20 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="form-group my-2">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="subcategory">Subcategory (Optional)</label>
+                                        <select name="subcategory" id="subcategory" class="form-control @error('subcategory') is-invalid @enderror" autocomplete="off">
+                                            <option value={{old('subcategory')}}>Select</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            @error('subcategory')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
                                         <label for="Title">Title</label>
                                         <input type="text" name="title" value="{{ old('title') }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' : '' }}" placeholder="Title" autocomplete="off">
                                         <div class="invalid-feedback">
@@ -53,7 +67,18 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="form-group my-2">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="CanonicalName">Canonical Name</label>
+                                        <input type="text" id="canonical_name" name="canonical_name" value="{{ old('canonical_name') }}" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" autocomplete="off" readonly>
+                                        <div class="invalid-feedback">
+                                            @error('canonical_name')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
                                         <label for="Title">Title in Arabic</label>
                                         <input type="text" name="arabic_title" value="{{ old('arabic_title') }}" class="slug form-control {{ Session::has('title_error') ? 'is-invalid' : '' }}" placeholder="Title in Arabic" autocomplete="off">
                                         <div class="invalid-feedback">
@@ -62,7 +87,24 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="form-group my-2">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="country">Country</label>
+                                        <select name="country" id="country" class="select2 form-control @error('country') is-invalid @enderror" autocomplete="off">
+                                            <option value="">Select</option>
+                                            @foreach ($country as $row1)
+                                                
+                                                <option {{ old('country') == $row1->id ? 'selected' : '' }} value="{{ $row1->id }}">{{ $row1->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            @error('country')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
                                         <label for="Price">Price</label>
                                         <input type="number" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
@@ -71,7 +113,44 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="form-group my-2">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="state">State</label>
+                                        <select name="state" id="state" class="select2 form-control @error('state') is-invalid @enderror" autocomplete="off">
+                                            <option value={{ old('state') }}>Select State</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            @error('state')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="Image">Image (Multiple)</label>
+                                        <input type="file" name="image[]" autocomplete="off" class="form-control @error('image') is-invalid @enderror" accept=".png, .jpeg, .jpg" multiple>
+                                        <div style="color: red;"><strong>Warning: </strong> Maximum of 5 images are allowed!</div>
+                                        <div class="invalid-feedback">
+                                            @error('image.*')
+                                                {{ $message }}
+                                            @enderror
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="city">City</label>
+                                        <select name="city" id="city" class="select2  form-control @error('city') is-invalid @enderror" autocomplete="off">
+                                            <option value={{old('city')}}>Select</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            @error('city')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
                                         <label for="Description">Description</label>
                                         <textarea name="description" class="form-control {{ Session::has('description_error') ? 'is-invalid' : '' }}" cols="30" rows="3" placeholder="Description" autocomplete="off">{{ old('description') }}</textarea>
                                         <div class="invalid-feedback">
@@ -80,16 +159,18 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="form-group my-2">
-                                        <label for="Image">Image (Multiple)</label>
-                                        <input type="file" name="image[]" autocomplete="off" class="form-control @error('image') is-invalid @enderror" accept=".png, .jpeg, .jpg" multiple>
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="Description">Description in Arabic</label>
+                                        <textarea name="description_arabic" class="form-control {{ Session::has('description_error') ? 'is-invalid' : '' }}" cols="30" rows="3" placeholder="Description in Arabic" autocomplete="off">{{ old('description_arabic') }}</textarea>
                                         <div class="invalid-feedback">
-                                            @error('image.*')
-                                                hi
-                                            @enderror
-                                            
+                                            @if (Session::has('description_error'))
+                                                {{ Session::get('description_error') }}
+                                            @endif
+                                                
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group my-2">
@@ -108,75 +189,6 @@
                                                 <label for="Status">Featured</label>
                                                 <input type="checkbox" name="featured" value="checked" autocomplete="off">
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group my-2">
-                                        <label for="subcategory">Subcategory (Optional)</label>
-                                        <select name="subcategory" id="subcategory" class="form-control @error('subcategory') is-invalid @enderror" autocomplete="off">
-                                            <option value={{old('subcategory')}}>Select</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            @error('subcategory')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="form-group my-2">
-                                        <label for="CanonicalName">Canonical Name</label>
-                                        <input type="text" id="canonical_name" name="canonical_name" value="{{ old('canonical_name') }}" class="form-control @error('canonical_name') is-invalid @enderror" placeholder="Canonical Name" autocomplete="off" readonly>
-                                        <div class="invalid-feedback">
-                                            @error('canonical_name')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="form-group my-2">
-                                        <label for="country">Country</label>
-                                        <select name="country" id="country" class="select2 form-control @error('country') is-invalid @enderror" autocomplete="off">
-                                            <option value="">Select</option>
-                                            @foreach ($country as $row1)
-                                                
-                                                <option {{ old('country') == $row1->id ? 'selected' : '' }} value="{{ $row1->id }}">{{ $row1->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            @error('country')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="form-group my-2">
-                                        <label for="state">State</label>
-                                        <select name="state" id="state" class="select2 form-control @error('state') is-invalid @enderror" autocomplete="off">
-                                            <option value={{ old('state') }}>Select State</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            @error('state')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="form-group my-2">
-                                        <label for="city">City</label>
-                                        <select name="city" id="city" class="select2  form-control @error('city') is-invalid @enderror" autocomplete="off">
-                                            <option value={{old('city')}}>Select</option>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            @error('city')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="form-group my-2">
-                                        <label for="Description">Description in Arabic</label>
-                                        <textarea name="description_arabic" class="form-control {{ Session::has('description_error') ? 'is-invalid' : '' }}" cols="30" rows="3" placeholder="Description in Arabic" autocomplete="off">{{ old('description_arabic') }}</textarea>
-                                        <div class="invalid-feedback">
-                                            @if (Session::has('description_error'))
-                                                {{ Session::get('description_error') }}
-                                            @endif
-                                                
                                         </div>
                                     </div>
                                 </div>
