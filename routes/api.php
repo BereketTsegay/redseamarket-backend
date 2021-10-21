@@ -71,6 +71,7 @@ Route::post('/search/autocomplete', [\App\Http\Controllers\Api\AdsController::cl
 
 Route::post('/contactus/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'contactEnquiry']);
 
+Route::post('/menu/list', [\App\Http\Controllers\Api\DashboardController::class, 'MenuList']);
 
 Route::middleware('auth:api')->group( function () {
    

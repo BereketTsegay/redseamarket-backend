@@ -874,6 +874,163 @@ class DashboardController extends Controller
         }
     }
 
+    public function MenuList(Request $request){
+
+        try{
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+            
+            $radius = 10; // Km
+            $r = 6371000; // earth's mean radius 6371 for kilometer and 3956 for miles
+            
+
+            if(isset($request->city)){
+
+                $city = City::where('id', $request->city)
+                ->first();
+            
+                $categoryDefault = Category::where('delete_status', '!=', Status::DELETE)
+                ->where('status', Status::ACTIVE)
+                ->where('display_flag', Status::ACTIVE)
+                ->orderBy('sort_order')
+                ->with(['Subcategory' => function($a){
+                    $a->where('delete_status', '!=', Status::DELETE)
+                    ->where('status', Status::ACTIVE)
+                    ->where('parent_id', 0)
+                    ->orderby('sort_order');
+                }])
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius, $request, $city){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->where(function($q) use($request, $city){
+                //         $q->orwhere('city_id', $request->city)
+                //         ->orwhere('state_id', $city->state_id);
+                //     })
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if(isset($request->country)){
+
+                    $categoryDefault->with(['Ads' => function($b) use($request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
+                        });
+                    }])
+                    ->whereHas('Ads', function($b) use($request, $city){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country)
+                        ->where(function($q) use($request, $city){
+                            $q->orwhere('city_id', $request->city)
+                            ->orwhere(function($a) use($city){
+                                $a->where('city_id', 0)
+                                ->where('state_id', $city->state_id);
+                            });
+                        });
+                    });
+                }
+
+                $categoryDefault = $categoryDefault->get()->map(function($a){
+
+                    $a->Subcategory->map(function($c){
+                        $c->SubcategoryChild->map(function($d){
+
+                            unset($d->sort_order, $d->delete_status, $d->status);
+                            return $d;
+                        });
+
+                        unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
+                        return $c;
+                    });
+                    
+                    unset($a->country_id, $a->state_id, $a->city_id, $a->delete_status, $a->sort_order, $a->status, $a->icon_class_id,);
+                    return $a;
+                });
+            }
+            else{
+                
+                $categoryDefault = Category::where('delete_status', '!=', Status::DELETE)
+                ->where('status', Status::ACTIVE)
+                ->where('display_flag', Status::ACTIVE)
+                ->orderBy('sort_order')
+                ->with(['Subcategory' => function($a){
+                    $a->where('delete_status', '!=', Status::DELETE)
+                    ->where('status', Status::ACTIVE)
+                    ->where('parent_id', 0)
+                    ->orderby('sort_order');
+                }])
+                // ->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                //     $b->where('status', Status::ACTIVE)
+                //     ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //         ->having('distance', '<=', $radius);
+                // })
+                ->take(5);
+
+                if($latitude != 0 && $longitude != 0){
+
+                    $categoryDefault->whereHas('Ads',function($b) use($latitude, $longitude, $radius){
+                        $b->where('status', Status::ACTIVE)
+                        ->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                            sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                            ->having('distance', '<=', $radius);
+                    });
+                }
+
+                if(isset($request->country)){
+                   
+                    $categoryDefault->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    }])
+                    ->whereHas('Ads',function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', $request->country);
+                    });
+                }
+
+                $categoryDefault = $categoryDefault->get()->map(function($a){
+
+                    $a->Subcategory->map(function($c){
+                        $c->SubcategoryChild->map(function($d){
+
+                            unset($d->sort_order, $d->delete_status, $d->status);
+                            return $d;
+                        });
+
+                        unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
+                        return $c;
+                    });
+                    
+                    unset($a->country_id, $a->state_id, $a->city_id, $a->delete_status, $a->sort_order, $a->status, $a->icon_class_id,);
+                    return $a;
+                });
+            }
+
+
+            return response()->json([
+                'status'    => 'success',
+                'code'      => 200,
+                'category'  => $categoryDefault,
+            ], 200);
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
     public function getCategory(Request $request){
         
         // $rules = [
