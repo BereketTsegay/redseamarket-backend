@@ -976,21 +976,21 @@ class AdsController extends Controller
                 $city = City::where('id', $request->city)
                 ->first();
 
-                $subcategory->with(['ads' => function($a) use($latitude, $longitude, $radius, $request, $city){
+                $subcategory->with(['ads' => function($a) use($request, $city){
                     $a->where(function($b) use($request, $city){
                         $b->orwhere('city_id', $request->city)
                         ->orwhere('state_id', $city->state_id);
                     });
-                }])
-                ->whereHas('ads', function($a) use($latitude, $longitude, $radius, $request, $city){
-                    $a->where(function($b) use($request, $city){
-                        $b->orwhere('city_id', $request->city)
-                        ->where(function($a) use($city){
-                            $a->where('city_id', 0)
-                            ->where('state_id', $city->state_id);
-                        });
-                    });
-                });
+                }]);
+                // ->whereHas('ads', function($a) use($request, $city){
+                //     $a->where(function($b) use($request, $city){
+                //         $b->orwhere('city_id', $request->city)
+                //         ->where(function($a) use($city){
+                //             $a->where('city_id', 0)
+                //             ->where('state_id', $city->state_id);
+                //         });
+                //     });
+                // });
             }
 
             if($latitude != 0 && $longitude != 0){
@@ -999,32 +999,32 @@ class AdsController extends Controller
                     $a->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                     ->having('distance', '<=', $radius);
-                }])
-                ->whereHas('ads', function($a) use($latitude, $longitude, $radius){
-                    $a->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                    ->having('distance', '<=', $radius);
-                });
+                }]);
+                // ->whereHas('ads', function($a) use($latitude, $longitude, $radius){
+                //     $a->selectRaw('(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                //     ->having('distance', '<=', $radius);
+                // });
             }
 
                 if(isset($request->country)){
 
                     $subcategory->with(['ads' => function($a) use($request){
                         $a->where('country_id', $request->country);
-                    }])
-                    ->whereHas('ads', function($a) use($request){
-                        $a->where('country_id', $request->country);
-                    });
+                    }]);
+                    // ->whereHas('ads', function($a) use($request){
+                    //     $a->where('country_id', $request->country);
+                    // });
 
                 }
 
                 if($request->city){
                     $subcategory->with(['ads' => function($a) use($request){
                         $a->where('city_id', $request->city);
-                    }])
-                    ->whereHas('ads', function($a) use($request){
-                        $a->where('city_id', $request->city);
-                    });
+                    }]);
+                    // ->whereHas('ads', function($a) use($request){
+                    //     $a->where('city_id', $request->city);
+                    // });
                 }
 
                 $subcategory = $subcategory->get()->map(function($a){
@@ -3821,10 +3821,10 @@ class AdsController extends Controller
             if(isset($request->seller)){
                 
                 if($request->seller == 0){
-                    $myAds->where('sellerinformation_id', 0);
+                    $myAds->where('featured_flag', 0);
                 }
                 else{
-                    $myAds->where('sellerinformation_id', '!=', 0);
+                    $myAds->where('featured_flag', '!=', 0);
                 }
             }
 
@@ -3953,7 +3953,7 @@ class AdsController extends Controller
 
     public function searchAutoComplete(Request $request){
 
-        // try{
+        try{
 
             $rules = [
                 'search_key'    => 'required',
@@ -4013,7 +4013,7 @@ class AdsController extends Controller
                 $ads->where('subcategory_id', $request->subcategory);
             }
             if($request->seller){
-                $ads->where('sellerinformation_id', $request->seller);
+                $ads->where('featured_flag', $request->seller);
             }
             if($request->price_from){
                 $ads->where('price', '>=', $request->price_from);
@@ -4061,13 +4061,13 @@ class AdsController extends Controller
                 'code'      => 200,
                 'ads'       => $ads,
             ]);
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 }

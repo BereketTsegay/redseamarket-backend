@@ -226,6 +226,7 @@ Route::group(['middleware' => ['revalidate']], function(){
 
         Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact.index');
         Route::get('/contact/view/{id}', [App\Http\Controllers\ContactController::class, 'view'])->name('contact.view');
+        Route::post('/contact/replay/mail/{id}', [App\Http\Controllers\ContactController::class, 'replay'])->name('send.mail.replay');
 
         Route::get('/get/notification', [App\Http\Controllers\AdsController::class,'adNotification']);
         Route::post('/read/notification', [App\Http\Controllers\AdsController::class,'readNotification']);
@@ -239,4 +240,4 @@ Route::group(['middleware' => ['revalidate']], function(){
     
 });
 
-// Route::view('/test', 'ads_enquiry');
+// Route::view('/test', 'enquiry_replay');

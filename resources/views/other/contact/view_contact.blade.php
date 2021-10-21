@@ -41,6 +41,9 @@
                                     <p class="col-md-6">Message :</p>
                                     <p class="col-md-6">{{ $contact->message }}</p>
                                 </div>
+                                <div class="row">
+                                    <button class="btn btn-primary col-md-3" data-toggle="modal" data-target="#exampleModal">Replay</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -49,3 +52,26 @@
         </div>
     </main> 
 @endsection
+
+@push('script')
+    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="dialog">
+        <div class="modal-content">
+            <form action="{{ route('send.mail.replay', $contact->id) }}" method="post">
+                <div class="modal-body">
+                    @csrf
+                    <div class="form-group">
+                        <label for="Replay">Replay</label>
+                        <textarea name="replay" id="Replay" cols="30" rows="5" placeholder="Email Replay" class="form-control"></textarea>
+                    </div>
+                
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Send Replay</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+@endpush
