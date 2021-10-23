@@ -30,6 +30,7 @@ Route::post('/customer/get/master/dependency', [\App\Http\Controllers\Api\AdsCon
 
 Route::post('/customer/get/category', [\App\Http\Controllers\Api\DashboardController::class, 'getCategory']);
 Route::post('/customer/get/subcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubcategory']);
+Route::post('/customer/get/subsubcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubSubcategory']);
 
 Route::post('/customer/ad/view', [\App\Http\Controllers\Api\AdsController::class, 'adView']);
 Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::class, 'searchAds']);
