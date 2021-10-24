@@ -457,9 +457,19 @@ class LoginController extends Controller
                 'password'  => Hash::make($request->password),
             ]);
 
+            $user = User::where('email', $request->email)
+            ->first();
+
+            if(Auth::loginUsingId($user->id)){
+                
+                $token = Auth::user()->createToken('TutsForWeb')->accessToken;
+            }
+
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Password has been updated',
+                'token'     => $token,
+                'user'      => Auth::user()->name,
             ], 200);
         }
         catch(\Exception $e){
