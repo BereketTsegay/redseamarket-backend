@@ -3816,7 +3816,7 @@ class StateSeeder extends Seeder
             array('name' => "Dubai",'country_id' => 229),
             array('name' => "Ras al-Khaymah",'country_id' => 229),
             array('name' => "Sharjah",'country_id' => 229),
-            array('name' => "Sharjha",'country_id' => 229),
+            array('name' => "Al Ain",'country_id' => 229),
             array('name' => "Umm al Qaywayn",'country_id' => 229),
             array('name' => "al-Fujayrah",'country_id' => 229),
             array('name' => "ash-Shariqah",'country_id' => 229),

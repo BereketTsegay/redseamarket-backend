@@ -268,16 +268,16 @@ class OtherController extends Controller
                 $myAds->where('country_id', $request->country);
             }
 
-            if($request->city){
+            if(isset($request->city)){
 
                 $myAds->where('city_id', $request->city);
             }
 
-            if($request->category){
+            if(isset($request->category)){
                 $myAds->where('category_id', $request->category);
             }
 
-            if($request->subcategory){
+            if(isset($request->subcategory)){
                 $myAds->where('subcategory_id', $request->subcategory);
             }
 
@@ -761,7 +761,7 @@ class OtherController extends Controller
             
                 $myAds = Ads::where(function($a) use($request, $city){
                     $a->orwhere('city_id', $request->city)
-                    ->where(function($a) use($city){
+                    ->orwhere(function($a) use($city){
                         $a->where('city_id', 0)
                         ->where('state_id', $city->state_id);
                     });
@@ -783,6 +783,16 @@ class OtherController extends Controller
                 if(isset($request->country)){
                     
                     $myAds->where('country_id', $request->country);
+                }
+
+                if(isset($request->seller)){
+                    $myAds->where('featured_flag', $request->seller);
+                }
+                if(isset($request->priceFrom)){
+                    $myAds->where('price', '>=', $request->priceFrom);
+                }
+                if(isset($request->priceTo)){
+                    $myAds->where('price', '<=', $request->priceTo);
                 }
 
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
@@ -866,6 +876,17 @@ class OtherController extends Controller
                 if(isset($request->country)){
                     
                     $myAds->where('country_id', $request->country);
+                }
+
+                if(isset($request->seller)){
+                    $myAds->where('featured_flag', $request->seller);
+                }
+
+                if(isset($request->priceFrom)){
+                    $myAds->where('price', '>=', $request->priceFrom);
+                }
+                if(isset($request->priceTo)){
+                    $myAds->where('price', '>=', $request->priceTo);
                 }
 
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
