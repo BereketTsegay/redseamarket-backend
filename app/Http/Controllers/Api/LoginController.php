@@ -488,7 +488,7 @@ class LoginController extends Controller
             ->first();
 
             $myAds = Ads::where('customer_id', $user->id)
-            ->where('status', Status::ACTIVE)
+            ->whereIn('status', [Status::ACTIVE, Status::REQUEST, Status::INACTIVE])
             ->where('delete_status', '!=', Status::DELETE)
             ->count();
 
