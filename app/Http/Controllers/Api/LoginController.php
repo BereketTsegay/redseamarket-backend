@@ -619,7 +619,16 @@ class LoginController extends Controller
 
                 return response()->json([
                     'status'    => 'error',
-                    'message'   => 'Incurrect password',
+                    'message'   => 'Incorrect password',
+                    'code'      => 400,
+                ], 200);
+            }
+
+            if($request->old_password == $request->password){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Old and new passwords are same',
                     'code'      => 400,
                 ], 200);
             }

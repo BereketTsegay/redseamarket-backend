@@ -346,16 +346,30 @@ class AdsController extends Controller
             }
             elseif($request->category == 2){
 
+                if($request->parking){
+                    $parking = 1;
+                }
+                else{
+                    $parking = 0;
+                }
+
                 $property                   = new PropertyRendCustomeValues();
                 $property->ads_id           = $ad->id;
                 $property->size             = $request->size;
                 $property->room             = $request->room;
                 $property->furnished        = $request->furnished;
                 $property->building_type    = $request->building;
-                $property->parking          = $request->parking;
+                $property->parking          = $parking;
                 $property->save();
             }
             elseif($request->category == 3){
+
+                if($request->parking){
+                    $parking = 1;
+                }
+                else{
+                    $parking = 0;
+                }
 
                 $property                   = new PropertySaleCustomeValues();
                 $property->ads_id           = $ad->id;
@@ -363,7 +377,7 @@ class AdsController extends Controller
                 $property->room             = $request->room;
                 $property->furnished        = $request->furnished;
                 $property->building_type    = $request->building;
-                $property->parking          = $request->parking;
+                $property->parking          = $parking;
                 $property->save();
             }
 
@@ -515,6 +529,7 @@ class AdsController extends Controller
                 'status'    => 'success',
                 'message'   => 'Ad request has been placed',
                 'code'      => 200,
+                'ad_id'     => $ad->id,
             ], 200);
 
         }
@@ -524,7 +539,8 @@ class AdsController extends Controller
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Something went wrong',
-            ], 301);
+                'code'      => 400,
+            ], 200);
         }
 
     }
