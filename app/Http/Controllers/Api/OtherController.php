@@ -886,7 +886,7 @@ class OtherController extends Controller
                     $myAds->where('price', '>=', $request->priceFrom);
                 }
                 if(isset($request->priceTo)){
-                    $myAds->where('price', '>=', $request->priceTo);
+                    $myAds->where('price', '<=', $request->priceTo);
                 }
 
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
