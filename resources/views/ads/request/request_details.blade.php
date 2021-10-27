@@ -122,9 +122,12 @@
                                         <h4>Features</h4>
                                         <hr>
                                         @foreach ($ad->MotorFeatures as $feature)
-                                            <div class="row">
-                                                <p class="col-md-6">{{ $feature->value }}</p>
-                                            </div>
+                                            @if ($feature->value != 0)
+                                                <div class="row">
+                                                    <p class="col-md-6 capitalize">{{ $feature->value }}</p>
+                                                    <p class="col-md-6">Yes</p>
+                                                </div>
+                                            @endif
                                         @endforeach
                                     </div>
                                     @endif

@@ -29,11 +29,12 @@
             </div>
             <!-- Navbar-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown" onclick="readNotification()">
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle notification-icon" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-bell fa-fw"></i>
                         <span id="notification_counts">0</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="notifications">
+
                     </ul>
                 </li>
             </ul>
@@ -412,6 +413,7 @@
                 $('#notification_counts').html(data.length);
 
                 notification += `<span class="notification_counts">${data.length}</span> Notifications</li>
+                        <li class="dropdown-item"><button onclick="readNotification();" class="btn btn-secondary">Clear All</button></li>
                         <li><hr class="dropdown-divider" /></li>`
                 for(let i = 0; i < data.length; i++){
 
@@ -431,9 +433,9 @@
                 method: 'post',
                 success:function(){
 
-                    // $('#notification_counts').html(0);
-                    // $('#notifications').html(`<li class="dropdown-item"><span class="notification_counts">0</span> Notifications</li>
-                    //     <li><hr class="dropdown-divider" /></li>`);
+                    $('#notifications').html(`<li class="dropdown-item"><span class="notification_counts">0</span> Notifications</li>
+                        <li class="dropdown-item"><button onclick="readNotification();" class="btn btn-secondary">Clear All</button></li>
+                        <li><hr class="dropdown-divider"/></li>`);
                 }
             });
 
@@ -452,6 +454,7 @@
                 $('#notification_counts').html(data.length);
 
                 notification += `<span class="notification_counts">${data.length}</span> Notifications</li>
+                        <li class="dropdown-item"><button onclick="readNotification();" class="btn btn-secondary">Clear All</button></li>
                         <li><hr class="dropdown-divider"/></li>`
                 for(let i = 0; i < data.length; i++){
 
