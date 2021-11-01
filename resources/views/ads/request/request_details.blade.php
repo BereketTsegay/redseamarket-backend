@@ -50,7 +50,7 @@
                                     <p class="col-md-6">{{ $ad->price }}</p>
                                 </div>
                                 @if($ad->featured_flag && $ad->Payment->payment_type != 0)
-                                    @if($ad->Payment)    
+                                    @if($ad->Payment) 
                                         <div class="row">
                                             <p class="col-md-6">Payment Document :</p>
                                             <p class="col-md-6"><a href="{{ asset($ad->Payment->document ? $ad->Payment->document : '/no-document') }}" target='blank'>View Document</a></p>
@@ -122,7 +122,7 @@
                                         <h4>Features</h4>
                                         <hr>
                                         @foreach ($ad->MotorFeatures as $feature)
-                                            @if ($feature->value != 0)
+                                            @if ($feature->value != '0')
                                                 <div class="row">
                                                     <p class="col-md-6 capitalize">{{ $feature->value }}</p>
                                                     <p class="col-md-6">Yes</p>
@@ -217,6 +217,31 @@
                                     @endif
                                 @endforeach
 
+                                @if($ad->Payment->document)   
+                                    
+                                @else
+                                    
+                                    <form action="{{ route('payment.document.upload', $ad->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-md-4">Upload Document :</div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <input type="file" class="form-control @error('document') is-invalid @enderror" name="document">
+                                                    @error('document')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-success">Upload</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    
+                                @endif
                                 @if($ad->sellerinformation_id != 0)
                                     <hr>
                                     <h5>Seller Details</h5>
@@ -317,4 +342,23 @@
         })
     });
 </script>
+
+
+@if (Session::has('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            text: '{{ Session::get('success') }}',
+        })
+    </script>
+@endif
+
+@if (Session::has('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            text: '{{ Session::get('error') }}',
+        })
+    </script>
+@endif
 @endpush

@@ -33,4 +33,30 @@ class PaymentController extends Controller
         session()->flash('success', 'Payment status has been changed');
         return redirect()->route('payment.index');
     }
+
+    public function documentUpload(Request $request, $id){
+
+        $request->validate([
+            'document'  => 'required|mimes:png,jpg,jpeg,gif,pdf,doc,docx,'
+        ]);
+
+        if($request->hasFile('document')){
+
+            $document = uniqid() . '.' . $request->document->getClientOriginalExtension();
+
+            $request->document->storeAs('public/document', $document);
+
+            $document = 'storage/document/' . $document;
+
+            Payment::where('ads_id', $id)
+            ->update([
+                'document'  => $document,
+            ]);
+        }
+
+        session()->flash('success', 'Document uploaded');
+        return redirect()->back();
+
+
+    }
 }

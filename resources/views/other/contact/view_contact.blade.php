@@ -41,6 +41,12 @@
                                     <p class="col-md-6">Message :</p>
                                     <p class="col-md-6">{{ $contact->message }}</p>
                                 </div>
+                                @if ($contact->replay)
+                                    <div class="row">
+                                        <p class="col-md-6">Replay :</p>
+                                        <p class="col-md-6">{{ $contact->replay }}</p>
+                                    </div>
+                                @endif
                                 <div class="row">
                                     <button class="btn btn-primary col-md-3" data-toggle="modal" data-target="#exampleModal">Replay</button>
                                 </div>

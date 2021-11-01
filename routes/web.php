@@ -231,6 +231,8 @@ Route::group(['middleware' => ['revalidate']], function(){
         Route::get('/get/notification', [App\Http\Controllers\AdsController::class,'adNotification']);
         Route::post('/read/notification', [App\Http\Controllers\AdsController::class,'readNotification']);
 
+        Route::post('/upload/document/{id}', [App\Http\Controllers\PaymentController::class, 'documentUpload'])->name('payment.document.upload');
+
         Route::get('/admin/logout', function(){
             Auth::logout();
     
