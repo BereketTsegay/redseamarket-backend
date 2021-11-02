@@ -23,7 +23,7 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Date :</p>
-                                    <p class="col-md-6">{{ date('d-M-Y H:i:s A', strtotime($payment->created_at)) }}</p>
+                                    <p class="col-md-6">{{ date('d-M-Y h:i:s A', strtotime($payment->created_at)) }}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Amount :</p>

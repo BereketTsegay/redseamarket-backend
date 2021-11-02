@@ -41,7 +41,7 @@
                                     <th scope="row">{{ $i }}</th>
                                     <td>{{ $row->payment_id }}</td>
                                     <td>{{ $row->name }}</td>
-                                    <td>{{ date('d-M-Y H:i A', strtotime($row->created_at)) }}</td>
+                                    <td>{{ date('d-M-Y h:i A', strtotime($row->created_at)) }}</td>
                                     <td>{{ $row->amount }}</td>
                                     <td>{{ $row->status }}</td>
                                     @if ($row->payment_type == 1)
