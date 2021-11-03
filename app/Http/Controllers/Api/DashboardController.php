@@ -365,6 +365,18 @@ class DashboardController extends Controller
                     });
                 }
 
+                if(!isset($request->country) && ($latitude == 0 && $longitude == 0)){
+
+                    $category->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
+                    }])
+                    ->whereHas('Ads', function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
+                    });
+                }
+
                 $category = $category->get()
                 ->map(function($a){
 
@@ -458,6 +470,18 @@ class DashboardController extends Controller
                     ->whereHas('Ads',function($b) use($request){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country);
+                    });
+                }
+
+                if(!isset($request->country) && ($latitude == 0 && $longitude == 0)){
+
+                    $categoryDefault->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
+                    }])
+                    ->whereHas('Ads', function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
                     });
                 }
 
@@ -900,6 +924,18 @@ class DashboardController extends Controller
                     });
                 }
 
+                if(!isset($request->country) && ($latitude == 0 && $longitude == 0)){
+
+                    $category->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
+                    }])
+                    ->whereHas('Ads', function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
+                    });
+                }
+
                 $category = $category->get()->map(function($a){
 
                     $a->Subcategory->map(function($c){
@@ -991,6 +1027,18 @@ class DashboardController extends Controller
                     ->whereHas('Ads',function($b) use($request){
                         $b->where('status', Status::ACTIVE)
                         ->where('country_id', $request->country);
+                    });
+                }
+
+                if(!isset($request->country) && ($latitude == 0 && $longitude == 0)){
+
+                    $categoryDefault->with(['Ads' => function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
+                    }])
+                    ->whereHas('Ads', function($b) use($request){
+                        $b->where('status', Status::ACTIVE)
+                        ->where('country_id', 229);
                     });
                 }
 
