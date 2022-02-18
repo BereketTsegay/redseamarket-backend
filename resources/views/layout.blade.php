@@ -1,12 +1,16 @@
+@php
+    $pageName="Dashbord";
+    $pageDescription="Main admin intry ponit";
+@endphp
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>DASHBOARD | JAMAL AL BAHR GENERAL TRADING</title>
+        <meta name="description" content="{{$pageDescription}}" />
+        <meta name="author" content="Redsea markets IT department" />
+        <title>{{$pageName}}| Redsea Market</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
@@ -17,7 +21,7 @@
         <input type="hidden" name="" id="csrf_toke" value="{{ csrf_token() }}">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="#">JAMAL AL BAHR </a>
+            <a class="navbar-brand ps-3" href="#">Red Sea Market</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -255,7 +259,7 @@
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; JAMAL AL BAHR GENERAL TRADING <span id="currentYear"></span></div>
+                        <div class="text-muted">Copyright &copy; Redsea Market <span id="currentYear"></span></div>
                         {{-- <div>
                             <a href="#">Privacy Policy</a>
                             &middot;

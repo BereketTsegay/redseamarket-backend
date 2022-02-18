@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout',['pageName'=>'Dashboard','pageDescription'=>'admin main entry point'])
 
 @section('content')
                 <main>

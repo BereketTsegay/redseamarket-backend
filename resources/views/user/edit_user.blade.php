@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout',['pageName'=>'Edit User -'.$user->name ,'pageDescription'=>'Edit user'.$user->name ])
 
 @section('content')
 
