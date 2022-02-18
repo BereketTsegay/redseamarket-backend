@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout',['pageName'=>'Subscribed Clients - ({{$users->count()}})','pageDescription'=>'Users list - redsea markets'])
 
 @section('content')
     <main>

@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout',['pageName'=>'Ads List','pageDescription'=>'ads post listed here - redsea markets'])
 
 @section('content')
 
