@@ -291,6 +291,9 @@
                 category: {
                         required : true,
                     },
+        customer_address:{
+            required : true,
+                  },
                 // title: {
                 //         required: true,
                 //     },
@@ -315,9 +318,6 @@
                         required: true,
                     },
                 model: {
-                        required: true,
-                    },
-                varient: { 
                         required: true,
                     },
                 registered_year: {

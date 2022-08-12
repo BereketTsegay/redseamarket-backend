@@ -21,6 +21,7 @@ use App\Models\RejectReason;
 use App\Models\SellerInformation;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -86,7 +87,7 @@ class AdsController extends Controller
             $request->validate([
                 'make'              => 'required|numeric',
                 'model'             => 'required|numeric',
-                'varient'           => 'required|numeric',
+                // 'varient'           => 'required|numeric',
                 'registered_year'   => 'required|numeric',
                 'fuel'              => 'required',
                 'transmission'      => 'required',
@@ -181,7 +182,19 @@ class AdsController extends Controller
         $ad->longitude              = $request->address_longitude;
         $ad->status                 = $status;
         $ad->save();
-
+        if($ad->featured_flag==1)
+        {
+        $payment                = new Payment();
+        $payment->payment_id    = $ad->id . uniqid();
+        $payment->amount        = $amount;
+        $payment->ads_id        = $ad->id;
+        $payment->name          = $request->name;
+        $payment->email         = $request->email;
+        $payment->phone         = $request->phone;
+        $payment->payment_type  = 1; // 1 for Payment through account or direct
+        $payment->status        = 'Payment pending';
+        $payment->save();
+         }
         if($request->hasFile('image')){
 
             foreach($request->image as $row){
@@ -516,7 +529,7 @@ class AdsController extends Controller
             $request->validate([
                 'make'              => 'required|numeric',
                 'model'             => 'required|numeric',
-                'varient'           => 'required|numeric',
+                // 'varient'           => 'required|numeric',
                 'registered_year'   => 'required|numeric',
                 'fuel'              => 'required',
                 'transmission'      => 'required',
@@ -631,7 +644,7 @@ class AdsController extends Controller
             ->update([
                 'make_id'           => $request->make,
                 'model_id'          => $request->model,
-                'varient_id'        => $request->varient,
+                // 'varient_id'        => $request->varient,
                 'registration_year' => $request->registered_year,
                 'fuel_type'         => $request->fuel,
                 'transmission'      => $request->transmission,

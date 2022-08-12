@@ -538,7 +538,7 @@ class AdsController extends Controller
 
             return response()->json([
                 'status'    => 'error',
-                'message'   => 'Something went wrong',
+                'message'   => 'Something went wrong '.$e->getMessage(),
                 'code'      => 400,
             ], 200);
         }

@@ -85,6 +85,7 @@
                                 </div>
 
                                 @if ($ad->category_id == 1)
+                                @if($ad->MotoreValue)
                                 <div class="row">
                                     <p class="col-md-6">Make :</p>
                                     <p class="col-md-6">{{ $ad->MotoreValue->Make->name }}</p>
@@ -117,6 +118,7 @@
                                     <p class="col-md-6">Mileage :</p>
                                     <p class="col-md-6">{{ $ad->MotoreValue->milage }}</p>
                                 </div>
+                                @endif
                                     @if (count($ad->MotorFeatures) != 0)
                                     <div class="">
                                         <h4>Features</h4>
