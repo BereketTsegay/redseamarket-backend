@@ -80,7 +80,16 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::post('/users/delete/{id}', [App\Http\Controllers\UserRoleController::class, 'userDelete'])->name('user.delete');
 
         /* ========== Ads ========== */
+        // MakeMst
 
+        Route::get('/make_mst', [App\Http\Controllers\MakeMstController::class, 'index'])->name('make_mst.index');
+        Route::get('/make_mst/create', [App\Http\Controllers\MakeMstController::class, 'create'])->name('make_mst.create');
+        Route::post('/make_mst/store', [App\Http\Controllers\MakeMstController::class, 'store'])->name('make_mst.store');
+        Route::get('/make_mst/view/{id}', [App\Http\Controllers\MakeMstController::class, 'view'])->name('make_mst.view');
+        Route::get('/make_mst/edit/{id}', [App\Http\Controllers\MakeMstController::class, 'edit'])->name('make_mst.edit');
+        Route::post('/make_mst/update/{id}', [App\Http\Controllers\MakeMstController::class, 'update'])->name('make_mst.update');
+        Route::post('/make_mst/delete/{id}', [App\Http\Controllers\MakeMstController::class, 'delete'])->name('make_mst.delete');
+       
         // Category
 
         Route::get('/category', [App\Http\Controllers\CategoryController::class, 'index'])->name('category.index');

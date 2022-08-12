@@ -18,4 +18,5 @@ class Task{
     const TERMS_CONDITIONS          = 12;
     const PRIVACYPOLICY             = 13;
     const MANAGEBANNERS             = 14;
+    const MANAGE_MASTER             = 15;
 }

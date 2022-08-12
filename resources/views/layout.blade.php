@@ -16,8 +16,57 @@
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
         @stack('style')
+        <style>
+            /* Center the loader */
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 120px;
+  height: 120px;
+  margin: -76px 0 0 -76px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+@-webkit-keyframes animatebottom {
+  from { bottom:-100px; opacity:0 } 
+  to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+  from{ bottom:-100px; opacity:0 } 
+  to{ bottom:0; opacity:1 }
+}
+#loader-container{
+    width:100vw;
+    height:100vh;
+    background:#ffffff4d;
+    position: fixed;
+    top: 0px;
+    z-index: 1040;
+}
+        </style>
     </head>
     <body class="sb-nav-fixed">
+            <div id="loader-container">
+                <div id="loader"></div>
+            </div>
         <input type="hidden" name="" id="csrf_toke" value="{{ csrf_token() }}">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
@@ -117,7 +166,19 @@
                                 </a>
 
                             @endif
+@if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_MASTERS))
 
+<a class="nav-link collapsed {{ request()->is('mst*') ? 'active' : '' }} {{ request()->is('*custom_field*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMst" aria-expanded="false" aria-controls="collapseAds">
+    <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+    Masters
+    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+</a>
+<div class="collapse {{ request()->is('mst*') ? 'show' : '' }} {{ request()->is('*custom_field*') ? 'show' : '' }}" id="collapseMst" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+    <nav class="sb-sidenav-menu-nested nav">
+        <a class="nav-link {{ request()->is('make_mst*') ? 'active' : '' }}" href="{{ route('make_mst.index') }}">Make</a>
+    </nav>
+</div>
+@endif
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_CATEGORY))
 
                                 <a class="nav-link collapsed {{ request()->is('category*') ? 'active' : '' }} {{ request()->is('*custom_field*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory" aria-expanded="false" aria-controls="collapseAds">
@@ -129,6 +190,7 @@
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link {{ request()->is('category*') ? 'active' : '' }}" href="{{ route('category.index') }}">Category</a>
                                         <a class="nav-link {{ request()->is('*custom_field*') ? 'active' : '' }}" href="{{ route('custom_field.index') }}">Custom Field</a>
+                                        <a class="nav-link {{ request()->is('*make_mst*') ? 'active' : '' }}" href="{{ route('make_mst.index') }}">Make Master</a>
                                     </nav>
                                 </div>
                             @endif
@@ -289,7 +351,11 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
-
+    <script>
+        $(document).ready(function(){
+            $("#loader-container").fadeOut();
+        })
+    </script>
     <script>
         let year = new Date().getFullYear();
         document.getElementById('currentYear').innerHTML = year;
