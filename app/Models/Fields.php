@@ -11,7 +11,7 @@ class Fields extends Model
     use HasFactory;
 
     public function CategoryField(){
-        return $this->hasMany(CategoryField::class, 'field_id', 'id')
+        return $this->hasMany(q::class, 'field_id', 'id')
         ->where('delete_status', '!=', Status::DELETE);
     }
 

@@ -52,29 +52,55 @@
                                     <p class="col-md-6">{{ $field->required == 1 ? 'Required' : 'Not required' }}</p>
                                 </div>
                             </div>
-                            @if (count($field->Dependency) != 0)
-                                <h5>Dependencies</h5>
+                                @if (count($field->Dependency) != 0)
+                            <div class="col-md-6">
+                                    <h5>Dependencies</h5>
+                                    <hr>
+                                    <div class="row">
+                                        <table class="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Master</th>
+                                                    <th>Order</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($field->Dependency as $row)
+                                                    <tr>
+                                                        <th scope="row">{{ $loop->iteration }}</th>
+                                                        <td>{{ $row->master }}</td>
+                                                        <td>{{ $row->order }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            </div>
+                                @endif
+                                @if (count($field->CategoryField) != 0)
+                                <div class="col-md-6">
+                                <h5>Categories</h5>
                                 <hr>
                                 <div class="row">
                                     <table class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Master</th>
-                                                <th>Order</th>
+                                                <th>Category</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($field->Dependency as $row)
+                                            @foreach ($field->CategoryField as $row)
                                                 <tr>
                                                     <th scope="row">{{ $loop->iteration }}</th>
-                                                    <td>{{ $row->master }}</td>
-                                                    <td>{{ $row->order }}</td>
+                                                    <td>{{ $row->Category->name }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
                                 </div>
+                                 </div>
                             @endif
                         </div>
                     </div>

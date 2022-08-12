@@ -14,4 +14,9 @@ class CategoryField extends Model
         return $this->belongsTo(Fields::class, 'field_id', 'id')
         ->where('delete_status', '!=', Status::DELETE);
     }
+    public function Category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id')
+        ->where('delete_status', '!=', Status::DELETE);
+    }
 }
