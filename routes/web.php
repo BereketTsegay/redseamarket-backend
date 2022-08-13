@@ -89,6 +89,15 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/make_mst/edit/{id}', [App\Http\Controllers\MakeMstController::class, 'edit'])->name('make_mst.edit');
         Route::post('/make_mst/update/{id}', [App\Http\Controllers\MakeMstController::class, 'update'])->name('make_mst.update');
         Route::post('/make_mst/delete/{id}', [App\Http\Controllers\MakeMstController::class, 'delete'])->name('make_mst.delete');
+
+        // ModelMst
+
+        Route::get('/model_mst', [App\Http\Controllers\ModelMstController::class, 'index'])->name('model_mst.index');
+        Route::get('/model_mst/create', [App\Http\Controllers\ModelMstController::class, 'create'])->name('model_mst.create');
+        Route::post('/model_mst/store', [App\Http\Controllers\ModelMstController::class, 'store'])->name('model_mst.store');
+        Route::get('/model_mst/edit/{id}', [App\Http\Controllers\ModelMstController::class, 'edit'])->name('model_mst.edit');
+        Route::post('/model_mst/update/{id}', [App\Http\Controllers\ModelMstController::class, 'update'])->name('model_mst.update');
+        Route::post('/model_mst/delete/{id}', [App\Http\Controllers\ModelMstController::class, 'delete'])->name('model_mst.delete');
        
         // Category
 

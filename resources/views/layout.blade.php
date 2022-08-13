@@ -173,9 +173,10 @@
     Masters
     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
 </a>
-<div class="collapse {{ request()->is('mst*') ? 'show' : '' }} {{ request()->is('*custom_field*') ? 'show' : '' }}" id="collapseMst" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+<div class="collapse {{ request()->is('*mst*') ? 'show' : '' }} " id="collapseMst" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
     <nav class="sb-sidenav-menu-nested nav">
         <a class="nav-link {{ request()->is('make_mst*') ? 'active' : '' }}" href="{{ route('make_mst.index') }}">Make</a>
+        <a class="nav-link {{ request()->is('model_mst*') ? 'active' : '' }}" href="{{ route('model_mst.index') }}">Model</a>
     </nav>
 </div>
 @endif
