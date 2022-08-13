@@ -272,7 +272,7 @@
                                 
                                 <a class="nav-link {{ request()->is('reject*') ? 'active' : '' }}" href="{{ route('reject.index') }}">
                                     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
-                                    Resons
+                                    Reasons
                                 </a>
                             
                             @endif

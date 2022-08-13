@@ -186,13 +186,13 @@ class AdsController extends Controller
         {
         $payment                = new Payment();
         $payment->payment_id    = $ad->id . uniqid();
-        $payment->amount        = $amount;
+        $payment->amount        = $request->price;
         $payment->ads_id        = $ad->id;
-        $payment->name          = $request->name;
+        $payment->name          = $request->seller_name;
         $payment->email         = $request->email;
-        $payment->phone         = $request->phone;
+        $payment->phone         = $request->Phone;
         $payment->payment_type  = 1; // 1 for Payment through account or direct
-        $payment->status        = 'Payment pending';
+        $payment->status        = 'Admin Entry';
         $payment->save();
          }
         if($request->hasFile('image')){
@@ -620,7 +620,7 @@ class AdsController extends Controller
             'address'           => $request->customer_address,
         ]);
 
-        Ads::where('id', $id)
+          Ads::where('id', $id)
         ->update([
             'category_id'       => $request->category,
             'subcategory_id'    => $subcategory,
@@ -637,7 +637,31 @@ class AdsController extends Controller
             'longitude'         => $request->address_longitude,
             'status'            => $status,
         ]);
-
+        $ad=Ads::find($id);
+        if($ad->featured_flag==1)
+        {
+            if($ad->Payment){
+                $payment                = $ad->Payment;
+        $payment->amount        = $request->price;
+        $payment->name          = $request->seller_name;
+        $payment->email         = $request->email;
+        $payment->phone         = $request->Phone;
+        $payment->payment_type  = 1; // 1 for Payment through account or direct
+        $payment->status        = 'Admin Entry';
+        $payment->update();
+            }else{
+        $payment                = new Payment();
+        $payment->payment_id    = $ad->id . uniqid();
+        $payment->amount        = $request->price;
+        $payment->ads_id        = $ad->id;
+        $payment->name          = $request->seller_name;
+        $payment->email         = $request->email;
+        $payment->phone         = $request->Phone;
+        $payment->payment_type  = 1; // 1 for Payment through account or direct
+        $payment->status        = 'Admin Entry';
+        $payment->save();
+             }
+         }
         if($request->category == 1){
 
             MotorCustomeValues::where('ads_id', $id)

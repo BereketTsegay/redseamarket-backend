@@ -5,18 +5,18 @@
     <main>
         <div class="container-fluid px-4">
             
-            <button type="button" class="btn btn-primary float-end" data-toggle="modal" data-target="#createIconModal">Create Reson</button>
+            <button type="button" class="btn btn-primary float-end" data-toggle="modal" data-target="#createIconModal">Create Reason</button>
             
-            <h2 class="mt-4">Reson</h2>
+            <h2 class="mt-4">Reason</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Reson</li>
+                <li class="breadcrumb-item active">Reason</li>
             </ol>
             
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    Reson
+                    Reason
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple" class="table table-striped table-bordered">
@@ -68,14 +68,14 @@
                 <form action="{{ route('reject.store') }}" method="POST" id="rejectReson">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editIconModalLabel">Create Reson</h5>
+                        <h5 class="modal-title" id="editIconModalLabel">Create Reason</h5>
                         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="container">
                             <div class="form-group my-2">
-                                <label for="Name">Reson Type</label>
+                                <label for="Name">Reason Type</label>
                                 <select name="type" class="form-control" id="">
                                     <option value="">Select Type</option>
                                     <option value="0">Reject</option>
@@ -84,11 +84,11 @@
                             </div>
                             <div class="form-group my-2">
                                 <label for="Name">Reson</label>
-                                <input type="text" name="reson" class="form-control" autocomplete="off" placeholder="Reson">
+                                <input type="text" name="reson" class="form-control" autocomplete="off" placeholder="Reason">
                             </div>
                             <div class="form-group my-2">
                                 <label for="SortOrder">Description</label>
-                                <textarea type="text" name="description" class="form-control" autocomplete="off" placeholder="Sort Order"></textarea>
+                                <textarea type="text" name="description" class="form-control" autocomplete="off" placeholder="Description"></textarea>
                             </div>
                             <div class="form-group my-2">
                                 <label for="Status">Active</label>
@@ -114,14 +114,14 @@
                 <form action="{{ route('reject.update') }}" method="POST" id="rejecResonEdit">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editIconModalLabel">Edit Reson</h5>
+                        <h5 class="modal-title" id="editIconModalLabel">Edit Reason</h5>
                         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="container">
                             <div class="form-group my-2">
-                                <label for="Name">Reson Type</label>
+                                <label for="Name">Reason Type</label>
                                 <select name="type" class="form-control" id="resonTypeEdit">
                                     <option value="">Select Type</option>
                                     <option value="0">Reject</option>
@@ -129,8 +129,8 @@
                                 </select>
                             </div>
                             <div class="form-group my-2">
-                                <label for="Name">Reson</label>
-                                <input type="text" name="reson" id="edit_reson" class="form-control" autocomplete="off" placeholder="Reson">
+                                <label for="Name">Reason</label>
+                                <input type="text" name="reson" id="edit_reson" class="form-control" autocomplete="off" placeholder="Reason">
                             </div>
                             <div class="form-group my-2">
                                 <label for="SortOrder">Description</label>

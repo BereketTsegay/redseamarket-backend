@@ -110,7 +110,7 @@
                                     </div>
                                     <div class="form-group my-2 col-md-6">
                                         <label for="state">State</label>
-                                        <select name="State" id="state" class="select2  form-control @error('state') is-invalid @enderror" autocomplete="off">
+                                        <select name="state" id="state" class="select2  form-control @error('state') is-invalid @enderror" autocomplete="off">
                                             <option value="{{ $ad->state_id }}">Select</option>
                                         </select>
                                         <div class="invalid-feedback">
