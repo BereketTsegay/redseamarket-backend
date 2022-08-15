@@ -1,8 +1,7 @@
 @extends('layout')
 
 @section('content')
-
-    <main>
+ <main>
         <div class="container-fluid px-4">
             
             <a href="{{ route('custom_field.create') }}"><button type="button" class="btn btn-primary float-end">Create Custom Field</button></a>
@@ -29,9 +28,8 @@
                                 <th>Options</th>
                                 <th>Status</th>
                                 <th>Action</th>
-                                {{-- <th>Edit</th>
-                                <th>Delete</th> --}}
                                 <th>Add to Category</th>
+                                <th>Subcategorys</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -57,12 +55,21 @@
                                             </div>
                                         </div>
                                     </td>
-                                    {{-- <td><a href="{{ route('custom_field.view', $row->id) }}"><button type="button" class="btn btn-primary">View</button></a></td>
-                                    <td><a href="{{ route('custom_field.edit', $row->id) }}"><button type="button" class="btn btn-secondary">Edit</button></a></td>
-                                    <td><button type="button" onclick="customFieldDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                                        <form id="custom_field_delete_form{{$row->id}}" action="{{ route('custom_field.delete', $row->id) }}" method="POST">@csrf</form>
-                                    </td> --}}
                                     <td><button type="button" onclick="addtoCategory({{$row->id}}, '{{$row->name}}')" class="btn btn-info" data-toggle="modal" data-target="#addtoCategoryModal">Add to Category</button></a></td>
+                                    <td>
+                                        <form method="POST" class="subcatform" action="{{route('custom_field.update_subcategory')}}">
+                                        @csrf
+                                        <select name="subcategory_ids[]" multiple class="subcategory_ids" style="width:100%">
+                                        @foreach($row->CategoryField as $category_field)
+                                           @foreach($category_field->Category->Subcategory as $subcategory)
+                                             <option value="{{$subcategory->id}}" {{(in_array($subcategory->id,$row->getSubcategoryIdAsArray()))?"selected":''}}>{{$subcategory->name}}</option>
+                                           @endforeach
+                                        @endforeach
+                                        </select>
+                                        <input type="hidden" name="field_id" value="{{$row->id}}">
+                                        <button type="button" onclick="$(this).closest('.subcatform').submit()" class="btn btn-success btn-sm">update</button>
+                                        </form>
+                                    </td>
                                     <td>
                                         @if($row->option == 1)
                                             <a href="{{ route('custom_field.option.index', $row->id) }} "><button type="button" class="btn btn-success">Option</button></a>
@@ -125,7 +132,7 @@
                             @endforeach
                         </Select>
                     </div>
-                    <div class="form-group my-2">
+                    <div class="form-group my-2" style="display:none">
                         <input type="checkbox" name="disabled" id="disableFor" value="checked" autocomplete="off">
                         <Label for="disableFor">Disabled for Subcategories</Label>
                     </div>
@@ -156,9 +163,13 @@
             $('#addtoCategoryModalLabel').html(name+' Add To Category');
             $('#field_id').val(id);
         }
-
+        
     </script>
-
+       <script>
+   $(document).ready(function(){
+    $('.subcategory_ids').select2({multiple:true});
+   })
+   </script>
 @if (Session::has('success'))
 <script>
     Swal.fire({

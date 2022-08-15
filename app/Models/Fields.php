@@ -26,4 +26,13 @@ class Fields extends Model
         ->where('delete_status', '!=', Status::DELETE)
         ->orderBy('order');
     }
+    public function getSubcategoryIdAsArray() {
+        $subcategorys=SubcategoryField::where('field_id',$this->id)->get();
+        $values=[];
+        foreach ($subcategorys as $subcategoryfield)
+        {
+            $values[]=$subcategoryfield->subcategory_id;
+        }
+        return $values;
+    }
 }

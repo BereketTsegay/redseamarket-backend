@@ -563,19 +563,20 @@ class AdsController extends Controller
                 'errors'    => $validate->errors(),
             ], 200);
         }
-
-        try{
+//
+//        try{
 
             $category_field = CategoryField::where('delete_status', '!=', Status::DELETE)
             ->where('category_id', $request->category)
-            ->with(['Field' => function($a){
+            ->with(['Field' => function($a) use ($request){
                 $a->where('status', Status::ACTIVE)
+                  ->whereRaw('(id in (select field_id from subcategory_fields where subcategory_id='.$request->subcategory.'))')
                 ->where('delete_status', '!=', Status::DELETE);
             }])
             ->get()
             ->map(function($a){
                 
-                    
+                    if($a->Field){
                     if($a->Field->description_area_flag == 0){
                         $a->Field->position = 'top';
                     }
@@ -607,8 +608,9 @@ class AdsController extends Controller
                             return $c;
                         });
                     }
-
-                    unset($a->delete_status, $a->field_id, $a->Field->status, $a->Field->delete_status);
+                    unset( $a->Field->delete_status);
+                    }
+                    unset($a->delete_status, $a->field_id);
                     
                 return $a;
             });
@@ -620,15 +622,15 @@ class AdsController extends Controller
                     'category_field'    => $category_field,
                 ],
             ], 200);
-        }
-        catch (\Exception $e) {
-            
-
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+//        }
+//        catch (\Exception $e) {
+//            
+//
+//            return response()->json([
+//                'status'    => 'error',
+//                'message'   => 'Something went wrong',
+//            ], 301);
+//        }
     }
 
     public function getMasterDependency(Request $request){

@@ -191,7 +191,6 @@
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link {{ request()->is('category*') ? 'active' : '' }}" href="{{ route('category.index') }}">Category</a>
                                         <a class="nav-link {{ request()->is('*custom_field*') ? 'active' : '' }}" href="{{ route('custom_field.index') }}">Custom Field</a>
-                                        <a class="nav-link {{ request()->is('*make_mst*') ? 'active' : '' }}" href="{{ route('make_mst.index') }}">Make Master</a>
                                     </nav>
                                 </div>
                             @endif
@@ -243,7 +242,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-phone"></i></div>
                                 Contact Us Enquiry
                             </a>
-
+                              <a class="nav-link {{ request()->is('enquiry*') ? 'active' : '' }}" href="{{ route('enquiry.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-phone"></i></div>
+                                Ads Enquiry
+                            </a>
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_FEATURED_DEALER))
 
                                 <a class="nav-link {{ request()->is('privacy*') ? 'active' : '' }}" href="{{ route('privacy.index') }}">

@@ -694,37 +694,33 @@ class OtherController extends Controller
             ], 200);
         }
 
-        try{
-
-            $ads = Ads::where('id', $request->id)
-            ->first();
+//        try{
 
             $enquiry = [
-                'title'         => $ads->title,
-                'category'      => $ads->Category->name,
+                'ad_id'         =>$request->id,
                 'customer_name' => $request->name,
                 'email'         => $request->email,
                 'phone'         => $request->phone,
                 'message'       => $request->message,
             ];
-
-            Mail::to('anasmk0313@gmail.com')->send(new Enquiry($enquiry));
+            if(\App\Models\Enquiry::create($enquiry)){
+//            Mail::to('anasmk0313@gmail.com')->send(new Enquiry($enquiry));
 
             return response()->json([
                 'status'    => 'success',
                 'code'      => 200,
                 'message'   => 'Your enquiry has been plced.',
             ], 200);
-
-        }
-        catch (\Exception $e) {
-            
-    
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+            }
+//        }
+//        catch (\Exception $e) {
+//            
+//    
+//            return response()->json([
+//                'status'    => 'error',
+//                'message'   => 'Something went wrong',
+//            ], 301);
+//        }
     }
 
     public function getCategoryAds(Request $request){

@@ -139,7 +139,7 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/custom_field/edit/{id}', [App\Http\Controllers\CustomFieldController::class, 'edit'])->name('custom_field.edit');
         Route::post('/custom_field/update/{id}', [App\Http\Controllers\CustomFieldController::class, 'update'])->name('custom_field.update');
         Route::post('/custom_field/delete/{id}', [App\Http\Controllers\CustomFieldController::class, 'delete'])->name('custom_field.delete');
-
+        Route::post('/custom_field/update_subcategory', [App\Http\Controllers\CustomFieldController::class, 'updateSubcategory'])->name('custom_field.update_subcategory');
         // Dependency
 
         Route::get('/dependency/get', [App\Http\Controllers\CustomFieldController::class, 'dependencyGet'])->name('dependency.get.ajax');
@@ -245,7 +245,12 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact.index');
         Route::get('/contact/view/{id}', [App\Http\Controllers\ContactController::class, 'view'])->name('contact.view');
         Route::post('/contact/replay/mail/{id}', [App\Http\Controllers\ContactController::class, 'replay'])->name('send.mail.replay');
+        
+       // Ads enquiry
 
+        Route::get('/enquiry', [App\Http\Controllers\EnquiryController::class, 'index'])->name('enquiry.index');
+        Route::get('/enquiry/view/{id}', [App\Http\Controllers\EnquiryController::class, 'show'])->name('enquiry.view');
+        
         Route::get('/get/notification', [App\Http\Controllers\AdsController::class, 'adNotification']);
         Route::post('/read/notification', [App\Http\Controllers\AdsController::class, 'readNotification']);
 
