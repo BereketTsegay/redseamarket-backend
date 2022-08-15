@@ -98,6 +98,15 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/model_mst/edit/{id}', [App\Http\Controllers\ModelMstController::class, 'edit'])->name('model_mst.edit');
         Route::post('/model_mst/update/{id}', [App\Http\Controllers\ModelMstController::class, 'update'])->name('model_mst.update');
         Route::post('/model_mst/delete/{id}', [App\Http\Controllers\ModelMstController::class, 'delete'])->name('model_mst.delete');
+
+         // VarientMst
+
+         Route::get('/varient_mst', [App\Http\Controllers\VarientMstController::class, 'index'])->name('varient_mst.index');
+         Route::get('/varient_mst/create', [App\Http\Controllers\VarientMstController::class, 'create'])->name('varient_mst.create');
+         Route::post('/varient_mst/store', [App\Http\Controllers\VarientMstController::class, 'store'])->name('varient_mst.store');
+         Route::get('/varient_mst/edit/{id}', [App\Http\Controllers\VarientMstController::class, 'edit'])->name('varient_mst.edit');
+         Route::post('/varient_mst/update/{id}', [App\Http\Controllers\VarientMstController::class, 'update'])->name('varient_mst.update');
+         Route::post('/varient_mst/delete/{id}', [App\Http\Controllers\VarientMstController::class, 'delete'])->name('varient_mst.delete');
        
         // Category
 
