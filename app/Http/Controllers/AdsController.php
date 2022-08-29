@@ -1061,8 +1061,6 @@ class AdsController extends Controller
                 else{
                     $p->Field;
                 }
-            }else{
-                return false;
             }
 
             return $p;

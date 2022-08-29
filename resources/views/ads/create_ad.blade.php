@@ -429,7 +429,10 @@
                     for(let i = 0; i < data.length; i++){
                         
                         // for(let j = 0; j < data[i].field.length; j++){
-                            
+                            if(!data[i].field)
+                            {
+                                continue;
+                            }
                             switch (data[i].field.type){
                                 case 'text':
                                     custom_field += `<div class="col-md-6 form-group my-2">
