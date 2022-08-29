@@ -11,6 +11,7 @@ use App\Models\Dependency;
 use App\Models\FieldOptions;
 use App\Models\Fields;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomFieldController extends Controller
 {
@@ -487,8 +488,10 @@ class CustomFieldController extends Controller
         {
             if(in_array( $subcategory_id,$old_values))
             {
-                SubcategoryField::where('field_id',$field_id)->where('subcategory_id',$subcategory_id)->update(['status'=>1]);
-                unset($old_values[$subcategory_id]);
+                SubcategoryField::where('field_id',$field_id)->where('subcategory_id',$subcategory_id)->update(['status'=>'1']);
+                if (($key = array_search($subcategory_id, $old_values)) !== false) {
+                    unset($old_values[$key]);
+                }
             } else {
                 SubcategoryField::create(["field_id"=>$field_id,
                                           "subcategory_id"=>$subcategory_id,
@@ -497,7 +500,7 @@ class CustomFieldController extends Controller
         }
         foreach ($old_values as $old_value)
         {
-            SubcategoryField::where('field_id',$field_id)->where('subcategory_id',$old_value)->update(['status'=>0]);
+            SubcategoryField::where('field_id',$field_id)->where('status',1)->where('subcategory_id',$old_value)->update(['status'=>0]);
         }
         session()->flash('success', 'subcategory added to custom field');
        return redirect()->route('custom_field.index');

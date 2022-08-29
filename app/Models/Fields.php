@@ -27,7 +27,7 @@ class Fields extends Model
         ->orderBy('order');
     }
     public function getSubcategoryIdAsArray() {
-        $subcategorys=SubcategoryField::where('field_id',$this->id)->get();
+        $subcategorys=SubcategoryField::where('field_id',$this->id)->where('status',1)->get();
         $values=[];
         foreach ($subcategorys as $subcategoryfield)
         {
