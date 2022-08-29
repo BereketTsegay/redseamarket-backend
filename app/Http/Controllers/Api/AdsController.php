@@ -570,7 +570,7 @@ class AdsController extends Controller
             ->where('category_id', $request->category)
             ->with(['Field' => function($a) use ($request){
                 $a->where('status', Status::ACTIVE)
-                  ->whereRaw('(id in (select field_id from subcategory_fields where subcategory_id='.$request->subcategory.'))')
+                  ->whereRaw('(id in (select field_id from subcategory_fields where subcategory_id='.$request->subcategory.' and status=1))')
                 ->where('delete_status', '!=', Status::DELETE);
             }])
             ->get()

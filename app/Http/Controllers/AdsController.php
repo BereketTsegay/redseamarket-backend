@@ -168,6 +168,7 @@ class AdsController extends Controller
         $ad->category_id            = $request->category;
         $ad->subcategory_id         = $subcategory;
         $ad->title                  = $request->title;
+        $ad->title_arabic           = $request->arabic_title;
         $ad->canonical_name         = $request->canonical_name;
         $ad->description            = $request->description;
         $ad->price                  = $request->price;
@@ -625,6 +626,7 @@ class AdsController extends Controller
             'category_id'       => $request->category,
             'subcategory_id'    => $subcategory,
             'title'             => $request->title,
+            'title_arabic'             => $request->arabic_title,
             'canonical_name'    => $request->canonical_name,
             'description'       => $request->description,
             'price'             => $request->price,
@@ -995,8 +997,9 @@ class AdsController extends Controller
 
         $field = CategoryField::where('category_id', $request->id)
         ->orderBy('field_id')
-        ->with(['Field' => function($a){
+        ->with(['Field' => function($a) use ($request){
             $a->where('delete_status', '!=', Status::DELETE)
+            ->whereRaw('(id in (select field_id from subcategory_fields where subcategory_id='.$request->subcategory.' and status=1))')
             ->where(function($b){
                 $b->orwhere(function($c){
                     $c->where('option', 1)
