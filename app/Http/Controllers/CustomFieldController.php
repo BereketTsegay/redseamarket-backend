@@ -477,7 +477,7 @@ class CustomFieldController extends Controller
     }
     public function updateSubcategory(Request $request) {
         $field_id=$request->field_id;
-        $subcategory_ids=$request->subcategory_ids;
+        $subcategory_ids=$request->subcategory_ids??[];
         $old_subcategory_fields=SubcategoryField::where('field_id',$field_id)->get();
         $old_values=[];
         foreach ($old_subcategory_fields as $old_subcategory_field) {
