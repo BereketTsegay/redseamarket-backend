@@ -218,8 +218,8 @@
                                         </div>
                                     @endif
                                 @endforeach
-
-                                @if($ad->Payment->document)   
+                              @if($ad->featured_flag==1)
+                                @if($ad->Payment->document)
                                     
                                 @else
                                     
@@ -244,6 +244,7 @@
                                     </form>
                                     
                                 @endif
+                            @endif
                                 @if($ad->sellerinformation_id != 0)
                                     <hr>
                                     <h5>Seller Details</h5>
