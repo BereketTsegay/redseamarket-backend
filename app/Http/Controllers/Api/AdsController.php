@@ -265,6 +265,7 @@ class AdsController extends Controller
             $ad->featured_flag         = $featured;
             $ad->latitude              = $request->latitude;
             $ad->longitude             = $request->longitude;
+            $ad->area                  = $request->area;
             $ad->status                = Status::REQUEST;
             $ad->notification_status   = 0;
             $ad->save();
@@ -4087,5 +4088,401 @@ class AdsController extends Controller
                 'message'   => 'Something went wrong',
             ], 301);
         }
+    }
+    public function getDetails(Request $request)
+    {
+        $rules = [
+            'ads_id'    => 'required|numeric',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => '400',
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        // try{
+
+            $ads = Ads::where('id', $request->ads_id)->with(['Category','Subcategory','MotoreValue','MotorFeatures','CustomValue','SellerInformation','PropertyRend'])
+            ->first();
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Ad details',
+                'code'      => 200,
+                'data'       => $ads,
+            ], 200);
+
+        // }
+        // catch (\Exception $e) {
+            
+
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
+    }
+    public function updateData(Request $request)
+    {
+  
+        // try{
+            
+            $rules = [
+                'category'          => 'required|numeric',
+                // 'subcategory'       => 'required|numeric',
+                // 'title'             => 'required',
+                'canonical_name'    => 'required',
+                // 'description'       => 'required',
+                'price'             => 'required|numeric',
+                'country'           => 'required|numeric',
+                'state'             => 'required|numeric',
+                // 'city'              => 'required|numeric',
+                'latitude'          => 'required|numeric',
+                'longitude'         => 'required|numeric',
+                'image.*'           => 'required',
+                'name'              => 'required',
+                'email'             => 'required|email',
+                'phone'             => 'required',
+                'address'           => 'required'
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            if($request->phone_hide == true){
+                $phone_hide = Status::ACTIVE;
+            }
+            else{
+                $phone_hide = 0;
+            }
+
+            if($request->negotiable == true){
+                $negotiable = Status::ACTIVE;
+            }
+            else{
+                $negotiable = 0;
+            }
+
+            
+
+            if(isset($request->city)){
+                $city = $request->city;
+            }
+            else{
+                $city = 0;
+            }
+
+            if(isset($request->subcategory)){
+                $subcategory = $request->subcategory;
+            }
+            else{
+                $subcategory = 0;
+            }
+
+            if(!$request->titleinArabic && !$request->title){
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Please enter title in any one of the language',
+                    'code'      => 400,
+                ], 200);
+            }
+
+            if(!$request->descriptioninArabic && !$request->description){
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Please enter description in any one of the language',
+                    'code'      => 400,
+                ], 200);
+            }
+            $ads=Ads::findOrFail($request->id);
+
+            $customer                   = SellerInformation::find($ads->sellerinformation_id);
+            $customer->name             = $request->name;
+            $customer->email            = $request->email;
+            $customer->phone            = $request->phone;
+            $customer->phone_hide_flag  = $phone_hide;
+            $customer->address          = $request->address;
+            $customer->update();
+
+            $ads->category_id           = $request->category;
+            $ads->subcategory_id        = $subcategory;
+            $ads->title                 = $request->title;
+            $ads->title_arabic          = $request->titleinArabic;
+            $ads->canonical_name        = $request->canonical_name;
+            $ads->description           = $request->description;
+            $ads->description_arabic    = $request->descriptioninArabic;
+            $ads->price                 = $request->price;
+            $ads->negotiable_flag       = $negotiable;
+            $ads->country_id            = $request->country;
+            $ads->state_id              = $request->state;
+            $ads->city_id               = $city;
+            $ads->sellerinformation_id  = $customer->id;
+            $ads->customer_id           = Auth::user()->id;
+            $ads->latitude              = $request->latitude;
+            $ads->longitude             = $request->longitude;
+            $ads->area                  = $request->area;
+            $ads->status                = Status::REQUEST;
+            $ads->notification_status   = 0;
+            $ads->update();
+
+
+
+            if($request->category == 1){
+                $motor                      = MotorCustomeValues::where('ads_id',$ads->id)->first();
+                $motor->ads_id              = $ads->id;
+                $motor->make_id             = $request->make_id;
+                $motor->model_id            = $request->model_id;
+                $motor->varient_id          = $request->variant_id;
+                $motor->registration_year   = $request->registration_year;
+                $motor->fuel_type           = $request->fuel;
+                $motor->transmission        = $request->transmission;
+                $motor->condition           = $request->condition;
+                $motor->milage              = $request->mileage;
+                $motor->update();
+                MotorFeatures::where('ads_id',$ads->id)->delete();
+
+                if(isset($request->aircondition)){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ads->id;
+                    $motorFeature->value    = $request->aircondition;
+                    $motorFeature->save();
+                }
+
+                if(isset($request->gps)){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ads->id;
+                    $motorFeature->value    = $request->gps;
+                    $motorFeature->save();
+                }
+
+                if(isset($request->security)){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ads->id;
+                    $motorFeature->value    = $request->security;
+                    $motorFeature->save();
+                }
+
+                if(isset($request->tire)){
+                    $motorFeature           = new MotorFeatures();
+                    $motorFeature->ads_id   = $ads->id;
+                    $motorFeature->value    = $request->tire;
+                    $motorFeature->save();
+                }
+            }
+            elseif($request->category == 2){
+                PropertyRendCustomeValues::where('ads_id',$ads->id)->delete();
+                if($request->parking){
+                    $parking = 1;
+                }
+                else{
+                    $parking = 0;
+                }
+
+                $property                   = new PropertyRendCustomeValues();
+                $property->ads_id           = $ads->id;
+                $property->size             = $request->size;
+                $property->room             = $request->room;
+                $property->furnished        = $request->furnished;
+                $property->building_type    = $request->building;
+                $property->parking          = $parking;
+                $property->save();
+            }
+            elseif($request->category == 3){
+                PropertySaleCustomeValues::where('ads_id',$ads->id)->delete();
+                if($request->parking){
+                    $parking = 1;
+                }
+                else{
+                    $parking = 0;
+                }
+
+                $property                   = new PropertySaleCustomeValues();
+                $property->ads_id           = $ads->id;
+                $property->size             = $request->size;
+                $property->room             = $request->room;
+                $property->furnished        = $request->furnished;
+                $property->building_type    = $request->building;
+                $property->parking          = $parking;
+                $property->save();
+            }
+
+            if($request->image){
+
+                foreach($request->image as $row){
+
+                    $image = $row['file'];
+
+                    $image_parts = explode(";base64,", $image);
+                    $image_type_aux = explode("image/", $image_parts[0]);
+                    $image_type = $image_type_aux[1];
+                    $image_base64 = base64_decode($image_parts[1]);
+
+                    $ad_image = uniqid() . '.' .$image_type;
+
+                    Storage::put('public/ads/'.$ad_image, $image_base64);
+
+                    $ad_image = 'storage/ads/'.$ad_image;
+    
+                    $adImage            = new AdsImage();
+                    $adImage->ads_id    = $ads->id;
+                    $adImage->image     = $ad_image;
+                    $adImage->save();
+                }
+            }
+    
+            if($request->fieldValue){
+                AdsCustomValue::where('ads_id',$ads->id)->delete();
+                foreach($request->fieldValue as $catRow){
+
+                    $option = null;
+                    $isFile = 0;
+
+                    $field = Fields::where('id', $catRow['field_id'])
+                    ->first();
+                    
+                    if($field->type == 'select' || $field->type == 'radio'){
+
+                        $option = FieldOptions::where('field_id', $catRow['field_id'])
+                        ->where('value', $catRow['value'])
+                        ->first();
+
+                    }
+                    elseif($field->type == 'file'){
+                        
+                        $customFile = uniqid().'.'.$catRow['value']->getClientOriginalExtension();
+                
+                        $catRow['value']->storeAs('public/custom_file', $customFile);
+        
+                        $customFile = 'storage/custom_file/'.$customFile;
+
+                        $isFile = 1;
+                        $option = null;
+                    }
+
+                    if($option){
+                        $option_id = $option->id;
+                    }
+                    else{
+                        $option_id = 0;
+                    }
+
+                    if($field->type == 'file'){
+
+                        $customValue            = new AdsCustomValue();
+                        $customValue->ads_id    = $ads->id;
+                        $customValue->field_id  = $catRow['field_id'];
+                        $customValue->option_id = $option_id;
+                        $customValue->value     = $customFile;
+                        $customValue->file      = $isFile;
+                        $customValue->save();
+                    }
+                    else{
+
+                        $customValue            = new AdsCustomValue();
+                        $customValue->ads_id    = $ads->id;
+                        $customValue->field_id  = $catRow['field_id'];
+                        $customValue->option_id = $option_id;
+                        $customValue->value     = $catRow['value'];
+                        $customValue->file      = $isFile;
+                        $customValue->save();
+                    }
+
+                }
+            }
+    
+            if($request->Make){
+                AdsFieldDependency::where('ads_id',$ads->id)->where('master_type','make')->delete();
+
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'make';
+                $adsDependency->master_id   = $request->Make;
+                $adsDependency->save();
+            }
+    
+            if($request->Model){
+                AdsFieldDependency::where('ads_id',$ads->id)->where('master_type','model')->delete();
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'model';
+                $adsDependency->master_id   = $request->Model;
+                $adsDependency->save();
+            }
+    
+            if($request->Variant){
+                AdsFieldDependency::where('ads_id',$ads->id)->where('master_type','variant')->delete();
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'variant';
+                $adsDependency->master_id   = $request->Variant;
+                $adsDependency->save();
+            }
+    
+            if($request->Country){
+                AdsFieldDependency::where('ads_id',$ads->id)->where('master_type','country')->delete();
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'country';
+                $adsDependency->master_id   = $request->Country;
+                $adsDependency->save();
+            }
+    
+            if($request->State){
+                AdsFieldDependency::where('ads_id',$ads->id)->where('master_type','state')->delete();
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'state';
+                $adsDependency->master_id   = $request->State;
+                $adsDependency->save();
+            }
+    
+            if($request->City){
+                AdsFieldDependency::where('ads_id',$ads->id)->where('master_type','city')->delete();
+                $adsDependency              = new AdsFieldDependency();
+                $adsDependency->ads_id      = $ads->id;
+                $adsDependency->master_type = 'city';
+                $adsDependency->master_id   = $request->City;
+                $adsDependency->save();
+            }
+
+            $notification           = new Notification();
+            $notification->title    = 'New Ad Update Request';
+            $notification->message  = 'New ad Update request';
+            $notification->status   = 0;
+            $notification->save();
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Ad update request has been placed',
+                'code'      => 200,
+                'ad_id'     => $ads->id,
+            ], 200);
+
+        // }
+        // catch (\Exception $e) {
+            
+
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong '.$e->getMessage(),
+        //         'code'      => 400,
+        //     ], 200);
+        // }
+
     }
 }

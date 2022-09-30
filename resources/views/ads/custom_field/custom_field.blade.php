@@ -39,7 +39,12 @@
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $row->name }}</td>
                                     <td>{{ $row->type }}</td>
-                                    <td><span class="badge badge-primary">{{ count($row->CategoryField) }} Category</span></td>
+                                    <td>
+                                        @foreach($row->CategoryField as $category_field)
+                                        <span class="badge badge-primary">{{$category_field->Category->name}}</span>
+                                        @endforeach
+                                    
+                                        </td>
                                     <td>{!! $row->option == 1 ? '<span class="badge badge-primary mx-2">'. count($row->FieldOption) .'</span>' : 'Null' !!}</td>
                                     <td>{!! $row->status == 1 ? '<span class="text-success">Active<span>' : '<span class="text-secondary">Disabled<span>' !!}</td>
                                     <td>

@@ -24,7 +24,7 @@ Route::post('/vefify/opt', [\App\Http\Controllers\Api\LoginController::class, 'v
 Route::post('/forgotpassword/password/reset', [\App\Http\Controllers\Api\LoginController::class, 'passwordReset']);
 
     // Ads Section
-    
+Route::post('/customer/ads/get_details', [\App\Http\Controllers\Api\AdsController::class, 'getDetails']);  
 Route::post('/customer/ads/custom_field_and_dependency', [\App\Http\Controllers\Api\AdsController::class, 'customFieldsAndDependency']);
 Route::post('/customer/get/master/dependency', [\App\Http\Controllers\Api\AdsController::class, 'getMasterDependency']);
 
@@ -65,6 +65,7 @@ Route::post('/customer/get/home/banner', [\App\Http\Controllers\Api\OtherControl
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
 
+
 Route::post('/privacy/policy', [\App\Http\Controllers\Api\OtherController::class, 'privacyPolicy']);
 Route::post('/terms/conditions', [\App\Http\Controllers\Api\OtherController::class, 'termsConditions']);
 
@@ -79,6 +80,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/loged/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'LogedDashboard']);
 
     Route::post('/customer/ads/store', [\App\Http\Controllers\Api\AdsController::class, 'adStore']);
+    Route::post('/customer/ads/update', [\App\Http\Controllers\Api\AdsController::class, 'updateData']);
     Route::post('/customer/view/profile', [\App\Http\Controllers\Api\LoginController::class, 'myProfile']);
     Route::post('/customer/update/profile', [\App\Http\Controllers\Api\LoginController::class, 'updateProfile']);
     Route::post('/customer/ad/favourite', [\App\Http\Controllers\Api\AdsController::class, 'favouriteGet']);

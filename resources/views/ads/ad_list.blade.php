@@ -57,7 +57,7 @@
                                         <div class="dropdown-menu text-center">
                                             <a href="{{ route('ads.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
                                             @if($row->customer_id != 1)
-                                                <a href="javascript:void(0);"><button class="btn btn-secondary my-2">Edit</button></a>
+                                                <!-- <a href="javascript:void(0);"><button class="btn btn-secondary my-2 ">Edit</button></a> -->
                                             @else
                                                 <a href="{{ route('ads.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                             @endif
