@@ -91,5 +91,6 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/uploade/payment_slip', [\App\Http\Controllers\Api\OtherController::class, 'paymentDocument']);
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
+    Route::post('/customer/ads/remove_image', [\App\Http\Controllers\Api\AdsController::class, 'removeImage']);
 });
 

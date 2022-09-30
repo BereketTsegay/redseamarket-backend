@@ -4109,7 +4109,7 @@ class AdsController extends Controller
 
         // try{
 
-            $ads = Ads::where('id', $request->ads_id)->with(['Category','Subcategory','MotoreValue','MotorFeatures','CustomValue','SellerInformation','PropertyRend'])
+            $ads = Ads::where('id', $request->ads_id)->with(['Category','Subcategory','MotoreValue','MotorFeatures','CustomValue','SellerInformation','PropertyRend','Image'])
             ->first();
             return response()->json([
                 'status'    => 'success',
@@ -4484,5 +4484,24 @@ class AdsController extends Controller
         //     ], 200);
         // }
 
+    }
+    public function removeImage(Request $request)
+    {
+      $id=$request->id;
+      if(AdsImage::find($id)->delete())
+      {
+        return response()->json([
+            'status'    => 'success',
+            'message'   => 'Image deleted successfully',
+            'code'      => 200
+        ], 200);
+      }else
+      {
+        return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Something went wrong '.$e->getMessage(),
+                    'code'      => 400,
+                ], 200);
+      }
     }
 }
