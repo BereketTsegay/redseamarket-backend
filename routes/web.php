@@ -149,6 +149,7 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::post('/custom_field/update/{id}', [App\Http\Controllers\CustomFieldController::class, 'update'])->name('custom_field.update');
         Route::post('/custom_field/delete/{id}', [App\Http\Controllers\CustomFieldController::class, 'delete'])->name('custom_field.delete');
         Route::post('/custom_field/update_subcategory', [App\Http\Controllers\CustomFieldController::class, 'updateSubcategory'])->name('custom_field.update_subcategory');
+        Route::delete('/custom_field/category_field_delete/{id}', [App\Http\Controllers\CustomFieldController::class, 'CategoryFieldDelete'])->name('custom_field.category_field_delete');
         // Dependency
 
         Route::get('/dependency/get', [App\Http\Controllers\CustomFieldController::class, 'dependencyGet'])->name('dependency.get.ajax');

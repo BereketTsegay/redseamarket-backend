@@ -505,4 +505,13 @@ class CustomFieldController extends Controller
         session()->flash('success', 'subcategory added to custom field');
        return redirect()->route('custom_field.index');
     }
+    public function CategoryFieldDelete($id)
+    {
+        $cfield=  CategoryField::findOrFail($id);
+        if($cfield->delete())
+        {
+            return response()->json(["status"=>true]);
+        }
+        return response()->json(["status"=>false]);
+    }
 }

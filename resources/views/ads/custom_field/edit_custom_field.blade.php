@@ -133,6 +133,33 @@
                                 </table>
                             </div>
                         @endif
+                        @if (count($field->CategoryField) != 0)
+                            <h5>Categories</h5>
+                            <hr>
+                            <div class="row">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Category</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($field->CategoryField as $row)
+                                            <tr>
+                                                <th scope="row">{{ $loop->iteration }}</th>
+                                                <td>{{ $row->Category->name }}</td>
+                                                <td><button type="button" onclick="deleteCategoryField({{$row->id}})" class="btn btn-danger" >
+                                                       <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -253,6 +280,54 @@
     </div>
 </div>
 
+<script>
+    function deleteCategoryField(id)
+    {
+        Swal.fire({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this details!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete.isConfirmed) { 
+          $.ajaxSetup({
+                  headers: {
+                      'X-CSRF-TOKEN': $('#csrf_toke').val()
+                  }
+              });
+        jQuery.ajax({
+            url:"{{url('custom_field/category_field_delete')}}/"+id,
+            type:"delete",
+            dataType:'json',
+            data:{
+                "id":id
+            },
+            success:function(response){
+                if(response.status)
+                {
+                    Swal.fire({
+                            title: "Done!",
+                            text: "Data Deleted Successfully."
+                        }).then(function(){
+                         location.reload();
+                       });
+                }
+                else
+                {
+                   Swal.fire("Error!","Failed To Delete...","error");
+               }
+            },
+             error: function(xhr) {
+         console.log(xhr.responseText); // this line will save you tons of hours while debugging
+        // do something here because of error
+       }
+        })
+          }
+            });
+    }
+</script>
     <script>
         let ids = '';
 
