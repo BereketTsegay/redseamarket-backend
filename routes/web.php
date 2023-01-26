@@ -208,6 +208,8 @@ Route::group(['middleware' => ['revalidate']], function () {
         //ad inactive
 
         Route::get('/ad_inactive/list', [App\Http\Controllers\AdsController::class, 'InactiveIndex'])->name('ads.inactive');
+        Route::post('/ad_inactive/accept/{id}', [App\Http\Controllers\AdsController::class, 'adReAccept'])->name('ad.inactive.accept');
+        Route::get('/ad_inactive/view/{id}', [App\Http\Controllers\AdsController::class, 'adsInactiveView'])->name('ad.inactive.view');
 
         // Ads Request
 

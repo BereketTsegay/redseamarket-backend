@@ -249,7 +249,7 @@ class OtherController extends Controller
             $latitude = $request->latitude;
             $longitude = $request->longitude;
 
-            $radius = 10; // Km
+            $radius = 100; // Km
 
             $myAds = Ads::where('status', Status::ACTIVE)
             // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
@@ -408,7 +408,7 @@ class OtherController extends Controller
             $latitude = $request->latitude;
             $longitude = $request->longitude;
 
-            $radius = 10; // Km
+            $radius = 100; // Km
 
             $myAds = Ads::where('status', Status::ACTIVE)
             ->where('category_id', 1)
@@ -750,7 +750,7 @@ class OtherController extends Controller
             $latitude = $request->latitude;
             $longitude = $request->longitude;
 
-            $radius = 10; // Km
+            $radius = 100; // Km
 
             if($request->city){
 
@@ -1006,7 +1006,7 @@ class OtherController extends Controller
             $latitude = $request->latitude;
             $longitude = $request->longitude;
 
-            $radius = 10; // Km
+            $radius = 100; // Km
 
             if($request->city){
 

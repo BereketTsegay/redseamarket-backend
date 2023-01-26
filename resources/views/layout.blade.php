@@ -107,7 +107,9 @@
         @php
             
             $adsCount = \App\Models\Ads::where('status', \App\Common\Status::REQUEST)
-            ->where('created_at', \Carbon\Carbon::today())
+            ->count();
+
+            $adsInaciveCount = \App\Models\Ads::where('status', \App\Common\Status::INACTIVE)
             ->count();
 
         @endphp
@@ -225,7 +227,11 @@
                                                 <div class="badge badge-primary">{{$adsCount}}</div>
                                             @endif
                                         </a>
-                                        <a class="nav-link {{ request()->is('ad_list*') ? 'active' : '' }}" href="{{ route('ads.index') }}">Inactive Ad</a>
+                                        <a class="nav-link {{ request()->is('ad_inactive*') ? 'active' : '' }}" href="{{ route('ads.inactive') }}">Inactive Ad
+                                            @if ($adsInaciveCount != 0)
+                                            <div class="badge badge-primary">{{$adsInaciveCount}}</div>
+                                        @endif
+                                        </a>
 
                                     </nav>
                                 </div>

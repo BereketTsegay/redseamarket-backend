@@ -39,7 +39,7 @@ class AdsController extends Controller
     }
 
     public function InactiveIndex(){
-
+      
         $ad = Ads::where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->where('status', Status::INACTIVE)
@@ -500,6 +500,13 @@ class AdsController extends Controller
         ->first();
         
         return view('ads.ad_details', compact('ad'));
+    }
+    public function adsInactiveView($id){
+
+        $ad = Ads::where('id', $id)
+        ->first();
+        
+        return view('ads.ads_inactive_detail', compact('ad'));
     }
 
     public function edit($id){
@@ -1101,9 +1108,23 @@ class AdsController extends Controller
         Ads::where('id', $id)
         ->update([
             'status'    => Status::ACTIVE,
+            'accept_at'    => \DB::raw('CURRENT_TIMESTAMP'),
+            'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
         ]);
 
         session()->flash('success', 'Ad has been accepted');
+        return redirect()->route('ads.index');
+    }
+
+    public function adReAccept($id){
+        
+        Ads::where('id', $id)
+        ->update([
+            'status'    => Status::ACTIVE,
+            'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
+        ]);
+
+        session()->flash('success', 'Ad has been activated');
         return redirect()->route('ads.index');
     }
 

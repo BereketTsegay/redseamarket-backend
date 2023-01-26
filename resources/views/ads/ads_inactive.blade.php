@@ -5,18 +5,17 @@
     <main>
         <div class="container-fluid px-4">
             
-            <a href="{{ route('ads.create') }}"><button type="button" class="btn btn-primary float-end">Create ad</button></a>
             
-            <h1 class="mt-4">Ads</h1>
+            <h1 class="mt-4">Inactive Ads</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Ads</li>
+                <li class="breadcrumb-item active">Inactive Ads</li>
             </ol>
             
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    Ads
+                    Inactive Ads
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple" class="table table-striped table-bordered">
@@ -55,14 +54,19 @@
                                             Action
                                         </button>
                                         <div class="dropdown-menu text-center">
-                                            <a href="{{ route('ads.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
+                                            <a href="{{ route('ad.inactive.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
+                                            @if($row->status == \App\Common\Status::INACTIVE)
+                                            <form action="{{ route('ad.inactive.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Active ad</button></form>
+                                            @endif
+                                            
+                                            {{-- <a href="{{ route('ads.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
                                             @if($row->customer_id != 1)
                                                 <!-- <a href="javascript:void(0);"><button class="btn btn-secondary my-2 ">Edit</button></a> -->
                                             @else
                                                 <a href="{{ route('ads.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                             @endif
                                             <button onclick="adDelete({{$row->id}})" type="button" class="btn btn-danger" data-toggle="modal" data-target="#adDeleteModal">Delete</button>
-                                            <form id="ad_delete_form{{$row->id}}" action="{{ route('ads.delete', $row->id) }}" method="POST">@csrf</form>
+                                            <form id="ad_delete_form{{$row->id}}" action="{{ route('ads.delete', $row->id) }}" method="POST">@csrf</form> --}}
                                         </div>
                                     </div>
                                 </td>
