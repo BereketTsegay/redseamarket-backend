@@ -463,13 +463,14 @@ class LoginController extends Controller
             if(Auth::loginUsingId($user->id)){
                 
                 $token = Auth::user()->createToken('TutsForWeb')->accessToken;
+                //dd($token);
             }
 
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Password has been updated',
                 'token'     => $token,
-                'user'      => Auth::user()->name,
+                'user'      => $user->name,
             ], 200);
         }
         catch(\Exception $e){

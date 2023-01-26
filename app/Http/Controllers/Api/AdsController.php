@@ -34,6 +34,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Models\AdsCountry;
+
 
 class AdsController extends Controller
 {
@@ -270,6 +272,17 @@ class AdsController extends Controller
             $ad->notification_status   = 0;
             $ad->save();
 
+
+            if($request->adsCountry){
+                foreach($request->adsCountry as $country){
+                    $ads_countryMap=new AdsCountry();
+                    $ads_countryMap->ads_id=$ad->id;
+                    $ads_countryMap->country_id=$country['id'];
+                    $ads_countryMap->save();
+                }
+            }
+            
+           
             if($featured == Status::ACTIVE){
 
                 if($request->paymentMethod == 'stripe'){
@@ -772,29 +785,32 @@ class AdsController extends Controller
             }
             else{
                 if($request->country && $request->city){
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
                     $motors = Category::where('id', 1)
-                    ->with(['Subcategory' => function($a) use($request){
+                    ->with(['Subcategory' => function($a) use($request,$countryAds){
                         $a->where('parent_id', 0)
-                        ->whereHas('Ads', function($a) use($request){
-                            $a->where('country_id', $request->country)
+                        ->whereHas('Ads', function($a) use($request,$countryAds){
+                            $a->whereIn('id', $countryAds)
                             ->where('city_id', $request->city);
                         })
-                        ->withCount(['Ads' => function($a) use($request){
-                            $a->where('country_id', $request->country);
+                        ->withCount(['Ads' => function($a) use($request,$countryAds){
+                            $a->whereIn('id', $countryAds);
                         }]);
                     }])
                     ->first();
                 }
                 elseif($request->country){
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
                     $motors = Category::where('id', 1)
-                    ->with(['Subcategory' => function($a) use($request){
+                    ->with(['Subcategory' => function($a) use($request,$countryAds){
                         $a->where('parent_id', 0)
-                        ->whereHas('Ads', function($a) use($request){
-                            $a->where('country_id', $request->country);
+                        ->whereHas('Ads', function($a) use($request,$countryAds){
+                            $a->whereIn('country_id', $countryAds);
                         })
-                        ->withCount(['Ads' => function($a) use($request){
-                            $a->where('country_id', $request->country);
+                        ->withCount(['Ads' => function($a) use($request,$countryAds){
+                            $a->where('id', $countryAds);
                         }]);
                     }])
                     ->first();
@@ -848,7 +864,9 @@ class AdsController extends Controller
                 }
                 
                 if(isset($request->country)){
-                    $ads->where('country_id', $request->country);
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+                    $ads->whereId('id', $countryAds);
                 }
 
                 $ads = tap($ads->paginate(20), function ($paginatedInstance){
@@ -884,7 +902,9 @@ class AdsController extends Controller
                 }
                 
                 if(isset($request->country)){
-                    $ads->where('country_id', $request->country);
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+                    $ads->whereIn('id', $countryAds);
                 }
 
                 $ads = tap($ads->paginate(20), function ($paginatedInstance){
@@ -1027,9 +1047,10 @@ class AdsController extends Controller
             }
 
                 if(isset($request->country)){
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $subcategory->with(['ads' => function($a) use($request){
-                        $a->where('country_id', $request->country);
+                    $subcategory->with(['ads' => function($a) use($request,$countryAds){
+                        $a->whereIn('id', $countryAds);
                     }]);
                     // ->whereHas('ads', function($a) use($request){
                     //     $a->where('country_id', $request->country);
@@ -3729,8 +3750,9 @@ class AdsController extends Controller
             }
 
             if(isset($request->country)){
-                    
-                $myAds->where('country_id', $request->country);
+                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+    
+                $myAds->whereIn('id',$countryAds);
             }
 
             if($request->city){
@@ -4239,6 +4261,16 @@ class AdsController extends Controller
             $ads->status                = Status::REQUEST;
             $ads->notification_status   = 0;
             $ads->update();
+               
+            AdsCountry::where('ads_id',$request->id)->delete();
+            if($request->adsCountry){
+                foreach($request->adsCountry as $country){
+                    $ads_countryMap=new AdsCountry();
+                    $ads_countryMap->ads_id=$request->id;
+                    $ads_countryMap->country_id=$country['id'];
+                    $ads_countryMap->save();
+                }
+            }
 
 
 
@@ -4503,5 +4535,16 @@ class AdsController extends Controller
                     'code'      => 400,
                 ], 200);
       }
+    }
+
+    public function adsCountries(Request $request){
+
+        $mapCounteis=AdsCountry::where('ads_id',$request->ads_id)->get()->pluck('country_id');
+        $datas=Country::whereIn('id',$mapCounteis)->get();
+        return response()->json([
+            'status'    => 'success',
+            'data'   => $datas,           
+        ], 200);
+
     }
 }

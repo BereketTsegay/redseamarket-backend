@@ -75,6 +75,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group my-2">
+                                        <label for="SortOrder">Ads Expire Days</label>
+                                        <input type="text" name="expire_days" value="{{ old('expire_days') }}" class="form-control @error('expire_days') is-invalid @enderror" placeholder="Expire Days" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('expire_days')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
                                         <div class="row">
                                             <div class="col-md-6 my-2">
                                                 <label for="Status">Active</label>

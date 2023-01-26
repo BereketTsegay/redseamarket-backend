@@ -47,6 +47,7 @@ class CategoryController extends Controller
             'canonical_name'    => 'required',
             // 'country'           => 'required|numeric',
             'sort_order'        => 'required|numeric',
+            'expire_days'       => 'required|numeric',
             'description'       => 'required',
             'image'             => 'required|mimes:jpeg,jpg,png',
         ]);
@@ -70,10 +71,10 @@ class CategoryController extends Controller
 
         if($request->display_flag == 'on'){
             
-            $count = Category::where('display_flag', Status::ACTIVE)
+            $count = Category::where('display_flag', Status::ACTIVE)->where('delete_status', '!=', Status::DELETE)
             ->count();
-            
-            if($count <= 5){
+           // return $count;
+            if($count <= 7){
                 $display_flag = Status::ACTIVE;
             }
             else{
@@ -95,6 +96,7 @@ class CategoryController extends Controller
         // $category->state_id         = $request->state;
         // $category->city_id          = $request->city;
         $category->sort_order       = $request->sort_order;
+        $category->expire_days        = $request->expire_days;
         $category->status           = $status;
         $category->display_flag     = $display_flag;
         $category->reserved_flag    = 0;
@@ -129,6 +131,10 @@ class CategoryController extends Controller
         return view('ads.category.edit_category', compact('category', 'icon', 'country'));
     }
 
+    public function editExpire($id){
+        $category = Category::find($id);
+        return view('ads.category.category_expire', compact('category'));
+    }
     public function update(Request $request, $id){
 
         $request->validate([
@@ -138,6 +144,7 @@ class CategoryController extends Controller
             'canonical_name'    => 'required',
             // 'country'           => 'required|numeric',
             // 'state'             => 'required|numeric',
+            // 'expire_days'       => 'required|numeric',
             'sort_order'        => 'required|numeric',
             'description'       => 'required',
             'image'             => 'mimes:jpeg,jpg,png',
@@ -169,10 +176,10 @@ class CategoryController extends Controller
 
         if($request->display_flag == 'on'){
 
-            $count = Category::where('display_flag', Status::ACTIVE)
+            $count = Category::where('display_flag', Status::ACTIVE)->where('delete_status', '!=', Status::DELETE)
             ->count();
             
-            if($count <= 5){
+            if($count <= 7){
                 $display_flag = Status::ACTIVE;
             }
             else{
@@ -202,12 +209,29 @@ class CategoryController extends Controller
             // 'state_id'          => $request->state,
             // 'city_id'           => $request->city,
             'sort_order'        => $request->sort_order,
+            'expire_days'        => $request->expire_days,
             'status'            => $status,
             'display_flag'      => $display_flag,
             'reserved_flag'     => $reserved,
         ]);
 
         session()->flash('success', 'Category has been updated');
+        return redirect()->route('category.index');
+    }
+
+    public function updateExpiry(Request $request,$id){
+        $request->validate([
+           
+            'expire_days'       => 'required|numeric',
+          
+        ]);
+
+        Category::where('id', $id)
+        ->update([  
+            'expire_days'        => $request->expire_days,    
+        ]);
+
+        session()->flash('success', 'Expiry Days has been updated');
         return redirect()->route('category.index');
     }
 

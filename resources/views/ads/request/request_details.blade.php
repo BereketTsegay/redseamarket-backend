@@ -55,6 +55,10 @@
                                             <p class="col-md-6">Payment Document :</p>
                                             <p class="col-md-6"><a href="{{ asset($ad->Payment->document ? $ad->Payment->document : '/no-document') }}" target='blank'>View Document</a></p>
                                         </div>
+                                        <div class="row">
+                                            <p class="col-md-6">Transation Id:</p>
+                                            <p class="col-md-6">{{$ad->Payment->payment_id}}</p>
+                                        </div>
                                     @endif
                                 @endif
                                 <div class="row">

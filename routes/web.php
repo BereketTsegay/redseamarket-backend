@@ -108,6 +108,25 @@ Route::group(['middleware' => ['revalidate']], function () {
          Route::post('/varient_mst/update/{id}', [App\Http\Controllers\VarientMstController::class, 'update'])->name('varient_mst.update');
          Route::post('/varient_mst/delete/{id}', [App\Http\Controllers\VarientMstController::class, 'delete'])->name('varient_mst.delete');
        
+         //country
+         Route::get('/countries', [App\Http\Controllers\ConntryController::class, 'CountryIndex'])->name('countries.index');
+         Route::get('/countries/create', [App\Http\Controllers\ConntryController::class, 'CountryCreate'])->name('countries.create');
+         Route::post('/countries/store', [App\Http\Controllers\ConntryController::class, 'CountryStore'])->name('countries.store');
+         Route::get('/countries/edit/{id}', [App\Http\Controllers\ConntryController::class, 'CountryEdit'])->name('countries.edit');
+         Route::post('/countries/update/{id}', [App\Http\Controllers\ConntryController::class, 'CountryUpdate'])->name('countries.update');
+         Route::post('/countries/delete/{id}', [App\Http\Controllers\ConntryController::class, 'CountryDelete'])->name('countries.delete');
+
+
+         // Conunty Currency
+         Route::get('/country_currency', [App\Http\Controllers\ConntryController::class, 'CurrencyIndex'])->name('country_currency.index');
+         Route::get('/country_currency/create', [App\Http\Controllers\ConntryController::class, 'CurrencyCreate'])->name('country_currency.create');
+         Route::post('/country_currency/store', [App\Http\Controllers\ConntryController::class, 'CurrencyStore'])->name('country_currency.store');
+         Route::get('/country_currency/edit/{id}', [App\Http\Controllers\ConntryController::class, 'CurrencyEdit'])->name('country_currency.edit');
+         Route::post('/country_currency/update/{id}', [App\Http\Controllers\ConntryController::class, 'CurrencyUpdate'])->name('country_currency.update');
+         Route::post('/country_currency/delete/{id}', [App\Http\Controllers\ConntryController::class, 'CurrencyDelete'])->name('country_currency.delete');
+
+
+
         // Category
 
         Route::get('/category', [App\Http\Controllers\CategoryController::class, 'index'])->name('category.index');
@@ -117,6 +136,8 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/category/edit/{id}', [App\Http\Controllers\CategoryController::class, 'edit'])->name('category.edit');
         Route::post('/category/update/{id}', [App\Http\Controllers\CategoryController::class, 'update'])->name('category.update');
         Route::post('/category/delete/{id}', [App\Http\Controllers\CategoryController::class, 'delete'])->name('category.delete');
+        Route::get('/category/expire/edit/{id}', [App\Http\Controllers\CategoryController::class, 'editExpire'])->name('category.expire');
+        Route::post('/category/expiry/update/{id}', [App\Http\Controllers\CategoryController::class, 'updateExpiry'])->name('category.expiry.update');
 
         // Subcategory
 
@@ -183,11 +204,18 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/ads/related/field', [App\Http\Controllers\AdsController::class, 'getAdsRelated']);
         Route::get('/get/motor/feature', [App\Http\Controllers\AdsController::class, 'getMotorFeature']);
 
+
+        //ad inactive
+
+        Route::get('/ad_inactive/list', [App\Http\Controllers\AdsController::class, 'InactiveIndex'])->name('ads.inactive');
+
         // Ads Request
 
         Route::get('/ad_request', [App\Http\Controllers\AdsController::class, 'adRequestIndex'])->name('ad_request.index');
         Route::get('/ad_request/details/{id}', [App\Http\Controllers\AdsController::class, 'adRequestDetails'])->name('ad_request.details');
         Route::post('/ad/accept/{id}', [App\Http\Controllers\AdsController::class, 'adAccept'])->name('ad.accept');
+        Route::get('/ad_request/document/{id}', [App\Http\Controllers\AdsController::class, 'adRequestDocument'])->name('ad_request.document');
+        Route::post('/ad/user/wallet', [App\Http\Controllers\AdsController::class, 'walletAdd'])->name('user.add.wallet');
 
         Route::get('/get/reject/reson', [App\Http\Controllers\AdsController::class, 'getRejectReson']);
         Route::post('/ad/reject', [App\Http\Controllers\AdsController::class, 'adReject'])->name('reject.ads');

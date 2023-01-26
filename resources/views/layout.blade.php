@@ -178,6 +178,8 @@
         <a class="nav-link {{ request()->is('make_mst*') ? 'active' : '' }}" href="{{ route('make_mst.index') }}">Make</a>
         <a class="nav-link {{ request()->is('model_mst*') ? 'active' : '' }}" href="{{ route('model_mst.index') }}">Model</a>
         <a class="nav-link {{ request()->is('varient_mst*') ? 'active' : '' }}" href="{{ route('varient_mst.index') }}">Varient</a>
+        <a class="nav-link {{ request()->is('countries*') ? 'active' : '' }}" href="{{ route('countries.index') }}">Country</a>
+        <a class="nav-link {{ request()->is('country_currency*') ? 'active' : '' }}" href="{{ route('country_currency.index') }}">Currency</a>
     </nav>
 </div>
 @endif
@@ -223,6 +225,8 @@
                                                 <div class="badge badge-primary">{{$adsCount}}</div>
                                             @endif
                                         </a>
+                                        <a class="nav-link {{ request()->is('ad_list*') ? 'active' : '' }}" href="{{ route('ads.index') }}">Inactive Ad</a>
+
                                     </nav>
                                 </div>
 

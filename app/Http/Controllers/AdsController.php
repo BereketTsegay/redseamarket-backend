@@ -38,6 +38,16 @@ class AdsController extends Controller
         return view('ads.ad_list', compact('ad'));
     }
 
+    public function InactiveIndex(){
+
+        $ad = Ads::where('delete_status', '!=', Status::DELETE)
+        ->orderBy('created_at', 'desc')
+        ->where('status', Status::INACTIVE)
+        ->paginate(10);
+
+        return view('ads.ads_inactive', compact('ad'));
+    }
+
     public function create(){
         
         $category = Category::where('delete_status', '!=', Status::DELETE)
@@ -1142,6 +1152,23 @@ class AdsController extends Controller
         ->get();
 
         return view('ads.request.request_details', compact('ad', 'reason'));
+    }
+
+    public function walletAdd(Request $request){
+               // return $request;
+
+        $user = User::find($request->user_id);
+        $user->wallet=$request->wallet;
+        $user->update();
+        session()->flash('success', 'Wallet Updated Successfully!');
+        return back();
+    }
+
+    public function adRequestDocument($id){
+
+        $ad = Ads::where('id', $id)
+        ->first();
+        return view('ads.request.ad_request_document', compact('ad'));
     }
 
     public function adReject(Request $request){

@@ -49,7 +49,8 @@
                                             </button>
                                             <div class="dropdown-menu text-center">
                                                 <a href="{{ route('category.view', $row->id) }}"><button class="btn btn-primary my-2" class="">View</button></a>
-                                                
+                                               <a href="{{route('category.expire', $row->id)}}" class="btn btn-danger ad-expire" >Expiry day</a>
+ 
                                                 @if ($row->reserved_flag == 1)
                                                     <a href="#" title="Can't delete, reserved category"><button class="btn btn-secondary my-1">Can't edit, reserved category</button></a>
                                                 @else
@@ -118,6 +119,35 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="expiryModal" tabindex="-1" role="dialog" aria-labelledby="expiryModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+          <h5 class="modal-title" id="deleteCategoryModalLabel">Expiry Days</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+
+                <form action="">
+                      <input type="hidden" id="ad_id" name="ad_id">
+                    <div class="form-group my-2">
+                        <label for="expire_days">Ads Expire Days</label>
+                        <input type="number" id="expire_days" name="expire_days" value="" class="form-control" placeholder="Expire Days" autocomplete="off" required>
+                    </div>
+
+                </form>
+              
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
   <script>
         
         let ids = '';
@@ -130,6 +160,9 @@
             
             $('#delete_category_form'+ids).submit();
         }
+
+
+       
   </script>
 
 @if (Session::has('success'))

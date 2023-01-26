@@ -69,7 +69,7 @@
                                             </button>
                                             <div class="dropdown-menu text-center">
                                                 @if ($row->featured_flag && $row->Payment->payment_type != 0)
-                                                    <a class="mb-2" href="{{ $row->Payment->document ? asset( $row->Payment->document ) : 'no-document' }}" target="blank"><button class="btn btn-warning">View Document</button></a>
+                                                    <a class="mb-2" href="{{ route('ad_request.document', $row->id) }}" ><button class="btn btn-warning">View Document</button></a>
                                                 @endif
                                                 <a href="{{ route('ad_request.details', $row->id) }}" ><button class="btn btn-secondary my-1">View</button></a>
                                                 <form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form>

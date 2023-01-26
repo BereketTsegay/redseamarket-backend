@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Validator;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
+use App\Models\AdsCountry;
 
 class OtherController extends Controller
 {
@@ -264,8 +265,9 @@ class OtherController extends Controller
             }
 
             if(isset($request->country)){
-                    
-                $myAds->where('country_id', $request->country);
+                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+                $myAds->whereIn('id', $countryAds);
             }
 
             if(isset($request->city)){
@@ -777,8 +779,9 @@ class OtherController extends Controller
                 }
 
                 if(isset($request->country)){
-                    
-                    $myAds->where('country_id', $request->country);
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+                    $myAds->whereIn('id', $countryAds);
                 }
 
                 if(isset($request->seller)){
@@ -870,8 +873,9 @@ class OtherController extends Controller
                 }
 
                 if(isset($request->country)){
-                    
-                    $myAds->where('country_id', $request->country);
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+                    $myAds->whereIn('id', $countryAds);
                 }
 
                 if(isset($request->seller)){
@@ -1031,8 +1035,9 @@ class OtherController extends Controller
                 }
 
                 if(isset($request->country)){
-                    
-                    $myAds->where('country_id', $request->country);
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+                    $myAds->whereIn('id', $request->country);
                 }
 
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
@@ -1113,8 +1118,9 @@ class OtherController extends Controller
                 }
 
                 if(isset($request->country)){
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $myAds->where('country_id', $request->country);
+                    $myAds->whereIn('id', $countryAds);
                 }
 
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
@@ -1439,7 +1445,7 @@ class OtherController extends Controller
 
         $rules = [
             'id'                => 'required|numeric',
-            'transaction_id'    => 'required',
+            'transaction_id'    => 'required|unique:payments,payment_id',
             'payment_slip'      => 'required',
         ];
 

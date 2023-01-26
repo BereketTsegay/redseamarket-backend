@@ -116,8 +116,6 @@ class CurrencySeeder extends Seeder
             array('id' => 99, 'country_id' => 99, 'currency_code' => 'HUF', 'currency_name' => 'Hungarian forint'),
             array('id' => 100, 'country_id' => 100, 'currency_code' => 'ISK', 'currency_name' => 'Icelandic króna'),
             array('id' => 101, 'country_id' => 101, 'currency_code' => 'INR', 'currency_name' => 'Indian rupee'),
-
-
             array('id' => 229, 'country_id' => 229, 'currency_code' => 'AED', 'currency_name' => 'UAE dirham'),
             array('id' => 231, 'country_id' => 231, 'currency_code' => 'USD', 'currency_name' => 'US dollar'),
         );
