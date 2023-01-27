@@ -153,7 +153,7 @@ class AdsController extends Controller
     }
 
     public function adStore(Request $request){
-        
+        // dd($request->all());
         try{
             
             $rules = [
@@ -301,12 +301,12 @@ class AdsController extends Controller
                         $amount = $subcategory->percentage;
                     }
                     else{
-                        $amount = $request->price * ($subcategory->percentage / 100);
+                        $amount = ($request->price * ($subcategory->percentage / 100));
                     }
 
                     $payment                = new Payment();
                     $payment->payment_id    = $ad->id . uniqid();
-                    $payment->amount        = $amount;
+                    $payment->amount        = $amount*count($request->adsCountry);
                     $payment->ads_id        = $ad->id;
                     $payment->name          = $request->name;
                     $payment->email         = $request->email;

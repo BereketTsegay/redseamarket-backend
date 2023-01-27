@@ -71,6 +71,7 @@ class LoginController extends Controller
                 'message'   => 'Welcome '. $user->name,
                 'user'      => $user->name,
                 'token'     => $token,
+                'wallet'    => $user->wallet,
             ], 200);
         }
         else{

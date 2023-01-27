@@ -20,9 +20,14 @@
                             <div class="col-md-12">
                                 <h5 class="my-4">Image</h5>
                                 <div class="row">
-                                    @foreach ($ad->Image as $row) 
+                                    {{-- @foreach ($ad->Image as $row) 
                                         <a href="{{ asset($row->image) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($row->image) }}" alt="image"></a>
-                                    @endforeach
+                                    @endforeach --}}
+
+                                    @if($ad->Payment)
+                                    <a href="{{ asset($ad->Payment->document) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($ad->Payment->document) }}" alt="image"></a>
+
+                                    @endif
                                 </div>
 
                                 <div class="row mt-4">
