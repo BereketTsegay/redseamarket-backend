@@ -77,7 +77,7 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::post('/users/update/{id}', [App\Http\Controllers\LoginController::class, 'userUpdate'])->name('user.update');
         Route::get('/users/ads/{type}/{id}', [App\Http\Controllers\LoginController::class, 'userAds'])->name('user.ads');
         Route::post('/users/change/password/{id}', [App\Http\Controllers\LoginController::class, 'userChangePassword'])->name('user.change.password');
-        Route::post('/users/delete/{id}', [App\Http\Controllers\UserRoleController::class, 'userDelete'])->name('user.delete');
+        Route::post('/users/delete/{id}', [App\Http\Controllers\LoginController::class, 'userDelete'])->name('user.delete');
 
         /* ========== Ads ========== */
         // MakeMst

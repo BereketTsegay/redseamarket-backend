@@ -43,6 +43,7 @@ class AdsController extends Controller
 
         $rules = [
             'ads_id'    => 'required|numeric',
+            'country_id' => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -58,88 +59,102 @@ class AdsController extends Controller
         }
 
         try{
+            $country_ad=AdsCountry::where('ads_id',$request->ads_id)->where('country_id',$request->country_id)->first();
+            if($country_ad){
 
-            $ads = Ads::where('id', $request->ads_id)
-            ->get()
-            ->map(function($a){
-
-                if($a->category_id == 1){
-                    $a->MotoreValue;
-                    if($a->MotoreValue){
-                        $a->make = $a->MotoreValue->Make ? $a->MotoreValue->Make->name : '';
-                        $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
-                        $a->variant = $a->MotoreValue->Variant ? $a->MotoreValue->Variant->name : '';
-
-                        unset($a->MotoreValue->Make, $a->MotoreValue->Model, $a->MotoreValue->Variant);
+                $ads = Ads::where('id', $request->ads_id)
+                ->get()
+                ->map(function($a){
+    
+                    if($a->category_id == 1){
+                        $a->MotoreValue;
+                        if($a->MotoreValue){
+                            $a->make = $a->MotoreValue->Make ? $a->MotoreValue->Make->name : '';
+                            $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
+                            $a->variant = $a->MotoreValue->Variant ? $a->MotoreValue->Variant->name : '';
+    
+                            unset($a->MotoreValue->Make, $a->MotoreValue->Model, $a->MotoreValue->Variant);
+                        }
+                        $a->MotorFeatures;
+    
                     }
-                    $a->MotorFeatures;
-
-                }
-                elseif($a->category_id == 2){
-                    $a->PropertyRend;
-                }
-                elseif($a->category_id ==3){
-                    $a->PropertySale;
-                }
-                $a->image = array_filter([
-                    $a->Image->map(function($q) use($a){
-                        $q->image;
-                        unset($q->ads_id, $q->img_flag);
-                        return $q;
-                    }),
-                ]);
-
-                $a->created_on = date('d-M-Y', strtotime($a->created_at));
-                $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
-
-                $a->Payment;
-
-                $a->country_name = $a->Country->name;
-                $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                $a->state_name = $a->State->name;
-                if($a->city_id != 0){
-                    $a->city_name = $a->City->name;
-                }
-                else{
-                    $a->city_name = $a->State->name;
-                }
-                $a->CustomValue->map(function($c){
-                    
-                    if($c->Field->description_area_flag == 0){
-                        $c->position = 'top';
-                        $c->name = $c->Field->name;
+                    elseif($a->category_id == 2){
+                        $a->PropertyRend;
                     }
-                    elseif($c->Field->description_area_flag == 1){
-                        $c->position = 'details_page';
-                        $c->name = $c->Field->name;
+                    elseif($a->category_id ==3){
+                        $a->PropertySale;
+                    }
+                    $a->image = array_filter([
+                        $a->Image->map(function($q) use($a){
+                            $q->image;
+                            unset($q->ads_id, $q->img_flag);
+                            return $q;
+                        }),
+                    ]);
+    
+                    $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                    $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+    
+                    $a->Payment;
+    
+                    $a->country_name = $a->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                    $a->state_name = $a->State->name;
+                    if($a->city_id != 0){
+                        $a->city_name = $a->City->name;
                     }
                     else{
-                        $c->position = 'none';
-                        $c->name = $c->Field->name;
+                        $a->city_name = $a->State->name;
                     }
-                    unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
-                    return $c;
+                    $a->CustomValue->map(function($c){
+                        
+                        if($c->Field->description_area_flag == 0){
+                            $c->position = 'top';
+                            $c->name = $c->Field->name;
+                        }
+                        elseif($c->Field->description_area_flag == 1){
+                            $c->position = 'details_page';
+                            $c->name = $c->Field->name;
+                        }
+                        else{
+                            $c->position = 'none';
+                            $c->name = $c->Field->name;
+                        }
+                        unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                        return $c;
+                    });
+    
+                    if($a->sellerinformation_id == 0){
+                        $a->seller = 'admin';
+                    }
+                    else{
+                        $a->seller = 'user';
+                    }
+    
+                    $a->SellerInformation;
+    
+                    unset($a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                    return $a;
                 });
+    
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Ad details',
+                    'code'      => 200,
+                    'ads'       => $ads,
+                ], 200);
 
-                if($a->sellerinformation_id == 0){
-                    $a->seller = 'admin';
-                }
-                else{
-                    $a->seller = 'user';
-                }
+            }
 
-                $a->SellerInformation;
-
-                unset($a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
-                return $a;
-            });
-
-            return response()->json([
-                'status'    => 'success',
-                'message'   => 'Ad details',
-                'code'      => 200,
-                'ads'       => $ads,
-            ], 200);
+            else{
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Not allow select country',
+                    'code'      => 200,
+                    'ads'       => '',
+                ], 200);
+            }
+           
 
         }
         catch (\Exception $e) {

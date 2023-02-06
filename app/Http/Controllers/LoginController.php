@@ -165,10 +165,10 @@ class LoginController extends Controller
 
     public function dashboard(){
 
-        $inActiveAd = Ads::where('status', Status::INACTIVE)
+        $inActiveAd = Ads::where('status', Status::INACTIVE)->where('delete_status', '!=', Status::DELETE)
         ->count();
 
-        $activeAd = Ads::where('status', Status::ACTIVE)
+        $activeAd = Ads::where('status', Status::ACTIVE)->where('delete_status', '!=', Status::DELETE)
         ->count();
 
         $user = User::where('type', UserType::USER)
@@ -222,7 +222,7 @@ class LoginController extends Controller
 
     public function userIndex(){
 
-        $user = User::where('status', Status::ACTIVE)
+        $user = User::where('status', Status::ACTIVE)->where('delete_status','!=', Status::DELETE)
         ->where('type', UserType::USER)
         ->orderBy('created_at', 'desc')
         ->paginate(10);
@@ -286,6 +286,18 @@ class LoginController extends Controller
 
         session()->flash('success', 'User details has been changed');
         return redirect()->route('user.index');
+    }
+
+    public function userDelete($id){
+
+        User::where('id', $id)
+        ->update([
+            'delete_status'     => Status::DELETE,
+        ]);
+
+        session()->flash('success', 'User has been deleted');
+        return redirect()->route('user.index');
+
     }
 
     public function userAds($type, $id){

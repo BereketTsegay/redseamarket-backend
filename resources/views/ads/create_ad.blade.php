@@ -170,6 +170,23 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="Description">View Countries</label>
+
+                                        <select class="form-control js-example-basic-multiple select2" name="viewCountries[]" multiple="multiple" required>
+                                             @foreach ($country as $data)
+                                             <option value="{{$data->id}}">{{$data->name}}</option>
+                                             @endforeach
+                                          </select>
+                                          
+                                         
+                                         
+                                    </div>
+                                </div>
+
+                            
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4">
@@ -280,6 +297,7 @@
 @push('script')
 
     <script>
+           // $('#Country_select2').select2();
 
         $('.slug').keyup(function() {
             $('#canonical_name').val(getSlug($(this).val()));
@@ -1037,7 +1055,7 @@
     </script>
 
     {{-- Location picker --}}
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEysollDCaGfbiPxh-VBvv31u2msCwa1c&libraries=places&callback=initialize" async defer></script>
         
     <script>
         function initialize() {

@@ -1196,26 +1196,26 @@ class DashboardController extends Controller
                    
                     $categoryDefault->with(['Ads' => function($b) use($request, $city){
                         $b->where('status', Status::ACTIVE)
-                        ->whereIn('id', $countryAds)
-                        ->where(function($q) use($request, $city){
-                            $q->orwhere('city_id', $request->city)
-                            ->orwhere(function($a) use($city){
-                                $a->where('city_id', 0)
-                                ->where('state_id', $city->state_id);
-                            });
-                        });
-                    }])
-                    ->whereHas('Ads', function($b) use($request, $city){
-                        $b->where('status', Status::ACTIVE)
-                        ->where('id', $countryAds)
-                        ->where(function($q) use($request, $city){
-                            $q->orwhere('city_id', $request->city)
-                            ->orwhere(function($a) use($city){
-                                $a->where('city_id', 0)
-                                ->where('state_id', $city->state_id);
-                            });
-                        });
-                    });
+                        ->whereIn('id', $countryAds);
+                        // ->where(function($q) use($request, $city){
+                        //     $q->orwhere('city_id', $request->city)
+                        //     ->orwhere(function($a) use($city){
+                        //         $a->where('city_id', 0)
+                        //         ->where('state_id', $city->state_id);
+                        //     });
+                        // });
+                    }]);
+                    // ->whereHas('Ads', function($b) use($request, $city){
+                    //     $b->where('status', Status::ACTIVE)
+                    //     ->where('id', $countryAds)
+                    //     ->where(function($q) use($request, $city){
+                    //         $q->orwhere('city_id', $request->city)
+                    //         ->orwhere(function($a) use($city){
+                    //             $a->where('city_id', 0)
+                    //             ->where('state_id', $city->state_id);
+                    //         });
+                    //     });
+                    // });
                 }
 
                 $categoryDefault = $categoryDefault->get()->map(function($a){

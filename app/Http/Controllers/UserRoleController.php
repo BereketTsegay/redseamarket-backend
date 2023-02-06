@@ -29,7 +29,7 @@ class UserRoleController extends Controller
     public function store(Request $request){
 
         $request->validate([
-            'name'          => 'required',
+            'name'          => 'required|unique:roles,name',
             'description'   => 'required',
         ]);
 
@@ -59,17 +59,20 @@ class UserRoleController extends Controller
     }
 
     public function update(Request $request){
-
+    // return $request;
         $request->validate([
             'name'          => 'required',
             'description'   => 'required',
         ]);
 
-        Roles::where('id', $request->id)
-        ->update([
-            'name'          => $request->name,
-            'description'   => $request->description,
-        ]);
+        $data=Roles::find($request->id);
+        $data->name=$request->name;
+        $data->description=$request->description;
+        $data->update();
+        // ->update([
+        //     'name'          => $request->name,
+        //     'description'   => $request->description,
+        // ]);
 
         session()->flash('success', 'Role has been updated');
         return redirect()->route('role.index');

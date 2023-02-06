@@ -7,7 +7,7 @@
             
             <a href="{{ route('subcategory.create') }}"><button type="button" class="btn btn-primary float-end">Create Subcategory</button></a>
             
-            <h1 class="mt-4">Subcategories</h1>
+            <h1 class="mt-4">Subcategory</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active">Subcategory</li>
@@ -72,7 +72,7 @@
           {{-- </button> --}}
             </div>
             <div class="modal-body">
-                Are you sure, do you want to delete?
+                Do you want to delete?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

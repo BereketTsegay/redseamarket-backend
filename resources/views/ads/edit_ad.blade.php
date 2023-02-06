@@ -164,6 +164,19 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="Description">View Countries</label>
+
+                                        <select class="form-control js-example-basic-multiple select2" name="viewCountries[]" multiple="multiple" required>
+                                             @foreach ($country as $data)
+                                             <option value="{{$data->id}}" @if(in_array($data->id,$viewCountries)) selected @endif>{{$data->name}}</option>
+                                             @endforeach
+                                        </select>
+
+                                    </div>
+                                </div>
+
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4">
@@ -253,8 +266,8 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <input type="hidden" name="address_latitude" value="{{ old('address_latitude') ?? 0 }}" id="address-latitude">
-                                    <input type="hidden" name="address_longitude" value="{{ old('address_longitude') ?? 0  }}" id="address-longitude">
+                                    <input type="hidden" name="address_latitude" value="{{ $ad->latitude ? $ad->latitude : old('address_latitude') }}" id="address-latitude">
+                                    <input type="hidden" name="address_longitude" value="{{ $ad->longitude ? $ad->latitude : old('address_longitude')  }}" id="address-longitude">
                                 </div>
                                 <div class="my-4" id="address-map-container" style="width:100%;height:400px; ">
                                     <div style="width: 100%; height: 100%" id="address-map"></div>
@@ -954,9 +967,12 @@
     </script>
 
     {{-- Location picker --}}
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEysollDCaGfbiPxh-VBvv31u2msCwa1c&libraries=places&callback=initialize" async defer></script>
         
     <script>
+
+       
+
         function initialize() {
 
             $('#address-input').on('keyup keypress', function(e) {
@@ -974,11 +990,12 @@
 
                 const input = locationInputs[i];
                 const fieldKey = input.id.replace("-input", "");
+               // console.log(fieldKey);
                 const isEdit = document.getElementById(fieldKey + "-latitude").value != '' && document.getElementById(fieldKey + "-longitude").value != '';
 
                 const latitude = parseFloat(document.getElementById(fieldKey + "-latitude").value) || 23.4241;
                 const longitude = parseFloat(document.getElementById(fieldKey + "-longitude").value) || 53.8478;
-
+       
                 const map = new google.maps.Map(document.getElementById(fieldKey + '-map'), {
                     center: {lat: latitude, lng: longitude},
                     zoom: 13

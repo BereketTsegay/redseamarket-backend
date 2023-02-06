@@ -31,7 +31,7 @@
                                         <label for="Description">Description</label>
                                         <textarea name="description" class="form-control" id="editDescription" cols="30" rows="3" placeholder="Description">{{ $role->description }}</textarea>
                                     </div>
-                                    <input type="hidden" name="id" id="editId">
+                                    <input type="hidden" name="id" id="editId" value="{{ $role->id }}">
                                     <div class="form-group my-2">
                                         <input type="checkbox" name="status" {{ $role->status == 1 ? 'checked' : '' }}>
                                         <label for="status">Status</label>

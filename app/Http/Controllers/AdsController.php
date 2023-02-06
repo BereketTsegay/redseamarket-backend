@@ -25,6 +25,7 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AdsCountry;
 
 class AdsController extends Controller
 {
@@ -64,7 +65,7 @@ class AdsController extends Controller
     }
 
     public function store(Request $request){
-        
+       // return $request;
         $request->validate([
             'category'          => 'required|numeric',
             // 'title'             => 'required',
@@ -74,7 +75,7 @@ class AdsController extends Controller
             'canonical_name'    => 'required',
             'country'           => 'required|numeric',
             // 'city'              => 'required|numeric',
-            // 'description'       => 'required',
+             'viewCountries'       => 'required',
             'seller_name'       => 'required',
             'Phone'             => 'required|numeric',
             'email'             => 'required|email',
@@ -229,6 +230,15 @@ class AdsController extends Controller
             }
         }
 
+
+        if($request->viewCountries){
+            foreach($request->viewCountries as $country){
+                $ads_countryMap=new AdsCountry();
+                $ads_countryMap->ads_id=$ad->id;
+                $ads_countryMap->country_id=$country;
+                $ads_countryMap->save();
+            }
+        }
         if($request->category == 1){
 
             $motor                      = new MotorCustomeValues();
@@ -513,7 +523,7 @@ class AdsController extends Controller
 
         $ad = Ads::where('id', $id)
         ->first();
-
+        
         $category = Category::where('delete_status', '!=', Status::DELETE)
         ->where('status', Status::ACTIVE)
         ->get();
@@ -521,11 +531,14 @@ class AdsController extends Controller
         $country = Country::orderBy('name')
         ->get();
 
-        return view('ads.edit_ad', compact('ad', 'category', 'country'));
+        $viewCountries=AdsCountry::where('ads_id',$id)->get()->pluck('country_id')->toArray();
+      // return $ad;
+
+        return view('ads.edit_ad', compact('ad', 'category', 'country','viewCountries'));
     }
 
     public function update(Request $request, $id){
-        
+        return $request;
         $request->validate([
             'category'          => 'required|numeric',
             // 'title'             => 'required',
@@ -657,6 +670,18 @@ class AdsController extends Controller
             'status'            => $status,
         ]);
         $ad=Ads::find($id);
+
+            
+        AdsCountry::where('ads_id',$id)->delete();
+        if($request->viewCountries){
+            foreach($request->viewCountries as $country){
+                $ads_countryMap=new AdsCountry();
+                $ads_countryMap->ads_id=$id;
+                $ads_countryMap->country_id=$request->viewCountries;
+                $ads_countryMap->save();
+            }
+        }
+
         if($ad->featured_flag==1)
         {
             if($ad->Payment){
