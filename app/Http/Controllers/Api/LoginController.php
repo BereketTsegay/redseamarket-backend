@@ -41,7 +41,11 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)
         ->where('type', UserType::USER)
         ->where('status', Status::ACTIVE)
+        ->where('delete_status','!=', Status::DELETE)
         ->first();
+
+        // $block= User::where('email', $request->email)->where('delete_status','!=', Status::DELETE)->first();
+
 
         if(!$user){
 
@@ -51,6 +55,14 @@ class LoginController extends Controller
                 'message'   => 'Invalid email or password',
             ], 200);
         }
+
+        // if($block){
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'code'      => 400,
+        //         'message'   => 'Sorry you are blocked',
+        //     ], 200);
+        // }
 
         if(!Hash::check($request->password, $user->password)){
             

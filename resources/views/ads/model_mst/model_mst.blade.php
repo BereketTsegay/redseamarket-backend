@@ -5,12 +5,12 @@
     <main>
         <div class="container-fluid px-4">
             
-            <a href="{{ route('model_mst.create') }}"><button type="button" class="btn btn-primary float-end">Create ModelMaster</button></a>
+            <a href="{{ route('model_mst.create') }}"><button type="button" class="btn btn-primary float-end">Create Model Master</button></a>
             
-            <h2 class="mt-4">ModelMasters</h2>
+            <h2 class="mt-4">Model Masters</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">ModelMaster</li>
+                <li class="breadcrumb-item active">Model Master</li>
             </ol>
             
             <div class="card mb-4">

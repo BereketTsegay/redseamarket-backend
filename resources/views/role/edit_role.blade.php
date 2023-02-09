@@ -26,6 +26,9 @@
                                     <div class="form-group my-2">
                                         <label for="Name">Name</label>
                                         <input type="text" value="{{ $role->name }}" name="name" class="form-control" id="editName" placeholder="Name">
+                                        @error('name')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Description">Description</label>

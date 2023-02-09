@@ -5,11 +5,11 @@
     <main>
         <div class="container-fluid px-4">
 
-            <h1 class="mt-4">MakeMaster Details</h1>
+            <h1 class="mt-4">Make Master Details</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('make_mst.index') }}">MakeMaster</a></li>
-                <li class="breadcrumb-item active">MakeMaster Details</li>
+                <li class="breadcrumb-item"><a href="{{ route('make_mst.index') }}">Make Master</a></li>
+                <li class="breadcrumb-item active">Make Master Details</li>
             </ol>
             
             <div class="card mb-4">

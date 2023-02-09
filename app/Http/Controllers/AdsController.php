@@ -538,7 +538,7 @@ class AdsController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $request;
+     //   return $request;
         $request->validate([
             'category'          => 'required|numeric',
             // 'title'             => 'required',
@@ -672,12 +672,13 @@ class AdsController extends Controller
         $ad=Ads::find($id);
 
             
-        AdsCountry::where('ads_id',$id)->delete();
         if($request->viewCountries){
+            AdsCountry::where('ads_id',$id)->delete();
+
             foreach($request->viewCountries as $country){
                 $ads_countryMap=new AdsCountry();
                 $ads_countryMap->ads_id=$id;
-                $ads_countryMap->country_id=$request->viewCountries;
+                $ads_countryMap->country_id=$country;
                 $ads_countryMap->save();
             }
         }
@@ -689,7 +690,7 @@ class AdsController extends Controller
         $payment->amount        = $request->price;
         $payment->name          = $request->seller_name;
         $payment->email         = $request->email;
-        $payment->phone         = $request->Phone;
+        $payment->phone         = $request->phone;
         $payment->payment_type  = 1; // 1 for Payment through account or direct
         $payment->status        = 'Admin Entry';
         $payment->update();
@@ -700,7 +701,7 @@ class AdsController extends Controller
         $payment->ads_id        = $ad->id;
         $payment->name          = $request->seller_name;
         $payment->email         = $request->email;
-        $payment->phone         = $request->Phone;
+        $payment->phone         = $request->phone;
         $payment->payment_type  = 1; // 1 for Payment through account or direct
         $payment->status        = 'Admin Entry';
         $payment->save();
@@ -1164,6 +1165,7 @@ class AdsController extends Controller
     public function adRequestIndex(){
 
         $adsRequest = Ads::where('status', Status::REQUEST)
+        ->where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->paginate(10);
 

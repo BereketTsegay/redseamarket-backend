@@ -178,8 +178,9 @@ class CategoryController extends Controller
 
             $count = Category::where('display_flag', Status::ACTIVE)->where('delete_status', '!=', Status::DELETE)
             ->count();
-            
-            if($count <= 7){
+            $category = Category::where('id', $id)
+            ->first();
+            if($count <= 7 || $category->display_flag==1){
                 $display_flag = Status::ACTIVE;
             }
             else{

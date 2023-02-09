@@ -755,7 +755,7 @@ class AdsController extends Controller
 
     public function getCategoryMotors(Request $request){
 
-        try{
+        // try{
 
             // $rules = [
             //     'latitude'      => 'required|numeric',
@@ -789,12 +789,12 @@ class AdsController extends Controller
                         $a->selectRaw('*, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                         ->having('distance', '<=', $radius);
-                    })
-                    ->withCount(['Ads' => function($a) use($latitude, $longitude, $radius){
-                        $a->selectRaw('*, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                        ->having('distance', '<=', $radius);
-                    }]);
+                    });
+                    // ->withCount(['Ads' => function($a) use($latitude, $longitude, $radius){
+                    //     $a->selectRaw('*, (6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    //     ->having('distance', '<=', $radius);
+                    // }]);
                 }])
                 ->first();
             }
@@ -808,10 +808,10 @@ class AdsController extends Controller
                         ->whereHas('Ads', function($a) use($request,$countryAds){
                             $a->whereIn('id', $countryAds)
                             ->where('city_id', $request->city);
-                        })
-                        ->withCount(['Ads' => function($a) use($request,$countryAds){
-                            $a->whereIn('id', $countryAds);
-                        }]);
+                        });
+                        // ->withCount(['Ads' => function($a) use($request,$countryAds){
+                        //     $a->whereIn('id', $countryAds);
+                        // }]);
                     }])
                     ->first();
                 }
@@ -823,10 +823,10 @@ class AdsController extends Controller
                         $a->where('parent_id', 0)
                         ->whereHas('Ads', function($a) use($request,$countryAds){
                             $a->whereIn('country_id', $countryAds);
-                        })
-                        ->withCount(['Ads' => function($a) use($request,$countryAds){
-                            $a->where('id', $countryAds);
-                        }]);
+                        });
+                        // ->withCount(['Ads' => function($a) use($request,$countryAds){
+                        //     $a->where('id', $countryAds);
+                        // }]);
                     }])
                     ->first();
                 }
@@ -836,10 +836,10 @@ class AdsController extends Controller
                         $a->where('parent_id', 0)
                         ->whereHas('Ads', function($a) use($request){
                             $a->where('city_id', $request->city);
-                        })
-                        ->withCount(['Ads' => function($a) use($request){
-                            $a->where('country_id', $request->city);
-                        }]);
+                        });
+                        // ->withCount(['Ads' => function($a) use($request){
+                        //     $a->where('country_id', $request->city);
+                        // }]);
                     }])
                     ->first();
                 }
@@ -956,15 +956,15 @@ class AdsController extends Controller
                     'testimonial'   => $testimonial,
                 ],
             ], 200);
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
     
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function getProperty(Request $request){
@@ -4540,6 +4540,30 @@ class AdsController extends Controller
         return response()->json([
             'status'    => 'success',
             'message'   => 'Image deleted successfully',
+            'code'      => 200
+        ], 200);
+      }else
+      {
+        return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Something went wrong '.$e->getMessage(),
+                    'code'      => 400,
+                ], 200);
+      }
+    }
+
+    public function removeAd(Request $request)
+    {
+      $id=$request->ads_id;
+      $data=Ads::find($id);
+      if($data)
+      {
+
+        $data->delete_status=1;
+        $data->update();
+        return response()->json([
+            'status'    => 'success',
+            'message'   => 'deleted successfully',
             'code'      => 200
         ], 200);
       }else

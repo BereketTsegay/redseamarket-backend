@@ -31,6 +31,7 @@ use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 use App\Models\AdsCountry;
+use App\Models\Category;
 
 class OtherController extends Controller
 {
@@ -1612,4 +1613,15 @@ class OtherController extends Controller
         }
     }
 
+    public function allCategories(){
+
+        $data = Category::where('delete_status', '!=', Status::DELETE)
+        ->where('status', Status::ACTIVE)
+        ->with('Subcategory')->withCount('Subcategory')->orderBy('subcategory_count','DESC')->get();
+
+        return response()->json([
+            'status'    => 'success',
+            'data'   => $data,
+        ], 200);
+    }
 }

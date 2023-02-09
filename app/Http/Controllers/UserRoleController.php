@@ -61,7 +61,7 @@ class UserRoleController extends Controller
     public function update(Request $request){
     // return $request;
         $request->validate([
-            'name'          => 'required',
+            'name'          => 'required|unique:roles,name,'.$request->id,
             'description'   => 'required',
         ]);
 

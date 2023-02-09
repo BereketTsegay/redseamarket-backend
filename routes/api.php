@@ -74,6 +74,7 @@ Route::post('/search/autocomplete', [\App\Http\Controllers\Api\AdsController::cl
 Route::post('/contactus/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'contactEnquiry']);
 
 Route::post('/menu/list', [\App\Http\Controllers\Api\DashboardController::class, 'MenuList']);
+Route::get('/category/list', [\App\Http\Controllers\Api\OtherController::class, 'allCategories']);
 
 Route::middleware('auth:api')->group( function () {
    
@@ -93,5 +94,7 @@ Route::middleware('auth:api')->group( function () {
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
     Route::post('/customer/ads/remove_image', [\App\Http\Controllers\Api\AdsController::class, 'removeImage']);
+    Route::post('/customer/ad/delete', [\App\Http\Controllers\Api\AdsController::class, 'removeAd']);
+
 });
 

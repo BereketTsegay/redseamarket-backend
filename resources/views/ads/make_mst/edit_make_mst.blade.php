@@ -6,11 +6,11 @@
         <div class="container-fluid px-4">
             
             
-            <h2 class="mt-4">Edit MakeMaster</h2>
+            <h2 class="mt-4">Edit Make Master</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('make_mst.index') }}">MakeMaster</a></li>
-                <li class="breadcrumb-item active">Edit MakeMaster</li>
+                <li class="breadcrumb-item"><a href="{{ route('make_mst.index') }}">Make Master</a></li>
+                <li class="breadcrumb-item active">Edit Make aster</li>
             </ol>
             
             <div class="card mb-4">
@@ -21,7 +21,7 @@
                                 <div class="col-md-6">
                                     @csrf
                                     <div class="form-group my-2">
-                                        <label for="Name">MakeMaster Name</label>
+                                        <label for="Name">Make Master Name</label>
                                         <input type="text" name="make_mst_name" value="{{ $make_mst->name }}" class="slug form-control @error('make_mst_name') is-invalid @enderror" placeholder="MakeMaster Name" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('make_mst_name')
