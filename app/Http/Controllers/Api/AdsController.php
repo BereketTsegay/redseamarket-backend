@@ -4558,6 +4558,7 @@ class AdsController extends Controller
       $data=Ads::find($id);
       if($data)
       {
+        AdsCountry::where('ads_id',$request->ads_id)->delete();
 
         $data->delete_status=1;
         $data->update();

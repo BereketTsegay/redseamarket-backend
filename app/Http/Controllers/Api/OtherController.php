@@ -226,7 +226,8 @@ class OtherController extends Controller
     }
 
     public function searchAds(Request $request){
-        
+        $search_key = $request->search_key ?? null;
+        $country=$request->country ?? 1;
         try{
             
             // $rules = [
@@ -251,12 +252,24 @@ class OtherController extends Controller
             $longitude = $request->longitude;
 
             $radius = 100; // Km
+            $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
+             //return $countryAds;
 
             $myAds = Ads::where('status', Status::ACTIVE)
+            ->with(['Category','Subcategory'])
             // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
             //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             // ->having('distance', '<=', $radius)
-            ->where('delete_status', '!=', Status::DELETE);
+            ->whereIn('id', $countryAds)
+            ->where('delete_status', '!=', Status::DELETE)
+            ->where('title', 'like', '%'.$search_key.'%')
+            ->where('canonical_name', 'like', '%'.$search_key.'%');
+            // ->where('description', 'like', '%'.$search_key.'%');
+
+            // ->where('category.name','like', '%'.$search_key.'%');
+            // ->where('category.name','like', '%'.$search_key.'%');
+           //   return $myAds->get();
+
 
             if($latitude != 0 && $longitude != 0){
 
@@ -265,11 +278,11 @@ class OtherController extends Controller
                 ->having('distance', '<=', $radius);
             }
 
-            if(isset($request->country)){
-                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
-
-                $myAds->whereIn('id', $countryAds);
-            }
+            // if(isset($request->country)){
+            //     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+            //   //  return $countryAds;
+            //     $myAds->whereIn('id', $countryAds);
+            // }
 
             if(isset($request->city)){
 
@@ -285,11 +298,22 @@ class OtherController extends Controller
             }
 
             if($request->search_key){
-                $myAds->where(function($a) use($request){
-                    $a->orwhere('title', 'like', '%'.$request->search_key.'%')
-                    ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
-                });
+
+                // $myAds->where(function($a) use($request){
+                //     $a->where('title', 'like', '%'.$request->search_key.'%')
+                //     ->where('canonical_name', 'like', '%'.$request->search_key.'%');
+                // })
+                
+                // $myAds->WhereHas('Category', function ($query) use ($request) {
+                //     $query->where('name', 'like','%'.$request->search_key.'%');
+                // })
+                // ->WhereHas('Subcategory', function ($query) use ($request) {
+                //     $query->where('name', 'like','%'.$request->search_key.'%');
+                // });
+               
             }
+
+         
 
             if(isset($request->seller)){
 
@@ -308,7 +332,8 @@ class OtherController extends Controller
             if($request->priceTo){
                 $myAds->where('price', '<=', $request->priceTo);
             }
-
+            $myAds->orderBy('created_at','DESC');
+           
             $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                 return $paginatedInstance->getCollection()->transform(function($a){
 
