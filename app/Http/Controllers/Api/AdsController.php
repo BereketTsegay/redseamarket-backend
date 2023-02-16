@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AdsCountry;
+use App\Models\JobDocument;
 
 
 class AdsController extends Controller
@@ -4587,4 +4588,14 @@ class AdsController extends Controller
         ], 200);
 
     }
+
+    public function jobRequestDocs(Request $request){
+        $datas=JobDocument::where('ads_id',$request->ads_id)->get();
+      //  return $datas;
+      return response()->json([
+        'status'    => 'success',
+        'data'   => $datas,           
+    ], 200);
+    }
+
 }

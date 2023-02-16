@@ -31,6 +31,8 @@ Route::post('/customer/get/master/dependency', [\App\Http\Controllers\Api\AdsCon
 Route::post('/customer/get/category', [\App\Http\Controllers\Api\DashboardController::class, 'getCategory']);
 Route::post('/customer/get/subcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubcategory']);
 Route::post('/customer/get/subsubcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubSubcategory']);
+Route::post('/customer/get/job/subsubcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getjobSubSubcategory']);
+
 
 Route::post('/customer/ad/view', [\App\Http\Controllers\Api\AdsController::class, 'adView']);
 Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::class, 'searchAds']);
@@ -93,6 +95,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/change/password', [\App\Http\Controllers\Api\LoginController::class, 'changePassword']);
     Route::post('/customer/uploade/payment_slip', [\App\Http\Controllers\Api\OtherController::class, 'paymentDocument']);
     Route::post('/customer/get/ad-selCountry', [\App\Http\Controllers\Api\AdsController::class, 'adsCountries']);
+    Route::post('/customer/get/ad-cvdocuments', [\App\Http\Controllers\Api\AdsController::class, 'jobRequestDocs']);
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
     Route::post('/customer/ads/remove_image', [\App\Http\Controllers\Api\AdsController::class, 'removeImage']);

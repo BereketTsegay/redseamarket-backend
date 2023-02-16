@@ -1409,7 +1409,58 @@ class DashboardController extends Controller
             }
 
             $subcategory = Subcategory::where(function($a) use($request){
-                $a->orwhere('category_id', $request->category);
+                $a->where('parent_id', $request->category);
+                // ->orwhere('id', $request->category);
+            })
+            ->where('status', Status::ACTIVE)
+            ->where('delete_status', '!=', Status::DELETE)
+            // ->orderBy('sort_order')
+            // ->with('SubcategoryChild')
+            ->get();
+            // ->map(function($a){
+                
+            //     unset($a->delete_status, $a->status, $a->category_id, $a->type, $a->sort_order, $a->percentage);
+            //     return $a;
+            // });
+
+            return response()->json([
+                'status'            => 'success',
+                'message'           => 'Category found',
+                'code'              => 200,
+                'subcategory'       => $subcategory,
+            ], 200);
+        }
+        catch (\Exception $e) {
+            
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getjobSubSubcategory(Request $request){
+        
+        try{
+
+            $rules = [
+                'category'   => 'required|numeric',
+            ];
+    
+            $validate = Validator::make($request->all(), $rules);
+    
+            if($validate->fails()){
+    
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 200,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $subcategory = Subcategory::where(function($a) use($request){
+                $a->where('category_id', $request->category);
                 // ->orwhere('id', $request->category);
             })
             ->where('status', Status::ACTIVE)

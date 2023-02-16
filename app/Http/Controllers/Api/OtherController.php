@@ -103,9 +103,9 @@ class OtherController extends Controller
 
     public function myAds(){
 
-        // try{
+        try{
 
-            $myAds = tap(Ads::where('customer_id', Auth::user()->id)
+            $myAds = tap(Ads::with('Category')->where('customer_id', Auth::user()->id)
             ->orderBy('created_at', 'desc')
             ->where('status', '!=', Status::REJECTED)
             ->where('delete_status', '!=', Status::DELETE)
@@ -161,13 +161,13 @@ class OtherController extends Controller
                 'ads'       => $myAds,
             ], 200);
 
-        // }
-        // catch(\Exception $e){
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function favouriteStoreOrRemove(Request $request){
