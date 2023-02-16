@@ -198,6 +198,8 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/ad/edit/{id}', [App\Http\Controllers\AdsController::class, 'edit'])->name('ads.edit');
         Route::post('/ad/update/{id}', [App\Http\Controllers\AdsController::class, 'update'])->name('ads.update');
         Route::post('/ad/delete/{id}', [App\Http\Controllers\AdsController::class, 'delete'])->name('ads.delete');
+        Route::get('/ad/job/request/list', [App\Http\Controllers\AdsController::class, 'jobRequest'])->name('job.index');
+        Route::get('/ad/job/request/documents/{id}', [App\Http\Controllers\AdsController::class, 'jobRequestDocs'])->name('job.documents');
 
         Route::get('/get/custom/field', [App\Http\Controllers\AdsController::class, 'getCustomField'])->name('ad.get.custom_field');
         Route::get('/get/master/dependency', [App\Http\Controllers\AdsController::class, 'getMasterDependency'])->name('ad.get.master.dependency');

@@ -32,7 +32,7 @@ use Stripe\PaymentIntent;
 use Stripe\Stripe;
 use App\Models\AdsCountry;
 use App\Models\Category;
-
+use App\Models\JobDocument;
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -438,6 +438,7 @@ class OtherController extends Controller
 
             $myAds = Ads::where('status', Status::ACTIVE)
             ->where('category_id', 1)
+            
             // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
             //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             // ->having('distance', '<=', $radius)
@@ -459,7 +460,9 @@ class OtherController extends Controller
             }
 
             if($request->country){
-                $myAds->where('country_id', $request->country);
+                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                //return $countryAds;
+                $myAds->whereIn('id', $countryAds);
             }
 
             if($request->condition){
@@ -556,6 +559,155 @@ class OtherController extends Controller
                 }
             }
 
+            $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
+                return $paginatedInstance->getCollection()->transform(function($a){
+
+                    $a->image = array_filter([
+                        $a->Image->map(function($q) use($a){
+                            $q->image;
+                            unset($q->ads_id, $q->img_flag);
+                            return $q;
+                        }),
+                    ]);
+
+                    $a->country_name = $a->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                    $a->state_name = $a->State->name;
+                    $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                    $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                    if($a->category_id == 1){
+                        $a->MotoreValue;
+                        $a->make = $a->MotoreValue->Make->name;
+                        $a->model = $a->MotoreValue->Model->name;
+                        $a->MotorFeatures;
+    
+                        unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                    }
+                    elseif($a->category_id == 2){
+                        $a->PropertyRend;
+                    }
+                    elseif($a->category_id ==3){
+                        $a->PropertySale;
+                    }
+
+                    if($a->city_id != 0){
+                        $a->city_name = $a->City->name;
+                    }
+                    else{
+                        $a->city_name = $a->State->name;
+                    }
+                    $a->CustomValue->map(function($c){
+                        
+                        if($c->Field->description_area_flag == 0){
+                            $c->position = 'top';
+                            $c->name = $c->Field->name;
+                        }
+                        elseif($c->Field->description_area_flag == 1){
+                            $c->position = 'details_page';
+                            $c->name = $c->Field->name;
+                        }
+                        else{
+                            $c->position = 'none';
+                            $c->name = $c->Field->name;
+                        }
+                        unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                        return $c;
+                    });
+
+                    unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                    return $a;
+                });
+            });
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Showing result',
+                'code'      => 200,
+                'ads'       => $myAds,
+            ], 200);
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function getJobList(Request $request){
+        $search_key = $request->search_key ?? null;
+
+        try{
+
+         //   $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+            // $rules = [
+            //     'latitude'      => 'required',
+            //     'longitude'     => 'required',
+            // ];
+    
+            // $validate = Validator::make($request->all(), $rules);
+    
+            // if($validate->fails()){
+    
+            //     return response()->json([
+            //         'status'    => 'error',
+            //         'message'   => 'Invalid request',
+            //         'code'      => 400,
+            //         'errors'    => $validate->errors(),
+            //     ], 200);
+            // }
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 100; // Km
+
+            $myAds = Ads::where('status', Status::ACTIVE)
+            ->where('category_id',$request->category)
+            // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+            //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            // ->having('distance', '<=', $radius)
+            ->where('title', 'like', '%'.$search_key.'%')
+            // ->where('canonical_name', 'like', '%'.$search_key.'%')
+            ->where('delete_status', '!=', Status::DELETE);
+
+            if($latitude != 0 && $longitude != 0){
+
+                // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius);
+            }
+
+            if($request->city){
+                $myAds->where('city_id', $request->city);
+            }
+
+            if($request->subcategory){
+                $myAds->where('subcategory_id', $request->subcategory);
+            }
+
+            if($request->country){
+                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                //return $countryAds;
+                $myAds->whereIn('id', $countryAds);
+            }
+
+
+            // if($request->priceFrom && $request->priceTo){
+            //     $myAds->where('price', '>=', $request->priceFrom)
+            //     ->where('price', '<=', $request->priceTo);
+            // }
+            // elseif($request->priceFrom){
+            //     $myAds->where('price', '>=', $request->priceFrom);
+            // }
+            // elseif($request->priceTo){
+            //     $myAds->where('price', '<=', $request->priceTo);;
+            // }
+
+           
             $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                 return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -1514,6 +1666,53 @@ class OtherController extends Controller
             'message'   => 'Document has been uploaded',
         ], 200);
     }
+
+    public function cvDocument(Request $request){
+      //  dd($request->all());
+        $rules = [
+            'id'                => 'required|numeric',
+            'cv_doc'      => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+    
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        if($request->cv_doc){
+
+            $document_part = explode(";base64,", $request->cv_doc);
+            $doc_type_aux = explode("application/", $document_part[0]);
+            $doc_type = $doc_type_aux[1];
+            $doc_base64 = base64_decode($document_part[1]);
+
+            $document = uniqid() . '.' .$doc_type;
+
+            Storage::put('public/document/'.$document, $doc_base64);
+
+            $document = 'storage/document/'.$document;
+
+        }
+
+       $doc= new JobDocument();
+       $doc->ads_id = $request->id;
+       $doc->document = $document;
+       $doc->save();
+
+        return response()->json([
+            'status'    => 'success',
+            'code'      => '200',
+            'message'   => 'Document has been uploaded',
+        ], 200);
+    }
+
 
     public function privacyPolicy(){
 

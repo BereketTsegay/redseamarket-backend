@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\AdsCountry;
+use App\Models\JobDocument;
 
 class AdsController extends Controller
 {
@@ -556,28 +557,28 @@ class AdsController extends Controller
             'image.*'           => 'mimes:png,jpg,jpeg',
         ]);
 
-        if($request->category == 1){
-            $request->validate([
-                'make'              => 'required|numeric',
-                'model'             => 'required|numeric',
-                // 'varient'           => 'required|numeric',
-                'registered_year'   => 'required|numeric',
-                'fuel'              => 'required',
-                'transmission'      => 'required',
-                'condition'         => 'required',
-                'mileage'           => 'required|numeric',
-                'features.*'        => 'required',
-            ]);
-        }
+        // if($request->category == 1){
+        //     $request->validate([
+        //         'make'              => 'required|numeric',
+        //         'model'             => 'required|numeric',
+        //         // 'varient'           => 'required|numeric',
+        //         'registered_year'   => 'required|numeric',
+        //         'fuel'              => 'required',
+        //         'transmission'      => 'required',
+        //         'condition'         => 'required',
+        //         'mileage'           => 'required|numeric',
+        //         'features.*'        => 'required',
+        //     ]);
+        // }
 
-        elseif($request->category == 2 || $request->category == 3){
-            $request->validate([
-                'size'      => 'required|numeric',
-                'rooms'     => 'required|numeric',
-                'furnished' => 'required',
-                'building'  => 'required',
-            ]);
-        }
+        // elseif($request->category == 2 || $request->category == 3){
+        //     $request->validate([
+        //         'size'      => 'required|numeric',
+        //         'rooms'     => 'required|numeric',
+        //         'furnished' => 'required',
+        //         'building'  => 'required',
+        //     ]);
+        // }
 
 
         $ad = Ads::where('id', $id)
@@ -707,71 +708,71 @@ class AdsController extends Controller
         $payment->save();
              }
          }
-        if($request->category == 1){
+        // if($request->category == 1){
 
-            MotorCustomeValues::where('ads_id', $id)
-            ->update([
-                'make_id'           => $request->make,
-                'model_id'          => $request->model,
-                // 'varient_id'        => $request->varient,
-                'registration_year' => $request->registered_year,
-                'fuel_type'         => $request->fuel,
-                'transmission'      => $request->transmission,
-                'condition'         => $request->condition,
-                'milage'            => $request->mileage,
-            ]);
+        //     MotorCustomeValues::where('ads_id', $id)
+        //     ->update([
+        //         'make_id'           => $request->make,
+        //         'model_id'          => $request->model,
+        //         // 'varient_id'        => $request->varient,
+        //         'registration_year' => $request->registered_year,
+        //         'fuel_type'         => $request->fuel,
+        //         'transmission'      => $request->transmission,
+        //         'condition'         => $request->condition,
+        //         'milage'            => $request->mileage,
+        //     ]);
 
-            MotorFeatures::where('ads_id', $id)
-            ->delete();
+        //     MotorFeatures::where('ads_id', $id)
+        //     ->delete();
 
-            if($request->features){
+        //     if($request->features){
 
-                foreach($request->features as $feature1){
+        //         foreach($request->features as $feature1){
                     
-                    $feature            = new MotorFeatures();
-                    $feature->ads_id    = $ad->id;
-                    $feature->value     = $feature1;
-                    $feature->save();
-                }
-            }
-        }
-        elseif($request->category == 2){
+        //             $feature            = new MotorFeatures();
+        //             $feature->ads_id    = $ad->id;
+        //             $feature->value     = $feature1;
+        //             $feature->save();
+        //         }
+        //     }
+        // }
+        // elseif($request->category == 2){
 
-            if($request->parking == 'Parking'){
-                $parking = 1;
-            }
-            else{
-                $parking = 0;
-            }
+        //     if($request->parking == 'Parking'){
+        //         $parking = 1;
+        //     }
+        //     else{
+        //         $parking = 0;
+        //     }
 
-            PropertyRendCustomeValues::where('ads_id', $id)
-            ->update([
-                'size'          => $request->size,
-                'room'          => $request->rooms,
-                'furnished'     => $request->furnished,
-                'building_type' => $request->building,
-                'parking'       => $parking,
-            ]);
-        }
-        elseif($request->category == 3){
+        //     PropertyRendCustomeValues::where('ads_id', $id)
+        //     ->update([
+        //         'size'          => $request->size,
+        //         'room'          => $request->rooms,
+        //         'furnished'     => $request->furnished,
+        //         'building_type' => $request->building,
+        //         'parking'       => $parking,
+        //     ]);
+        // }
+        // elseif($request->category == 3){
 
-            if($request->parking == 'Parking'){
-                $parking = 1;
-            }
-            else{
-                $parking = 0;
-            }
+        //     if($request->parking == 'Parking'){
+        //         $parking = 1;
+        //     }
+        //     else{
+        //         $parking = 0;
+        //     }
 
-            PropertySaleCustomeValues::where('ads_id', $id)
-            ->update([
-                'size'          => $request->size,
-                'room'          => $request->rooms,
-                'furnished'     => $request->furnished,
-                'building_type' => $request->building,
-                'parking'       => $parking,
-            ]);
+        //     PropertySaleCustomeValues::where('ads_id', $id)
+        //     ->update([
+        //         'size'          => $request->size,
+        //         'room'          => $request->rooms,
+        //         'furnished'     => $request->furnished,
+        //         'building_type' => $request->building,
+        //         'parking'       => $parking,
+        //     ]);
 
-        }
+        // }
 
         if($request->hasFile('image')){
 
@@ -1278,6 +1279,17 @@ class AdsController extends Controller
         ->update([
             'status'    => 1,
         ]);
+    }
+
+    public function jobRequest(){
+        $datas=JobDocument::select('ads_id')->groupBy('ads_id')->get();
+      //  return $datas;
+        return view('ads.jobs.job_enqiry_list',compact('datas'));
+    }
+    public function jobRequestDocs($id){
+        $datas=JobDocument::where('ads_id',$id)->get();
+      //  return $datas;
+        return view('ads.jobs.document_list',compact('datas'));
     }
 
 

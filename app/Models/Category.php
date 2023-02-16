@@ -14,7 +14,7 @@ class Category extends Model
 
         return $this->hasMany(Subcategory::class, 'category_id', 'id')
         ->where('delete_status', '!=', Status::DELETE)
-        ->where('parent_id',0)
+        // ->where('parent_id',0)
         ->where('status', Status::ACTIVE);
     }
 

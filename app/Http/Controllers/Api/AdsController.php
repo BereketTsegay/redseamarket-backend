@@ -63,7 +63,7 @@ class AdsController extends Controller
             if($country_ad){
 
                 $ads = Ads::where('id', $request->ads_id)
-                ->get()
+                ->with('Category')->get()
                 ->map(function($a){
     
                     if($a->category_id == 1){
@@ -4168,7 +4168,7 @@ class AdsController extends Controller
     public function updateData(Request $request)
     {
   
-        // try{
+        try{
             
             $rules = [
                 'category'          => 'required|numeric',
@@ -4520,16 +4520,16 @@ class AdsController extends Controller
                 'ad_id'     => $ads->id,
             ], 200);
 
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
 
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong '.$e->getMessage(),
-        //         'code'      => 400,
-        //     ], 200);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong '.$e->getMessage(),
+                'code'      => 400,
+            ], 200);
+        }
 
     }
     public function removeImage(Request $request)

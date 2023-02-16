@@ -233,6 +233,14 @@
                                         @endif
                                         </a>
 
+                                        <a class="nav-link {{ request()->is('job/request/*') ? 'active' : '' }}" href="{{ route('job.index') }}">Job Request
+                                            {{-- @if ($adsInaciveCount != 0)
+                                            <div class="badge badge-primary">{{$adsInaciveCount}}</div>
+                                        @endif --}}
+                                        </a>
+
+
+
                                     </nav>
                                 </div>
 

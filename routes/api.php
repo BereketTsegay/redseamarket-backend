@@ -38,6 +38,7 @@ Route::post('/customer/get/category/ads', [\App\Http\Controllers\Api\OtherContro
 Route::post('/customer/get/subcategory/ads', [\App\Http\Controllers\Api\OtherController::class, 'getSubcategoryAds']);
 Route::post('/customer/get/property/filter', [\App\Http\Controllers\Api\AdsController::class, 'getPropertyFilter']);
 Route::post('/customer/get/motor/list', [\App\Http\Controllers\Api\OtherController::class, 'getMototList']);
+Route::post('/customer/get/job/list', [\App\Http\Controllers\Api\OtherController::class, 'getJobList']);
 
 Route::post('/customer/get/country', [\App\Http\Controllers\Api\OtherController::class,'getCountry']);
 Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::class, 'getState']);
@@ -75,6 +76,7 @@ Route::post('/contactus/enquiry', [\App\Http\Controllers\Api\OtherController::cl
 
 Route::post('/menu/list', [\App\Http\Controllers\Api\DashboardController::class, 'MenuList']);
 Route::get('/category/list', [\App\Http\Controllers\Api\OtherController::class, 'allCategories']);
+Route::post('/uploade/cv_document', [\App\Http\Controllers\Api\OtherController::class, 'cvDocument']);
 
 Route::middleware('auth:api')->group( function () {
    

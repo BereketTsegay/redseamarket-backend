@@ -1409,7 +1409,7 @@ class DashboardController extends Controller
             }
 
             $subcategory = Subcategory::where(function($a) use($request){
-                $a->orwhere('parent_id', $request->category);
+                $a->orwhere('category_id', $request->category);
                 // ->orwhere('id', $request->category);
             })
             ->where('status', Status::ACTIVE)
