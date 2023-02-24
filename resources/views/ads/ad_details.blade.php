@@ -57,7 +57,9 @@
                                     @if($ad->Payment) 
                                         <div class="row">
                                             <p class="col-md-6">Payment Document :</p>
+                                            @if($ad->Payment->document)
                                             <p class="col-md-6"><a href="{{ asset($ad->Payment->document ? $ad->Payment->document : '/no-document') }}" target='blank'>View Document</a></p>
+                                            @endif
                                         </div>
                                     @endif
                                 @endif

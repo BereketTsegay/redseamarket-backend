@@ -33,6 +33,8 @@ use Stripe\Stripe;
 use App\Models\AdsCountry;
 use App\Models\Category;
 use App\Models\JobDocument;
+use AmrShawky\LaravelCurrency\Facade\Currency;
+
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -639,7 +641,7 @@ class OtherController extends Controller
     public function getJobList(Request $request){
         $search_key = $request->search_key ?? null;
 
-        try{
+        // try{
 
          //   $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
@@ -665,15 +667,15 @@ class OtherController extends Controller
 
             $radius = 100; // Km
 
-            $myAds = Ads::where('status', Status::ACTIVE)
-            ->where('category_id',$request->category)
-            // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-            //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-            // ->having('distance', '<=', $radius)
-            ->where('title', 'like', '%'.$search_key.'%')
-            // ->where('canonical_name', 'like', '%'.$search_key.'%')
-            ->where('delete_status', '!=', Status::DELETE);
-
+            $myAds = Ads::select('ads.*')
+            ->join('ads_countries','ads_countries.ads_id','ads.id')
+            ->where('ads.status', Status::ACTIVE)
+            ->where('ads.category_id',$request->category)
+           
+            ->where('ads.title', 'like', '%'.$search_key.'%')
+          
+            ->where('ads.delete_status', '!=', Status::DELETE);
+           // return $myAds->get();
             if($latitude != 0 && $longitude != 0){
 
                 // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
@@ -682,30 +684,35 @@ class OtherController extends Controller
             }
 
             if($request->city){
-                $myAds->where('city_id', $request->city);
+                $myAds->where('ads.city_id', $request->city);
             }
 
             if($request->subcategory){
-                $myAds->where('subcategory_id', $request->subcategory);
+                $myAds->where('ads.subcategory_id', $request->subcategory);
             }
 
             if($request->country){
                 $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
                 //return $countryAds;
-                $myAds->whereIn('id', $countryAds);
+                $myAds->whereIn('ads.id', $countryAds);
             }
 
 
-            // if($request->priceFrom && $request->priceTo){
-            //     $myAds->where('price', '>=', $request->priceFrom)
-            //     ->where('price', '<=', $request->priceTo);
-            // }
-            // elseif($request->priceFrom){
-            //     $myAds->where('price', '>=', $request->priceFrom);
-            // }
-            // elseif($request->priceTo){
-            //     $myAds->where('price', '<=', $request->priceTo);;
-            // }
+            if($request->priceFrom && $request->priceTo){
+                $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
+                // $myAds->where('price', '>=', $request->priceFrom)
+                // ->where('price', '<=', $request->priceTo);
+            }
+            elseif($request->priceFrom){
+                $myAds->where('ads_countries.price', '>=', $request->priceFrom);
+            }
+            elseif($request->priceTo){
+                $myAds->where('ads_countries.price', '<=', $request->priceTo);
+            }
+
+            $myAds->groupBy('ads.id');
+            $myAds->orderBy('ads.id','DESC');
+
 
            
             $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
@@ -776,13 +783,13 @@ class OtherController extends Controller
                 'ads'       => $myAds,
             ], 200);
 
-        }
-        catch(\Exception $e){
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        // }
+        // catch(\Exception $e){
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function getCountry(){
@@ -1553,10 +1560,17 @@ class OtherController extends Controller
             $currency = CurrencyCode::where('country_id', $request->country)
             ->first();
 
+           $usdval= Currency::convert()
+                ->from($currency->currency_code)
+                ->to('USD')
+                ->round(3)
+                ->get();
+
             return response()->json([
                 'status'    => 'success',
                 'code'      => '200',
                 'currency'  => $currency,
+                'usdval'    => $usdval,
             ]);
         }
         catch(\Exception $e){
@@ -1823,7 +1837,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'code'      => 200,
-                'message'   => 'Your enquiry has been plced.',
+                'message'   => 'Your enquiry has been successfully placed.',
             ], 200);
 
         }

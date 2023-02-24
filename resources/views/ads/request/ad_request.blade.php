@@ -74,7 +74,9 @@
                                                 <a href="{{ route('ad_request.details', $row->id) }}" ><button class="btn btn-secondary my-1">View</button></a>
                                                 <form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form>
                                                 <button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger my-1" data-toggle="modal" data-target="#rejectModal">Reject</button>
+                                                @if ($row->featured_flag && $row->Payment->payment_type != 0)
                                                 <button type="button" onclick="refundAd({{$row->id}})" class="btn btn-success my-1" data-toggle="modal" data-target="#refundModal">Refund</button>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>
@@ -208,7 +210,7 @@
                     <div class="container">
                         <div class="form-group">
                             <label for="Reason">Reason</label>
-                            <select name="reason" class="form-control" id="Reason">
+                            <select name="reason" class="form-control" id="Reason" required>
                                 <option value="">Select</option>
                                 @foreach ($reason as $row3)
                                     <option value="{{ $row3->id }}">{{ $row3->reson }}</option>
@@ -245,7 +247,7 @@
                     <div class="container">
                         <div class="form-group">
                             <label for="Reason">Reason</label>
-                            <select name="reason" class="form-control" id="Reason">
+                            <select name="reason" class="form-control" id="Reason" required>
                                 <option value="">Select</option>
                                 @foreach ($refund as $row4)
                                     <option value="{{ $row4->id }}">{{ $row4->reson }}</option>

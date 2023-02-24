@@ -101,12 +101,12 @@ Route::group(['middleware' => ['revalidate']], function () {
 
          // VarientMst
 
-         Route::get('/varient_mst', [App\Http\Controllers\VarientMstController::class, 'index'])->name('varient_mst.index');
-         Route::get('/varient_mst/create', [App\Http\Controllers\VarientMstController::class, 'create'])->name('varient_mst.create');
-         Route::post('/varient_mst/store', [App\Http\Controllers\VarientMstController::class, 'store'])->name('varient_mst.store');
-         Route::get('/varient_mst/edit/{id}', [App\Http\Controllers\VarientMstController::class, 'edit'])->name('varient_mst.edit');
-         Route::post('/varient_mst/update/{id}', [App\Http\Controllers\VarientMstController::class, 'update'])->name('varient_mst.update');
-         Route::post('/varient_mst/delete/{id}', [App\Http\Controllers\VarientMstController::class, 'delete'])->name('varient_mst.delete');
+         Route::get('/variant_mst', [App\Http\Controllers\VarientMstController::class, 'index'])->name('varient_mst.index');
+         Route::get('/variant_mst/create', [App\Http\Controllers\VarientMstController::class, 'create'])->name('varient_mst.create');
+         Route::post('/variant_mst/store', [App\Http\Controllers\VarientMstController::class, 'store'])->name('varient_mst.store');
+         Route::get('/variant_mst/edit/{id}', [App\Http\Controllers\VarientMstController::class, 'edit'])->name('varient_mst.edit');
+         Route::post('/variant_mst/update/{id}', [App\Http\Controllers\VarientMstController::class, 'update'])->name('varient_mst.update');
+         Route::post('/variant_mst/delete/{id}', [App\Http\Controllers\VarientMstController::class, 'delete'])->name('varient_mst.delete');
        
          //country
          Route::get('/countries', [App\Http\Controllers\ConntryController::class, 'CountryIndex'])->name('countries.index');

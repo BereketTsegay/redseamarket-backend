@@ -50,7 +50,7 @@ class ModelMstController extends Controller
         $model_mst->status           = $status;
         $model_mst->save();
 
-        session()->flash('success', 'ModelMst has been created');
+        session()->flash('success', 'Model has been created');
         return redirect()->route('model_mst.index');
 
     }
@@ -92,7 +92,7 @@ class ModelMstController extends Controller
             'status'            => $status
         ]);
 
-        session()->flash('success', 'ModelMst has been updated');
+        session()->flash('success', 'Model as been updated');
         return redirect()->route('model_mst.index');
     }
 
@@ -100,7 +100,7 @@ class ModelMstController extends Controller
 
         ModelMst::where('id', $id)->delete();
 
-        session()->flash('success', 'ModelMst has been deleted');
+        session()->flash('success', 'Model has been deleted');
         return redirect()->route('model_mst.index');
     }
 

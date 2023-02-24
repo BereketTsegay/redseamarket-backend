@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AdsCountry;
 use App\Models\JobDocument;
-
+use App\Models\CurrencyCode;
 
 class AdsController extends Controller
 {
@@ -291,9 +291,11 @@ class AdsController extends Controller
 
             if($request->adsCountry){
                 foreach($request->adsCountry as $country){
+                    $currency=CurrencyCode::where('country_id',$country['id'])->first();
                     $ads_countryMap=new AdsCountry();
                     $ads_countryMap->ads_id=$ad->id;
                     $ads_countryMap->country_id=$country['id'];
+                    $ads_countryMap->price=$request->price*$currency->value;
                     $ads_countryMap->save();
                 }
             }
@@ -4278,12 +4280,15 @@ class AdsController extends Controller
             $ads->notification_status   = 0;
             $ads->update();
                
-            AdsCountry::where('ads_id',$request->id)->delete();
             if($request->adsCountry){
+                AdsCountry::where('ads_id',$request->id)->delete();
+
                 foreach($request->adsCountry as $country){
+                    $currency=CurrencyCode::where('country_id',$country['id'])->first();
                     $ads_countryMap=new AdsCountry();
-                    $ads_countryMap->ads_id=$request->id;
+                    $ads_countryMap->ads_id=$ads->id;
                     $ads_countryMap->country_id=$country['id'];
+                    $ads_countryMap->price=$request->price*$currency->value;
                     $ads_countryMap->save();
                 }
             }

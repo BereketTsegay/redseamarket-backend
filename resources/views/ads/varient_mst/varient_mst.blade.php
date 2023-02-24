@@ -7,16 +7,16 @@
             
             <a href="{{ route('varient_mst.create') }}"><button type="button" class="btn btn-primary float-end">Create Varient Master</button></a>
             
-            <h2 class="mt-4">Varient Masters</h2>
+            <h2 class="mt-4">Variant Masters</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Varient Master</li>
+                <li class="breadcrumb-item active">Variant Master</li>
             </ol>
             
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    VarientMaster
+                    Variant Master
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple" class="table table-striped table-bordered">

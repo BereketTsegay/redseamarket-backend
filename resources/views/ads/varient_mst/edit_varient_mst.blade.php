@@ -6,11 +6,11 @@
         <div class="container-fluid px-4">
             
             
-            <h2 class="mt-4">Edit Varient Master</h2>
+            <h2 class="mt-4">Edit Variant Master</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('varient_mst.index') }}">Varient Master</a></li>
-                <li class="breadcrumb-item active">Edit Varient Master</li>
+                <li class="breadcrumb-item"><a href="{{ route('varient_mst.index') }}">Variant Master</a></li>
+                <li class="breadcrumb-item active">Edit Variant Master</li>
             </ol>
             
             <div class="card mb-4">
@@ -21,7 +21,7 @@
                                 <div class="col-md-6">
                                     @csrf
                                     <div class="form-group my-2">
-                                        <label for="Name">VarientMaster Name</label>
+                                        <label for="Name">Variant Master Name</label>
                                         <input type="text" name="varient_mst_name" value="{{ $varient_mst->name }}" class="slug form-control @error('varient_mst_name') is-invalid @enderror" placeholder="VarientMaster Name" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('varient_mst_name')

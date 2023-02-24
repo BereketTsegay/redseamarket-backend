@@ -43,7 +43,7 @@
                                 </div>
                                 @if ($contact->replay)
                                     <div class="row">
-                                        <p class="col-md-6">Replay :</p>
+                                        <p class="col-md-6">Reply :</p>
                                         <p class="col-md-6">{{ $contact->replay }}</p>
                                     </div>
                                 @endif
