@@ -70,6 +70,23 @@
                                         </div>
                                     </div> --}}
                                     <div class="form-group my-2">
+                                        <label for="Type">Type</label>
+                                        <select name="type" id="Type" class="form-control @error('type') is-invalid @enderror" autocomplete="off">
+                                            @if ($category->type == 0)
+                                                <option selected value="0">Flat</option>
+                                                <option value="1">Percentage</option>
+                                            @else
+                                                <option value="0">Flat</option>
+                                                <option selected value="1">Percentage</option>
+                                            @endif
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            @error('type')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group my-2">
                                         <label for="SortOrder">Sort Order</label>
                                         <input type="text" name="sort_order" value="{{ $category->sort_order }}" class="form-control @error('sort_order') is-invalid @enderror" placeholder="Sort Order" autocomplete="off">
                                         <div class="invalid-feedback">
@@ -123,6 +140,15 @@
                                             @enderror
                                         </div>
                                     </div> --}}
+                                    <div class="form-group my-2">
+                                        <label for="SortOrder">Value</label>
+                                        <input type="text" name="value" value="{{ $category->percentage }}" class="form-control @error('value') is-invalid @enderror" placeholder="Value" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('value')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="form-group my-2">
                                         <label for="Image">Image</label>
                                         <input type="file" name="image" autocomplete="off" class="form-control @error('image') is-invalid @enderror">

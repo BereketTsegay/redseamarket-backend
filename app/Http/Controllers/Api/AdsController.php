@@ -314,13 +314,26 @@ class AdsController extends Controller
 
                     $subcategory = Subcategory::where('id', $request->subcategory)
                     ->first();
-
-                    if($subcategory->type == 0){
-                        $amount = $subcategory->percentage;
+                    if($subcategory){
+                        if($subcategory->type == 0){
+                            $amount = $subcategory->percentage;
+                        }
+                        else{
+                            $amount = ($request->price * ($subcategory->percentage / 100));
+                        }
                     }
                     else{
-                        $amount = ($request->price * ($subcategory->percentage / 100));
+
+                        $category = Category::where('id', $request->category)
+                        ->first();
+                        if($category->type == 0){
+                            $amount = $category->percentage;
+                        }
+                        else{
+                            $amount = ($request->price * ($category->percentage / 100));
+                        }
                     }
+                   
 
                     $payment                = new Payment();
                     $payment->payment_id    = $ad->id . uniqid();
