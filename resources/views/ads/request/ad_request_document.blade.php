@@ -23,33 +23,46 @@
                                     {{-- @foreach ($ad->Image as $row) 
                                         <a href="{{ asset($row->image) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($row->image) }}" alt="image"></a>
                                     @endforeach --}}
-
                                     @if($ad->Payment)
-                                    <a href="{{ asset($ad->Payment->document) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($ad->Payment->document) }}" alt="image"></a>
 
+                                    @foreach($ad->PaymentDoc as $payment)
+                                    @if($payment->document)
+
+                                    @if(Str::afterLast($payment->document, '.') == 'pdf') 
+                                    <a href="{{ asset($payment->document) }}" target="blank" class="col-md-4">View Document</a>
+                                    @else
+                                    <a href="{{ asset($payment->document) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($payment->document) }}" alt="image"></a>
                                     @endif
+                                     
+                                    @endif
+                                   @endforeach
+                                  @endif
                                 </div>
 
                                 <div class="row mt-4">
-                                    <p class="col-md-6">Transaction Id :  {{$ad->Payment->payment_id}}</p>
-                                    <p class="col-md-6">Amount(USD) :  {{$ad->Payment->amount}}</p>
+                                    <p class="col-md-6">Transaction Id :   @foreach($ad->PaymentDoc as $ad_payment) {{$loop->iteration}} - {{$ad_payment->payment_id}}  @endforeach</p>
+                                    <p class="col-md-3">Amount(USD) :  {{$ad->Payment->amount}}</p>
+                                    <p class="col-md-3">Wallet(USD) :  {{$ad->User->wallet}}</p>
+                                    
                                 </div>
                                 <form action="{{route('user.add.wallet')}}" method="POST">
                                     @csrf
                                     <input type="hidden" value="{{$ad->User->id}}" name="user_id">
                                 <div class="row mt-4">
-                                    
+                                    <input type="hidden" name="wallet" value="{{$ad->User->wallet}}">
+                                    <input type="hidden" name="ad_id" value="{{$ad->id}}">
+
+                                                                            
                                         <div class="form-group col-md-4">
-                                            <label for="category">Ad Paid Amount(USD)</label>
-                                            <input class="form-control" type="text" value="{{$ad->Payment->amount}}" readonly>
+                                            <label for="category">Wallet Amount Add(+)</label>
+                                            <input class="form-control" type="text" name="addwallet" value="0" >
                                         </div>
-                                     
                                         <div class="form-group col-md-4">
-                                            <label for="category">Wallet Amount(USD)</label>
-                                            <input class="form-control" type="text" name="wallet" value="{{$ad->User->wallet}}" >
+                                            <label for="category">Wallet Amount Cut(-)</label>
+                                            <input class="form-control" type="text" name="cutwallet" value="0" >
                                         </div>
                                         <div class="form-group col-md-4 my-4">
-                                            <button type="submit" class="btn btn-success">Submit</button>
+                                            <button type="submit" class="btn btn-success">Verify/Accept</button>
                                         </div>
 
                                 </div>

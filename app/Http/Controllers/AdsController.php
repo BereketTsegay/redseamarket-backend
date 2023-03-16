@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\AdsCountry;
 use App\Models\JobDocument;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AdsReject;
 
 class AdsController extends Controller
 {
@@ -1207,10 +1209,15 @@ class AdsController extends Controller
                // return $request;
 
         $user = User::find($request->user_id);
-        $user->wallet=$request->wallet;
+        $user->wallet=$request->wallet+$request->addwallet-$request->cutwallet;
         $user->update();
-        session()->flash('success', 'Wallet Updated Successfully!');
-        return back();
+        Ads::where('id', $request->ad_id)
+        ->update([
+            'status'    => Status::ACTIVE,
+            'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
+        ]);
+        session()->flash('success', 'Ad has been activated');
+        return redirect()->route('ads.index');
     }
 
     public function adRequestDocument($id){
@@ -1221,13 +1228,21 @@ class AdsController extends Controller
     }
 
     public function adReject(Request $request){
-
-        Ads::where('id', $request->ad_id)
+      //  return $request;
+       Ads::where('id', $request->ad_id)
         ->update([
             'status'            => Status::REJECTED,
             'reject_reason_id'  => $request->reason,
         ]);
+        $ad=Ads::find($request->ad_id);
+        $reason=RejectReason::find($request->reason);
+        $data = [
+            'name'  => $ad->title,
+            'reason'   => $reason->reson,
+            'description'=>$request->description,
+        ];
 
+        Mail::to($ad->User->email)->send(new AdsReject($data));
         session()->flash('success', 'Ad has been rejected');
         return redirect()->route('ad_request.index');
     }

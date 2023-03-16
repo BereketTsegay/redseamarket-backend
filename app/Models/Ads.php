@@ -78,6 +78,9 @@ class Ads extends Model
     public function Payment() {
         return $this->hasOne(Payment::class, 'ads_id', 'id');
     }
+    public function PaymentDoc() {
+        return $this->hasMany(Payment::class, 'ads_id', 'id')->where('parent','!=',0);
+    }
 
     public function Currency(){
         return $this->hasOne(CurrencyCode::class, 'id', 'country_id');

@@ -87,6 +87,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/ads/store', [\App\Http\Controllers\Api\AdsController::class, 'adStore']);
     Route::post('/customer/ads/update', [\App\Http\Controllers\Api\AdsController::class, 'updateData']);
     Route::post('/customer/view/profile', [\App\Http\Controllers\Api\LoginController::class, 'myProfile']);
+    Route::post('/customer/view/transactions', [\App\Http\Controllers\Api\OtherController::class, 'Transactions']);
     Route::post('/customer/update/profile', [\App\Http\Controllers\Api\LoginController::class, 'updateProfile']);
     Route::post('/customer/ad/favourite', [\App\Http\Controllers\Api\AdsController::class, 'favouriteGet']);
     Route::post('/customer/view/favourite', [\App\Http\Controllers\Api\OtherController::class, 'favouriteView']);

@@ -72,7 +72,9 @@
                                                     <a class="mb-2" href="{{ route('ad_request.document', $row->id) }}" ><button class="btn btn-warning">View Document</button></a>
                                                 @endif
                                                 <a href="{{ route('ad_request.details', $row->id) }}" ><button class="btn btn-secondary my-1">View</button></a>
+                                                @if ($row->featured_flag && $row->Payment->payment_type == 0)
                                                 <form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form>
+                                                @endif
                                                 <button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger my-1" data-toggle="modal" data-target="#rejectModal">Reject</button>
                                                 @if ($row->featured_flag && $row->Payment->payment_type != 0)
                                                 <button type="button" onclick="refundAd({{$row->id}})" class="btn btn-success my-1" data-toggle="modal" data-target="#refundModal">Refund</button>
@@ -217,7 +219,15 @@
                                 @endforeach
                             </select>
                         </div>
-                        <input type="hidden" name="ad_id" value="" id="rejectAd_id">
+                        <div class="form-group">
+                            <label for="description">Note</label>
+                            <textarea name="description" class="form-control" id="description"  rows="3"></textarea>
+                        </div>
+                        <input type="hidden" name="ad_id" id="rejectAd_id">
+                        <div class="form-group" id="reson_description">
+                            
+                        </div>
+                        {{-- <input type="hidden" name="ad_id" value="" id="rejectAd_id"> --}}
                         <div class="form-group" id="reson_description">
                             
                         </div>
@@ -254,10 +264,8 @@
                                 @endforeach
                             </select>
                         </div>
-                        <input type="hidden" name="ad_id" id="refundAd_id">
-                        <div class="form-group" id="reson_description">
-                            
-                        </div>
+
+                       
                     </div>
                 </div>
                 <div class="modal-footer">

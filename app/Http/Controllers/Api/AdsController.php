@@ -1305,6 +1305,8 @@ class AdsController extends Controller
 
             $subcategory = Subcategory::where('id', $request->subcategory_id)
             ->first();
+
+            if($subcategory){
             
             if($request->city && $request->property_type && $request->price && $request->room){
 
@@ -1332,8 +1334,8 @@ class AdsController extends Controller
                     }
 
                     if(isset($request->country)){
-                    
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1412,7 +1414,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1493,7 +1496,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1570,7 +1574,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1650,7 +1655,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1727,7 +1733,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
                     
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1807,7 +1814,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1884,7 +1892,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -1965,7 +1974,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2043,7 +2053,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2120,7 +2131,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2195,7 +2207,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2274,7 +2287,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2350,7 +2364,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2425,7 +2440,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2499,7 +2515,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2580,7 +2597,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2658,7 +2676,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2737,7 +2756,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2814,7 +2834,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2894,7 +2915,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -2970,7 +2992,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3049,7 +3072,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3125,7 +3149,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3205,7 +3230,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3281,7 +3307,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3357,7 +3384,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3431,7 +3459,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3510,7 +3539,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3586,7 +3616,8 @@ class AdsController extends Controller
 
                     if(isset($request->country)){
                     
-                        $myAds->where('country_id', $request->country);
+                        $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                        $myAds->whereIn('ads.id', $countryAds);
                     }
 
                     $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3660,7 +3691,8 @@ class AdsController extends Controller
 
                 if(isset($request->country)){
                     
-                    $myAds->where('country_id', $request->country);
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                    $myAds->whereIn('ads.id', $countryAds);
                 }
 
                 $myAds = tap($myAds->paginate(10), function($paginatedInstance){
@@ -3713,6 +3745,83 @@ class AdsController extends Controller
                         return $a;
                     });
                 });
+            }
+        }
+
+            else{
+
+
+                $myAds = Ads::where('status', Status::ACTIVE)
+                // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius)
+                ->where('delete_status', '!=', Status::DELETE)
+                ->where('category_id', $request->category_id);
+                if($latitude != 0 && $longitude != 0){
+
+                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    ->having('distance', '<=', $radius);
+                }
+
+                if(isset($request->country)){
+                    
+                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                    $myAds->whereIn('ads.id', $countryAds);
+                }
+
+                $myAds = tap($myAds->paginate(10), function($paginatedInstance){
+                    return $paginatedInstance->getCollection()->transform(function($a){
+
+                        $a->image = array_filter([
+                            $a->Image->map(function($q) use($a){
+                                $q->image;
+                                unset($q->ads_id, $q->img_flag);
+                                return $q;
+                            }),
+                        ]);
+
+                        $a->subcategory_name = $a->Subcategory->name;
+                            
+
+                        $a->country_name = $a->Country->name;
+                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                        $a->state_name = $a->State->name;
+                        if($a->city_id != 0){
+                            $a->city_name = $a->City->name;
+                        }
+                        else{
+                            $a->city_name = $a->State->name;
+                        }
+
+                        if($a->category_id == 2){
+                            $a->PropertyRend;
+                        }
+                        elseif($a->category_id == 3){
+                            $a->PropertySale;
+                        }
+
+                        if($a->sellerinformation_id == 0){
+                            $a->seller = 'admin';
+                        }
+                        else{
+                            $a->seller = 'user';
+                            $a->phone_hide = $a->SellerInformation->phone_hide_flag;
+                            $a->seller_phone =  $a->SellerInformation->phone;
+                            $a->seller_email = $a->SellerInformation->email;
+
+                            unset($a->SellerInformation);
+                        }
+
+                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                        unset($a->Country, $a->City, $a->State, $a->Subcategory);
+                        return $a;
+                    });
+                });
+
+
             }
 
             return response()->json([

@@ -34,6 +34,7 @@ use App\Models\AdsCountry;
 use App\Models\Category;
 use App\Models\JobDocument;
 use AmrShawky\LaravelCurrency\Facade\Currency;
+use Illuminate\Support\Str;
 
 class OtherController extends Controller
 {
@@ -679,12 +680,9 @@ class OtherController extends Controller
             $myAds = Ads::select('ads.*')
             ->join('ads_countries','ads_countries.ads_id','ads.id')
             ->where('ads_countries.country_id',$request->country)
-            ->where('ads_countries.country_id',$request->country)
             ->where('ads.status', Status::ACTIVE)
             ->where('ads.category_id',$request->category)
-           
             ->where('ads.title', 'like', '%'.$search_key.'%')
-          
             ->where('ads.delete_status', '!=', Status::DELETE);
            // return $myAds->get();
             if($latitude != 0 && $longitude != 0){
@@ -710,15 +708,15 @@ class OtherController extends Controller
 
 
             if($request->priceFrom && $request->priceTo){
-                $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo])->where('ads_countries.country_id',$request->country);
+                $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
                 // $myAds->where('price', '>=', $request->priceFrom)
                 // ->where('price', '<=', $request->priceTo);
             }
             elseif($request->priceFrom){
-                $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
+                $myAds->where('ads_countries.price', '>=', $request->priceFrom);
             }
             elseif($request->priceTo){
-                $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
+                $myAds->where('ads_countries.price', '<=', $request->priceTo);
             }
 
           
@@ -1675,6 +1673,7 @@ class OtherController extends Controller
     }
 
     public function paymentDocument(Request $request){
+        // dd($request->payment_slip);
 
         $rules = [
             'id'                => 'required|numeric',
@@ -1695,12 +1694,24 @@ class OtherController extends Controller
         }
 
         if($request->payment_slip){
-
+            $file=$request->payment_slip;
             $document_part = explode(";base64,", $request->payment_slip);
-            $image_type_aux = explode("image/", $document_part[0]);
-            $image_type = $image_type_aux[1];
-            $image_base64 = base64_decode($document_part[1]);
+           
+          //  $image_type_aux = explode("image/", $document_part[0]);
+            $ext=Str::afterLast($document_part[0], '/');
+          // return $document_part;
+      
 
+            if($ext=='pdf'){
+                $image_type_aux = explode("application/", $document_part[0]);
+            }
+            else{
+                $image_type_aux = explode("image/", $document_part[0]);
+            }
+            $image_type = $image_type_aux[1];
+            
+            $image_base64 = base64_decode($document_part[1]);
+           // return $image_base64;
             $document = uniqid() . '.' .$image_type;
 
             Storage::put('public/document/'.$document, $image_base64);
@@ -1709,11 +1720,25 @@ class OtherController extends Controller
 
         }
 
-        Payment::where('ads_id', $request->id)
-        ->update([
-            'payment_id'    => $request->transaction_id,
-            'document'      => $document,
-        ]);
+        $parentpay=Payment::where('ads_id', $request->id)->where('parent',0)->first();
+
+        $payment=new Payment();
+        $payment->ads_id=$request->id;
+        $payment->payment_id=$request->transaction_id;
+        $payment->amount=$parentpay->amount;
+        $payment->name=$parentpay->name;
+        $payment->email=$parentpay->email;
+        $payment->phone=$parentpay->phone;
+        $payment->payment_type=$parentpay->payment_type;
+        $payment->status=$parentpay->status;
+        $payment->document=$document;
+        $payment->parent=$parentpay->id;
+        $payment->save();
+       
+        // ->update([
+        //     'payment_id'    => $request->transaction_id,
+        //     'document'      => $document,
+        // ]);
 
         return response()->json([
             'status'    => 'success',
@@ -1902,5 +1927,17 @@ class OtherController extends Controller
             'status'    => 'success',
             'data'   => $data,
         ], 200);
+    }
+
+    public function Transactions(Request $request){
+
+       $user_id=Auth::user()->id;
+       $ads=Ads::where('customer_id',$user_id)->get()->pluck('id');
+       $payments=Payment::whereIn('ads_id',$ads)->where('parent','!=',0)->with('Ad')->get();
+
+       return response()->json([
+        'status'    => 'success',
+        'data'   => $payments,
+    ], 200);
     }
 }
