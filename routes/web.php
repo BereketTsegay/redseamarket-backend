@@ -55,6 +55,12 @@ Route::group(['middleware' => ['revalidate']], function () {
 
         // });
 
+        // featured
+
+        Route::get('/featured', [App\Http\Controllers\FeaturedController::class, 'index'])->name('admin.featured');
+        Route::post('/featured/update', [App\Http\Controllers\FeaturedController::class, 'update'])->name('admin.featured.update');
+
+
         // Global
 
         Route::get('/global/state/get', [App\Http\Controllers\CategoryController::class, 'getState']);

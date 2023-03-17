@@ -80,6 +80,9 @@ Route::post('/menu/list', [\App\Http\Controllers\Api\DashboardController::class,
 Route::get('/category/list', [\App\Http\Controllers\Api\OtherController::class, 'allCategories']);
 Route::post('/uploade/cv_document', [\App\Http\Controllers\Api\OtherController::class, 'cvDocument']);
 
+
+Route::get('/featured', [\App\Http\Controllers\Api\AdsController::class, 'featured']);
+
 Route::middleware('auth:api')->group( function () {
    
     Route::post('/customer/loged/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'LogedDashboard']);

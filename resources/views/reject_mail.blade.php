@@ -1,71 +1,67 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ad Reject Alert</title>
 </head>
 <body>
-    <table cellpadding="0" cellspacing="0" border="0" id="backgroundTable" style="height:auto !important; margin:0; padding:0; width:100% !important; background-color:#ffffff; color:#222222;">
-        <tr>
-            <td>
-             <div id="tablewrap" style="width:100% !important; max-width:600px !important; text-align:center !important; margin-top:0 !important; margin-right: auto !important; margin-bottom:0 !important; margin-left: auto !important;">
-                  <table id="contenttable" width="600" align="center" cellpadding="0" cellspacing="0" border="0" style="background-color:#FFFFFF; text-align:center !important; margin-top:0 !important; margin-right: auto !important; margin-bottom:0 !important; margin-left: auto !important; border:none; width: 100% !important; max-width:600px !important;">
-                <tr>
-                    <td width="100%">
-                        <table bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0" width="100%">
-                            <tr>
-                                {{-- <td width="100%" bgcolor="#ffffff" style="text-align:center;"><a href="#"><img src="http://placekitten.com/600/250" alt="Main banner image and link" style="display:inline-block; max-width:100% !important; width:100% !important; height:auto !important;border-bottom-right-radius:8px;border-bottom-left-radius:8px;" border="0"></a>
-                                </td> --}}
-                            </tr>
-                       </table>
-                       <table bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="25" width="100%">
-                            <tr>
-                                <td width="100%" bgcolor="#ffffff" style="text-align:left;">
-                                    <p style="color:#222222; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:19px; margin-top:0; margin-bottom:20px; padding:0; font-weight:normal;">
-                                       Your ad ({{$data['name']}}) is Rejected                              
-                                    </p>
-                                     
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="100%" bgcolor="#ffffff" style="text-align:left;">
-                                    <p style="color:#222222; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:19px; margin-top:0; margin-bottom:20px; padding:0; font-weight:normal;">
-                                       Reason :   {{$data['reason']}} <br>
-                                       {{$data['description']}}
-                                                                  
-                                    </p>
-                                     
-                                </td>
-                            </tr>
-                       </table>
-                       {{-- <table bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0" width="100%">
-                            <tr>
-                              <td width="100%" bgcolor="#ffffff" style="text-align:center;"><a style="font-weight:bold; text-decoration:none;" href="#"><div style="display:block; max-width:100% !important; width:93% !important; height:auto !important;background-color:#2489B3;padding-top:15px;padding-right:15px;padding-bottom:15px;padding-left:15px;border-radius:8px;color:#ffffff;font-size:24px;font-family:Arial, Helvetica, sans-serif;">Call-To-Action Image or Text!</div></a></td>
-                            </tr>
-                       </table> --}}
-                       <table bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="25" width="100%">
-                            <tr>
-                                <td width="100%" bgcolor="#ffffff" style="text-align:left;">
-                                    <p style="color:#222222; font-family:Arial, Helvetica, sans-serif; font-size:11px; line-height:14px; margin-top:0; margin-bottom:15px; padding:0; font-weight:normal;">
-                                        Thank you <br>
-                                        Jamal al bahar general trading.
-                                        
-                                    </p>
-                                    {{-- <p style="color:#222222; font-family:Arial, Helvetica, sans-serif; font-size:11px; line-height:14px; margin-top:0; margin-bottom:15px; padding:0; font-weight:normal;">
-                                        Copyright 2013 Your Company. All Rights Reserved.<br>
-                                        If you no longer wish to receive emails from us, you may <a style="color:#2489B3; font-weight:normal; text-decoration:underline;" href="#">unsubscribe</a>.
-                                    </p> --}}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+<div>
+    <div style="background:#ffffff;padding:15px">
+        <center>
+            <div style="width:100%;max-width:500px;background:#ffffff;">
+                <br>
+                    <a href="#">
+                        <h3 style="font-size: 54px">Redsea Market</h3>
+                    </a>
             </div>
-            </td>
-        </tr>
-    </table>
+            <br>
+
+            <div style="width:100%;max-width:580px;background:#ffffff;height:auto;padding:10px 0 10px 0">
+                <hr style="border:dashed 1px #e1e1e1;max-width:100%">
+
+                <div style="width:100%;max-width:580px;background:#ffffff;height:auto;padding:0px 0 0px 0">
+                    <div style="font-family:'Lato',Helvetica,Arial,sans-serif;display:inline-block;margin:0px 0px 0 0;max-width:100%;width:100%;margin-right:0px">
+
+                        <div style="width:100%;max-width:580px;background:#ffffff;height:auto;padding:20px 0 0px 0">
+                            
+
+
+                            <div style="width:100%;max-width:580px;background:#ffffff;height:auto;padding:15px 0 0px 0">
+                                <div bgcolor="#f8f4e8" align="left"
+                                     style="padding:0px 0% 0px 0%;font-size:16px;line-height:25px;font-family:'Lato',Helvetica,Arial,sans-serif;color:#6c6e6e;font-weight:500"
+                                     class="m_-7788511936867687679padding-copy">
+                                     Your ad ({{$data['name']}}) is Rejected <br>
+                                     Reason :   {{$data['reason']}} <br>
+                                     {{$data['description']}}.
+
+                                </div>
+
+
+
+
+                                <div style="width:100%;max-width:580px;background:#ffffff;height:auto;padding:0px 0 10px 0">
+                                    <hr style="border:dashed 1px #e1e1e1;max-width:100%">
+                                </div>
+
+                                <div style="display:inline-block;text-align:center;color:#777777;margin:0px auto 26px auto;font-family:'Lato',Helvetica,Arial,sans-serif"
+                                     align="center">
+
+                                    <div style="font-size:12px;color:#777777;margin:12px auto 30px auto;font-family:'Lato',Helvetica,Arial,sans-serif">
+                                        <p style="font-size: 11px"><b>Note</b>:- Do not reply to this notification message,this message was auto-generated by the sender's security system.</p>
+
+                                        <p style="line-height:1;font-size:12px;margin:0 20px 30px 20px;padding:0 0 0 0;color:#777777;font-family:'Lato',Helvetica,Arial,sans-serif">
+                                            All Rights Reserved.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </center>
+    </div>
+
+</div>
 </body>
 </html>

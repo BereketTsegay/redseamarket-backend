@@ -14,8 +14,8 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-       
-        @stack('style')
+        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> --}}
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>        @stack('style')
         <style>
             /* Center the loader */
 #loader {
@@ -323,6 +323,7 @@
                             </a>
                             <div class="collapse {{ request()->is('*profile*') ? 'show' : '' }}" id="collapseSettings" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ route('admin.featured') }}">Featured</a>
                                     <a class="nav-link {{ request()->is('*profile*') ? 'active' : '' }}" href="{{ route('admin.profile') }}">Porfile</a>
                                     <a class="nav-link" href="#" onclick="changePassword()">Change Password</a>
                                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>

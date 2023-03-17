@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\AdsCountry;
 use App\Models\JobDocument;
 use App\Models\CurrencyCode;
-
+use App\Models\Featured;
 class AdsController extends Controller
 {
     public function adView(Request $request){
@@ -284,6 +284,8 @@ class AdsController extends Controller
             $ad->latitude              = $request->latitude;
             $ad->longitude             = $request->longitude;
             $ad->area                  = $request->area;
+            $ad->sub_area              = $request->sub_area;
+            $ad->sub_area2              = $request->sub_area2;
             $ad->status                = Status::REQUEST;
             $ad->notification_status   = 0;
             $ad->save();
@@ -4227,7 +4229,7 @@ class AdsController extends Controller
                 });
             }
 
-            $ads = $ads->get()->map(function($a){
+            $ads = $ads->get()->take(5)->map(function($a){
 
                 $a->images = count($a->Image) != 0 ? $a->Image[0]->image : '';
                 $a->currency = $a->Currency->currency_code;
@@ -4398,6 +4400,8 @@ class AdsController extends Controller
             $ads->latitude              = $request->latitude;
             $ads->longitude             = $request->longitude;
             $ads->area                  = $request->area;
+            $ads->sub_area                  = $request->sub_area;
+            $ads->sub_area2                  = $request->sub_area2;
             $ads->status                = Status::REQUEST;
             $ads->notification_status   = 0;
             $ads->update();
@@ -4723,6 +4727,14 @@ class AdsController extends Controller
         'status'    => 'success',
         'data'   => $datas,           
     ], 200);
+    }
+
+    public function featured(){
+        $data=Featured::first();
+        return response()->json([
+            'status'    => 'success',
+            'data'   => $data->featured,           
+        ], 200);
     }
 
 }

@@ -18,7 +18,10 @@
                         <div class="row">
                             
                             <div class="col-md-12">
-                                <h5 class="my-4">Image</h5>
+                               
+                                 <p class="my-4" style="text-align: right;font-size: 20px;">
+                                    <i class="fas fa-wallet"></i> ${{$ad->User->wallet}}</p>
+
                                 <div class="row">
                                     {{-- @foreach ($ad->Image as $row) 
                                         <a href="{{ asset($row->image) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($row->image) }}" alt="image"></a>
@@ -29,7 +32,7 @@
                                     @if($payment->document)
 
                                     @if(Str::afterLast($payment->document, '.') == 'pdf') 
-                                    <a href="{{ asset($payment->document) }}" target="blank" class="col-md-4">View Document</a>
+                                    <a href="{{ asset($payment->document) }}" target="blank" class="col-md-4">{{$loop->iteration}}-View Document</a>
                                     @else
                                     <a href="{{ asset($payment->document) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($payment->document) }}" alt="image"></a>
                                     @endif
@@ -41,8 +44,8 @@
 
                                 <div class="row mt-4">
                                     <p class="col-md-6">Transaction Id :   @foreach($ad->PaymentDoc as $ad_payment) {{$loop->iteration}} - {{$ad_payment->payment_id}}  @endforeach</p>
-                                    <p class="col-md-3">Amount(USD) :  {{$ad->Payment->amount}}</p>
-                                    <p class="col-md-3">Wallet(USD) :  {{$ad->User->wallet}}</p>
+                                    <p class="col-md-3">Ad payment :  ${{$ad->Payment->amount}}</p>
+                                    {{-- <p class="col-md-3">Wallet(USD) :  {{$ad->User->wallet}}</p> --}}
                                     
                                 </div>
                                 <form action="{{route('user.add.wallet')}}" method="POST">
