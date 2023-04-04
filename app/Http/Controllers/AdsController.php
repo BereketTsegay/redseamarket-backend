@@ -1224,7 +1224,15 @@ class AdsController extends Controller
 
         $ad = Ads::where('id', $id)
         ->first();
-        return view('ads.request.ad_request_document', compact('ad'));
+        $ads=Ads::where('customer_id',$ad->customer_id)->get()->pluck('id');
+        $payments=Payment::whereIn('ads_id',$ads)->where('parent','!=',0)->with('Ad')->get();
+
+        $reason = RejectReason::where('status', Status::ACTIVE)
+        ->where('type', 0)
+        ->orderBy('reson')
+        ->get();
+      // return $payments;
+        return view('ads.request.ad_request_document', compact('ad','reason','payments'));
     }
 
     public function adReject(Request $request){

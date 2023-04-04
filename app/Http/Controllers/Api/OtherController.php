@@ -110,7 +110,7 @@ class OtherController extends Controller
 
             $myAds = tap(Ads::with('Category')->where('customer_id', Auth::user()->id)
             ->orderBy('created_at', 'desc')
-            ->where('status', '!=', Status::REJECTED)
+            // ->where('status', '!=', Status::REJECTED)
             ->where('delete_status', '!=', Status::DELETE)
             ->paginate(12), function ($paginatedInstance){
                 return $paginatedInstance->getCollection()->transform(function($a){

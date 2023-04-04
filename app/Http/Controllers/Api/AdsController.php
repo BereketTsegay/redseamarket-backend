@@ -290,9 +290,17 @@ class AdsController extends Controller
             $ad->notification_status   = 0;
             $ad->save();
 
+             $countries=$request->adsCountry;
+            if(!in_array($request->country, $request->adsCountry))
+            {
+                $temp = array("id" => $request->country,"code"=>"0","name"=>"0");
+                array_push($countries, $temp);
+            }
+
+            
 
             if($request->adsCountry){
-                foreach($request->adsCountry as $country){
+                foreach($countries as $country){
                     $currency=CurrencyCode::where('country_id',$country['id'])->first();
                     $ads_countryMap=new AdsCountry();
                     $ads_countryMap->ads_id=$ad->id;

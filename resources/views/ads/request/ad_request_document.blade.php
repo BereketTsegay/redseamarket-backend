@@ -66,6 +66,8 @@
                                         </div>
                                         <div class="form-group col-md-4 my-4">
                                             <button type="submit" class="btn btn-success">Verify/Accept</button>
+                                            <button type="button" onclick="rejectAd({{$ad->id}})" class="btn btn-danger my-1" data-toggle="modal" data-target="#rejectModal">Reject</button>
+
                                         </div>
 
                                 </div>
@@ -78,6 +80,101 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    All Transactions
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            
+                            <div class="col-md-12">
+
+                                <table id="datatablesSimple" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Transaction id</th>
+                                            <th>Ad </th>
+                                            <th>Action</th>
+                                                                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach($payments as $payment)
+
+                                        <tr>
+                                            <td>{{$loop->iteration}}</td>
+                                            <td>{{$payment->payment_id}}</td>
+                                            <td>{{$payment->ad->title}}</td>
+                                            <td><a href="{{asset($payment->document)}}" target="_blank">view slip</a></td>
+                                        </tr>
+
+                                        @endforeach
+                                        
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form action="{{ route('reject.ads') }}" method="POST">
+                            @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="rejectModalLabel">Reject Ad Request</h5>
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                {{-- <span aria-hidden="true">&times;</span> --}}
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="form-group">
+                                    <label for="Reason">Reason</label>
+                                    <select name="reason" class="form-control" id="Reason" required>
+                                        <option value="">Select</option>
+                                        @foreach ($reason as $row3)
+                                            <option value="{{ $row3->id }}">{{ $row3->reson }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Note</label>
+                                    <textarea name="description" class="form-control" id="description"  rows="3"></textarea>
+                                </div>
+                                <input type="hidden" name="ad_id" id="rejectAd_id">
+                                <div class="form-group" id="reson_description">
+                                    
+                                </div>
+                                {{-- <input type="hidden" name="ad_id" value="" id="rejectAd_id"> --}}
+                                <div class="form-group" id="reson_description">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Reject</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+
         </div>
     </main> 
 @endsection
@@ -92,5 +189,25 @@
         })
     </script>
 @endif
+
+<script>
+     rejectAd = id => {
+    $('#rejectAd_id').val(id);
+    }
+
+    $('#Reason').on('change', function(){
+        let id = $(this).val();
+        $.ajax({
+            url: '/get/reject/reson',
+            method: 'get',
+            data:{id:id},
+            success:function(data){
+                let description = `<p class="my-2">${data.description}</p>`;
+
+                $('#reson_description').html(description);
+            }
+        })
+    });
+</script>
 
 @endpush
