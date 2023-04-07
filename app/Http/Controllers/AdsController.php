@@ -1140,6 +1140,10 @@ class AdsController extends Controller
             'accept_at'    => \DB::raw('CURRENT_TIMESTAMP'),
             'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
         ]);
+        $lastpayment=Payment::where('ads_id',$id)->latest()->first();
+        // return $lastpayment;
+         $lastpayment->status="payment accepted";
+         $lastpayment->update();
 
         session()->flash('success', 'Ad has been accepted');
         return redirect()->route('ads.index');
@@ -1152,6 +1156,10 @@ class AdsController extends Controller
             'status'    => Status::ACTIVE,
             'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
         ]);
+        $lastpayment=Payment::where('ads_id',$id)->latest()->first();
+        // return $lastpayment;
+         $lastpayment->status="payment accepted";
+         $lastpayment->update();
 
         session()->flash('success', 'Ad has been activated');
         return redirect()->route('ads.index');
@@ -1231,25 +1239,40 @@ class AdsController extends Controller
         ->where('type', 0)
         ->orderBy('reson')
         ->get();
-      // return $payments;
+      // return $ad;
         return view('ads.request.ad_request_document', compact('ad','reason','payments'));
     }
 
     public function adReject(Request $request){
       //  return $request;
+      $ad=Ads::find($request->ad_id);
+
+     // return $ad;
+      if($ad->featured_flag==true){
+        $lastpayment=Payment::where('ads_id',$request->ad_id)->latest()->first();
+        // return $lastpayment;
+         $lastpayment->status="payment rejected";
+         $lastpayment->update();
+      }
+     
+
        Ads::where('id', $request->ad_id)
         ->update([
             'status'            => Status::REJECTED,
             'reject_reason_id'  => $request->reason,
         ]);
+
+       
+
         $ad=Ads::find($request->ad_id);
+       
         $reason=RejectReason::find($request->reason);
         $data = [
             'name'  => $ad->title,
             'reason'   => $reason->reson,
             'description'=>$request->description,
         ];
-
+      
         Mail::to($ad->User->email)->send(new AdsReject($data));
         session()->flash('success', 'Ad has been rejected');
         return redirect()->route('ad_request.index');

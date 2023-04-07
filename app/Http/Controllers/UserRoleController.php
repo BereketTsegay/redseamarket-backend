@@ -85,7 +85,7 @@ class UserRoleController extends Controller
             'delete_status'          => Status::DELETE,
         ]);
 
-        session()->flash('success', 'Role has been updated');
+        session()->flash('success', 'Role has been deleted');
         return redirect()->route('role.index');
     }
 

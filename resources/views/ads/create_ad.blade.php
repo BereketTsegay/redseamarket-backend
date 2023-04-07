@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group my-2 col-md-6">
-                                        <label for="Price">Price</label>
+                                        <label for="Price">Price($)</label>
                                         <input type="number" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('price')

@@ -262,13 +262,14 @@ class OtherController extends Controller
             ->join('ads_countries','ads_countries.ads_id','ads.id')
             ->where('ads_countries.country_id',$request->country)
             ->where('ads.status', Status::ACTIVE)
-            ->with(['Category','Subcategory'])
+           
             // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
             //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             // ->having('distance', '<=', $radius)
             ->whereIn('ads.id', $countryAds)
             ->where('ads.delete_status', '!=', Status::DELETE)
-            ->where('ads.title', 'like', '%'.$search_key.'%');
+            ->where('ads.title', 'like', '%'.$search_key.'%')
+            ->with(['Category','Subcategory']);
             // ->where('ads.canonical_name', 'like', '%'.$search_key.'%');
             // ->where('description', 'like', '%'.$search_key.'%');
 
@@ -330,7 +331,10 @@ class OtherController extends Controller
                     $myAds->where('ads.featured_flag', 1);
                 }
             }
+            if($request->priceFrom && $request->priceTo){
+                $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo])->where('ads_countries.country_id',$request->country);
 
+            }
             if($request->priceFrom){
                 $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
             }
@@ -905,7 +909,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'code'      => 200,
-                'message'   => 'Your enquiry has been plced.',
+                'message'   => 'Your enquiry has been placed.',
             ], 200);
             }
 //        }
@@ -980,16 +984,22 @@ class OtherController extends Controller
 
                     $myAds->whereIn('ads.id', $countryAds);
                 }
-
+               
                 if(isset($request->seller)){
                     $myAds->where('ads.featured_flag', $request->seller);
                 }
-                if(isset($request->priceFrom)){
-                    $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
+
+                if($request->priceFrom && $request->priceTo){
+                    $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
+                    
                 }
-                if(isset($request->priceTo)){
-                    $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
-                }
+                // elseif(isset($request->priceFrom)){
+                //     $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
+                // }
+                // else{
+                //     $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
+                // }
+
                 $myAds->groupBy('ads.id');
                 $myAds->orderBy('ads.id','DESC');
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
@@ -1082,13 +1092,17 @@ class OtherController extends Controller
                 if(isset($request->seller)){
                     $myAds->where('ads.featured_flag', $request->seller);
                 }
-
-                if(isset($request->priceFrom)){
-                    $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
+                
+                if($request->priceFrom && $request->priceTo){
+                    $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
+                    
                 }
-                if(isset($request->priceTo)){
-                    $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
-                }
+                // if(isset($request->priceFrom)){
+                //     $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
+                // }
+                // if(isset($request->priceTo)){
+                //     $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
+                // }
               
                 $myAds->orderBy('ads.id','DESC');
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
@@ -1533,9 +1547,10 @@ class OtherController extends Controller
                 'country'       => $request->country,
             ],
         ]);
+       // 'currency'              => $request->currency,
 
         $intent = PaymentIntent::create([
-            'amount'                => $request->amount,
+            'amount'                => round($request->amount*100),
             'currency'              => $request->currency,
             'customer'              => $customer->id,
             'payment_method_types'  => ['card'],
@@ -1673,7 +1688,7 @@ class OtherController extends Controller
     }
 
     public function paymentDocument(Request $request){
-        // dd($request->payment_slip);
+       //  dd($request->payment_slip);
 
         $rules = [
             'id'                => 'required|numeric',
@@ -1692,10 +1707,12 @@ class OtherController extends Controller
                 'errors'    => $validate->errors(),
             ], 200);
         }
+       $documents=[];
 
-        if($request->payment_slip){
-            $file=$request->payment_slip;
-            $document_part = explode(";base64,", $request->payment_slip);
+        if(count($request->payment_slip)!=0){
+            for($i=0;$i<count($request->payment_slip);$i++){
+            $file=$request->payment_slip[$i]['paymentSlip'];
+            $document_part = explode(";base64,", $request->payment_slip[$i]['paymentSlip']);
            
           //  $image_type_aux = explode("image/", $document_part[0]);
             $ext=Str::afterLast($document_part[0], '/');
@@ -1718,10 +1735,16 @@ class OtherController extends Controller
 
             $document = 'storage/document/'.$document;
 
+            array_push($documents,$document);
+
+        }
         }
 
         $parentpay=Payment::where('ads_id', $request->id)->where('parent',0)->first();
 
+        $ad=Ads::find($request->id);
+        $ad->status=0;
+        $ad->update();
         $payment=new Payment();
         $payment->ads_id=$request->id;
         $payment->payment_id=$request->transaction_id;
@@ -1731,7 +1754,7 @@ class OtherController extends Controller
         $payment->phone=$parentpay->phone;
         $payment->payment_type=$parentpay->payment_type;
         $payment->status=$parentpay->status;
-        $payment->document=$document;
+        $payment->document=json_encode($documents);
         $payment->parent=$parentpay->id;
         $payment->save();
        

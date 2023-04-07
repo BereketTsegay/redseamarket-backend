@@ -62,10 +62,16 @@ class AdsController extends Controller
         try{
             $country_ad=AdsCountry::where('ads_id',$request->ads_id)->where('country_id',$request->country_id)->first();
             if($country_ad){
+                $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
+                $lastpay = 0;
+                
+                if($lastpayment){
+                    $lastpay = 1;
+                }
 
                 $ads = Ads::where('id', $request->ads_id)
                 ->with('Category')->get()
-                ->map(function($a){
+                ->map(function($a,$lastpayment){
     
                     if($a->category_id == 1){
                         $a->MotoreValue;
@@ -79,6 +85,7 @@ class AdsController extends Controller
                         $a->MotorFeatures;
     
                     }
+                   
                     elseif($a->category_id == 2){
                         $a->PropertyRend;
                     }
@@ -92,7 +99,7 @@ class AdsController extends Controller
                             return $q;
                         }),
                     ]);
-    
+                    
                     $a->created_on = date('d-M-Y', strtotime($a->created_at));
                     $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
     
@@ -137,12 +144,14 @@ class AdsController extends Controller
                     unset($a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
                     return $a;
                 });
-    
+                
+                
                 return response()->json([
                     'status'    => 'success',
                     'message'   => 'Ad details',
                     'code'      => 200,
                     'ads'       => $ads,
+                    'lastpay'   => $lastpay
                 ], 200);
 
             }
@@ -290,12 +299,12 @@ class AdsController extends Controller
             $ad->notification_status   = 0;
             $ad->save();
 
-             $countries=$request->adsCountry;
-            if(!in_array($request->country, $request->adsCountry))
-            {
-                $temp = array("id" => $request->country,"code"=>"0","name"=>"0");
-                array_push($countries, $temp);
-            }
+              $countries=$request->adsCountry;
+            // if(!in_array($request->country,$request->adsCountry))
+            // {
+            //     $temp = array("id" => $request->country,"code"=>"0","name"=>"0");
+            //     array_push($countries, $temp);
+            // }
 
             
 
@@ -305,6 +314,15 @@ class AdsController extends Controller
                     $ads_countryMap=new AdsCountry();
                     $ads_countryMap->ads_id=$ad->id;
                     $ads_countryMap->country_id=$country['id'];
+                    $ads_countryMap->price=$request->price*$currency->value;
+                    $ads_countryMap->save();
+                }
+                $existcountry=AdsCountry::where('ads_id',$ad->id)->where('country_id',$request->country)->get();
+                if(count($existcountry)==0){
+                    $currency=CurrencyCode::where('country_id',$request->country)->first();
+                    $ads_countryMap=new AdsCountry();
+                    $ads_countryMap->ads_id=$ad->id;
+                    $ads_countryMap->country_id=$request->country;
                     $ads_countryMap->price=$request->price*$currency->value;
                     $ads_countryMap->save();
                 }
@@ -344,10 +362,10 @@ class AdsController extends Controller
                         }
                     }
                    
-
+                    $countryval=CurrencyCode::where('country_id',$request->country)->first();
                     $payment                = new Payment();
                     $payment->payment_id    = $ad->id . uniqid();
-                    $payment->amount        = $amount*count($request->adsCountry);
+                    $payment->amount        = ($amount*$countryval->value)*count($request->adsCountry);
                     $payment->ads_id        = $ad->id;
                     $payment->name          = $request->name;
                     $payment->email         = $request->email;

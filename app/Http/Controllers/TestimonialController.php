@@ -110,4 +110,10 @@ class TestimonialController extends Controller
         session()->flash('success', 'Testimonial has been updated');
         return redirect()->route('testimonial.index');
     }
+
+    public function delete($id){
+        Testimonial::find($id)->delete();
+        session()->flash('success', 'Testimonial has been deleted');
+        return redirect()->route('testimonial.index');
+    }
 }

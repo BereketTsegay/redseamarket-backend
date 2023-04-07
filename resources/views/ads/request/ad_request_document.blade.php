@@ -30,13 +30,14 @@
 
                                     @foreach($ad->PaymentDoc as $payment)
                                     @if($payment->document)
-
-                                    @if(Str::afterLast($payment->document, '.') == 'pdf') 
-                                    <a href="{{ asset($payment->document) }}" target="blank" class="col-md-4">{{$loop->iteration}}-View Document</a>
+                                     {{-- {{dd(json_decode($payment->document))}} --}}
+                                     @foreach(json_decode($payment->document) as $document)
+                                    @if(Str::afterLast($document, '.') == 'pdf') 
+                                    <a href="{{ asset($document) }}" target="blank" class="col-md-4">{{$loop->iteration}}-View Document</a>
                                     @else
-                                    <a href="{{ asset($payment->document) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($payment->document) }}" alt="image"></a>
+                                    <a href="{{ asset($document) }}" target="blank" class="col-md-4"><img class="img-thumbnail" src="{{ asset($document) }}" alt="image"></a>
                                     @endif
-                                     
+                                     @endforeach
                                     @endif
                                    @endforeach
                                   @endif
@@ -44,7 +45,7 @@
 
                                 <div class="row mt-4">
                                     <p class="col-md-6">Transaction Id :   @foreach($ad->PaymentDoc as $ad_payment) {{$loop->iteration}} - {{$ad_payment->payment_id}}  @endforeach</p>
-                                    <p class="col-md-3">Ad payment :  ${{$ad->Payment->amount}}</p>
+                                    <p class="col-md-3">Ad payment : {{$ad->Currency->currency_code}} {{$ad->Payment->amount}}</p>
                                     {{-- <p class="col-md-3">Wallet(USD) :  {{$ad->User->wallet}}</p> --}}
                                     
                                 </div>

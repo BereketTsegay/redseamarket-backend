@@ -22,7 +22,7 @@
                                     @csrf
                                     <div class="form-group my-2">
                                         <label for="Name">Variant Master Name</label>
-                                        <input type="text" name="varient_mst_name" value="{{ $varient_mst->name }}" class="slug form-control @error('varient_mst_name') is-invalid @enderror" placeholder="VarientMaster Name" autocomplete="off">
+                                        <input type="text" name="varient_mst_name" value="{{ $varient_mst->name }}" class="slug form-control @error('varient_mst_name') is-invalid @enderror" placeholder="VariantMaster Name" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('varient_mst_name')
                                                 {{ $message }}

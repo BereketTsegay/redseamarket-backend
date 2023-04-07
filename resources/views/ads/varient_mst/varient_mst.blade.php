@@ -5,7 +5,7 @@
     <main>
         <div class="container-fluid px-4">
             
-            <a href="{{ route('varient_mst.create') }}"><button type="button" class="btn btn-primary float-end">Create Varient Master</button></a>
+            <a href="{{ route('varient_mst.create') }}"><button type="button" class="btn btn-primary float-end">Create Variant Master</button></a>
             
             <h2 class="mt-4">Variant Masters</h2>
             <ol class="breadcrumb mb-4">

@@ -24,7 +24,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Currency Name</th>
-                                <th>Currency Prifix</th>
+                                <th>Currency Prefix</th>
                                 <th>Currency Value($1)</th>
                                 <th>Country</th>
                                 <th>Action</th>

@@ -48,7 +48,7 @@
                                     </div>
                                 @endif
                                 <div class="row">
-                                    <button class="btn btn-primary col-md-3" data-toggle="modal" data-target="#exampleModal">Replay</button>
+                                    <button class="btn btn-primary col-md-3" data-toggle="modal" data-target="#exampleModal">Reply</button>
                                 </div>
                             </div>
                         </div>
@@ -67,14 +67,14 @@
                 <div class="modal-body">
                     @csrf
                     <div class="form-group">
-                        <label for="Replay">Replay</label>
-                        <textarea name="replay" id="Replay" cols="30" rows="5" placeholder="Email Replay" class="form-control"></textarea>
+                        <label for="Replay">Reply</label>
+                        <textarea name="replay" id="Replay" cols="30" rows="5" placeholder="Email Reply" class="form-control"></textarea>
                     </div>
                 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Send Replay</button>
+                    <button type="submit" class="btn btn-primary">Send Reply</button>
                 </div>
             </form>
         </div>

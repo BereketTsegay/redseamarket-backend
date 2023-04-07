@@ -14,7 +14,7 @@
                                         <div class="row">
                                             <div class="col-md-9">
                                                 <p>{{ $inActiveAd }}</p>
-                                                Unactivated ads
+                                                inactivated ads
                                             </div>
                                             <div class="col-md-3">
                                                 <i class="fa fa-edit display-6"></i>
@@ -22,7 +22,7 @@
                                         </div>
                                     </div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="{{ route('ads.index') }}">View Details</a>
+                                        <a class="small text-white stretched-link" href="{{ route('ads.inactive') }}">View Details</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>

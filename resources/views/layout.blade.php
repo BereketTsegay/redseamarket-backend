@@ -324,7 +324,7 @@
                             <div class="collapse {{ request()->is('*profile*') ? 'show' : '' }}" id="collapseSettings" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{{ route('admin.featured') }}">Featured</a>
-                                    <a class="nav-link {{ request()->is('*profile*') ? 'active' : '' }}" href="{{ route('admin.profile') }}">Porfile</a>
+                                    <a class="nav-link {{ request()->is('*profile*') ? 'active' : '' }}" href="{{ route('admin.profile') }}">Profile</a>
                                     <a class="nav-link" href="#" onclick="changePassword()">Change Password</a>
                                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                                 </nav>
