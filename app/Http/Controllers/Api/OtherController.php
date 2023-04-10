@@ -709,7 +709,13 @@ class OtherController extends Controller
                 //return $countryAds;
                 $myAds->whereIn('ads.id', $countryAds);
             }
-
+            
+            if(isset($request->area)){
+                $myAds->where('ads.area', $request->area);
+            }
+            if(isset($request->subArea)){
+                $myAds->where('ads.sub_area', $request->subArea);
+            }
 
             if($request->priceFrom && $request->priceTo){
                 $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
@@ -988,7 +994,12 @@ class OtherController extends Controller
                 if(isset($request->seller)){
                     $myAds->where('ads.featured_flag', $request->seller);
                 }
-
+                if(isset($request->area)){
+                    $myAds->where('ads.area', $request->area);
+                }
+                if(isset($request->subArea)){
+                    $myAds->where('ads.sub_area', $request->subArea);
+                }
                 if($request->priceFrom && $request->priceTo){
                     $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
                     
