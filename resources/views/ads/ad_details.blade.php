@@ -50,7 +50,7 @@
                                     @endif
                                 </div>
                                 <div class="row">
-                                    <p class="col-md-6">Price :</p>
+                                    <p class="col-md-6">Price($) :</p>
                                     <p class="col-md-6">{{ $ad->price }}</p>
                                 </div>
                                 @if($ad->featured_flag && $ad->Payment->payment_type != 0)
