@@ -101,7 +101,7 @@
                                 <div class="row">
                                     <div class="form-group my-2 col-md-6">
                                         <label for="Price">Price($)</label>
-                                        <input type="number" name="price" value="{{ $ad->price }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
+                                        <input type="number" name="price" value="{{ $ad->price }}" class="form-control @error('price') is-invalid @enderror" min="1" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('price')
                                                 {{ $message }}
@@ -733,7 +733,7 @@
             else if(id == 2 || id == 3){
                 custom_field += `<div class="col-md-6 form-group my-2">
                                     <label for="Size">Size </label>
-                                    <input type="number" class="form-control @error('size') 'is-invalid' @enderror" name="size" id="Size" placeholder="Size" >
+                                    <input type="number" class="form-control @error('size') 'is-invalid' min="1" @enderror" name="size" id="Size" placeholder="Size" >
                                     <div class="invalid-feedback">
                                         @error('size')
                                             {{ $message }}
@@ -743,7 +743,7 @@
 
                 custom_field += `<div class="col-md-6 form-group my-2">
                                     <label for="Room">Rooms </label>
-                                    <input type="number" class="form-control @error('rooms') 'is-invalid' @enderror" name="rooms" id="Room" placeholder="Rooms" >
+                                    <input type="number" class="form-control @error('rooms') 'is-invalid' @enderror" min="1" name="rooms" id="Room" placeholder="Rooms" >
                                     <div class="invalid-feedback">
                                         @error('rooms')
                                             {{ $message }}

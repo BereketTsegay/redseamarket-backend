@@ -112,7 +112,16 @@
                                             <td>{{$loop->iteration}}</td>
                                             <td>{{$payment->payment_id}}</td>
                                             <td>{{$payment->ad->title}}</td>
-                                            <td><a href="{{asset($payment->document)}}" target="_blank">view slip</a></td>
+                                            <td>
+                                                @if(is_array(json_decode($payment->document)))
+                                                 @foreach(json_decode($payment->document) as $document)
+                                                <a href="{{asset($document)}}" target="_blank">view slip</a>
+                                                @endforeach
+                                                @else
+                                                <a href="{{asset($payment->document)}}" target="_blank">view slip</a>
+
+                                                @endif
+                                            </td>
                                         </tr>
 
                                         @endforeach

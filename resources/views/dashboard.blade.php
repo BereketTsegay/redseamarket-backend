@@ -14,7 +14,7 @@
                                         <div class="row">
                                             <div class="col-md-9">
                                                 <p>{{ $inActiveAd }}</p>
-                                                inactivated ads
+                                                Inactivated ads
                                             </div>
                                             <div class="col-md-3">
                                                 <i class="fa fa-edit display-6"></i>
