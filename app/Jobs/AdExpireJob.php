@@ -12,6 +12,7 @@ use App\Models\Ads;
 use App\Common\Status;
 use App\Mail\AdsExpiry;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class AdExpireJob implements ShouldQueue
 {
@@ -34,7 +35,7 @@ class AdExpireJob implements ShouldQueue
      */
     public function handle()
     {
-        $expireAds=Ads::where('delete_status', '!=', Status::DELETE)->where('status', Status::ACTIVE)->get()->take(50);
+        $expireAds=Ads::where('delete_status', '!=', Status::DELETE)->where('status', Status::ACTIVE)->get();
 
         foreach($expireAds as $expiread){
 

@@ -231,7 +231,7 @@
                                     
                                 @else
                                     
-                                    <form action="{{ route('payment.document.upload', $ad->id) }}" method="POST" enctype="multipart/form-data">
+                                    {{-- <form action="{{ route('payment.document.upload', $ad->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
                                             <div class="col-md-4">Upload Document :</div>
@@ -249,7 +249,7 @@
                                                 <button class="btn btn-success">Upload</button>
                                             </div>
                                         </div>
-                                    </form>
+                                    </form> --}}
                                     
                                 @endif
                             @endif

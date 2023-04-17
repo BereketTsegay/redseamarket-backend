@@ -51,7 +51,7 @@ class ContactController extends Controller
 
         Mail::to($contact->email)->send(new EnquiryReplay($replay));
 
-        session()->flash('success', 'Replay has been sended');
+        session()->flash('success', 'Reply has been sended');
         return redirect()->route('contact.index');
     }
 }

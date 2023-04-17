@@ -1217,15 +1217,25 @@ class AdsController extends Controller
                // return $request;
 
         $user = User::find($request->user_id);
-        $user->wallet=$request->wallet+$request->addwallet-$request->cutwallet;
-        $user->update();
-        Ads::where('id', $request->ad_id)
-        ->update([
-            'status'    => Status::ACTIVE,
-            'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
-        ]);
-        session()->flash('success', 'Ad has been activated');
-        return redirect()->route('ads.index');
+        if($user->wallet>$request->cutwallet || $request->cutwallet==0){
+            $user->wallet=$request->wallet+$request->addwallet-$request->cutwallet;
+            $user->update();
+
+            Ads::where('id', $request->ad_id)
+            ->update([
+                'status'    => Status::ACTIVE,
+                'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
+            ]);
+            session()->flash('success', 'Ad has been activated');
+            return redirect()->route('ads.index');
+        }
+        else{
+            session()->flash('error', 'invalid wallet amount');
+            return back();
+        }
+
+       
+       
     }
 
     public function adRequestDocument($id){

@@ -930,7 +930,6 @@ class OtherController extends Controller
     }
 
     public function getCategoryAds(Request $request){
-
         $rules = [
             'category'    => 'required',
             // 'latitude'          => 'required',
@@ -995,6 +994,7 @@ class OtherController extends Controller
                     $myAds->where('ads.featured_flag', $request->seller);
                 }
                 if(isset($request->area)){
+                   
                     $myAds->where('ads.area', $request->area);
                 }
                 if(isset($request->subArea)){
@@ -1103,7 +1103,13 @@ class OtherController extends Controller
                 if(isset($request->seller)){
                     $myAds->where('ads.featured_flag', $request->seller);
                 }
-                
+                if(isset($request->area)){
+                   
+                    $myAds->where('ads.area', $request->area);
+                }
+                if(isset($request->subArea)){
+                    $myAds->where('ads.sub_area', $request->subArea);
+                }
                 if($request->priceFrom && $request->priceTo){
                     $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
                     
