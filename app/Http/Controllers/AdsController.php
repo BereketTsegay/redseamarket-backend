@@ -1176,6 +1176,7 @@ class AdsController extends Controller
     public function adRequestIndex(){
 
         $adsRequest = Ads::where('status', Status::REQUEST)
+        ->where('status', Status::REREQUEST)
         ->where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->paginate(10);

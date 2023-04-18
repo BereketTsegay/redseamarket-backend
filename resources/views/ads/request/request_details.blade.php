@@ -46,13 +46,19 @@
                                     <p class="col-md-6">{{ $ad->City ? $ad->City->name : $ad->State->name }}</p>
                                 </div>
                                 <div class="row">
-                                    <p class="col-md-6">Price :</p>
+                                    <p class="col-md-6">Price($) :</p>
                                     <p class="col-md-6">{{ $ad->price }}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Transaction Id :</p>
                                     <p class="col-md-6">{{ $ad->Payment->payment_id }}</p>
                                 </div>
+                                @if($ad->Payment)
+                                <div class="row">
+                                    <p class="col-md-6">featured payment($) :</p>
+                                    <p class="col-md-6">{{ $ad->Payment->amount }}</p>
+                                </div>
+                               @endif
                                 @if($ad->featured_flag && $ad->Payment->payment_type != 0)
                                     @if($ad->Payment) 
                                         <div class="row">

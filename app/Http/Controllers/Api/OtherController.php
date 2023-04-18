@@ -1579,7 +1579,7 @@ class OtherController extends Controller
 
         $intent = PaymentIntent::create([
             'amount'                => round($request->amount*100),
-            'currency'              => $request->currency,
+            'currency'              => 'usd',
             'customer'              => $customer->id,
             'payment_method_types'  => ['card'],
             'description'           => 'Featured Ad payment',

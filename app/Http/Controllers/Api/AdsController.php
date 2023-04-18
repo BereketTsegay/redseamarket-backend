@@ -365,7 +365,7 @@ class AdsController extends Controller
                     $countryval=CurrencyCode::where('country_id',$request->country)->first();
                     $payment                = new Payment();
                     $payment->payment_id    = $ad->id . uniqid();
-                    $payment->amount        = ($amount*$countryval->value)*count($request->adsCountry);
+                    $payment->amount        = $amount*count($request->adsCountry);
                     $payment->ads_id        = $ad->id;
                     $payment->name          = $request->name;
                     $payment->email         = $request->email;
@@ -1311,6 +1311,7 @@ class AdsController extends Controller
             // 'latitude'          => 'required',
             // 'longitude'         => 'required',
         ];
+        $search_key = $request->searchKey ?? null;
 
         $validate = Validator::make($request->all(), $rules);
 
@@ -1352,6 +1353,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
                     
                     if($latitude != 0 && $longitude != 0){
@@ -1438,6 +1441,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -1525,6 +1529,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -1609,6 +1614,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -1695,6 +1701,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -1778,6 +1786,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0 ){
@@ -1863,6 +1873,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -1946,6 +1958,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('ads.title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2033,6 +2047,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2117,6 +2133,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2201,6 +2219,8 @@ class AdsController extends Controller
                     ->where('price', '<=', $request->price)
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2281,6 +2301,8 @@ class AdsController extends Controller
                     ->where('price', '<=', $request->price)
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2367,6 +2389,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2449,6 +2473,8 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2530,6 +2556,8 @@ class AdsController extends Controller
                     ->where('city_id', $request->city)
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2609,6 +2637,8 @@ class AdsController extends Controller
                     ->where('city_id', $request->city)
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
+
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2696,6 +2726,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2780,6 +2811,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2866,6 +2898,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -2948,6 +2981,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3034,6 +3068,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3117,6 +3152,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3201,6 +3237,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3283,6 +3320,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3369,6 +3407,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3452,6 +3491,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3534,6 +3574,7 @@ class AdsController extends Controller
                     ->where('price', '<=', $request->price)
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0) {
@@ -3613,6 +3654,7 @@ class AdsController extends Controller
                     ->where('price', '<=', $request->price)
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3698,6 +3740,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3780,6 +3823,7 @@ class AdsController extends Controller
                     })
                     ->where('delete_status', '!=', Status::DELETE)
                     ->where('category_id', $request->category_id)
+                    ->where('title', 'like', '%'.$search_key.'%')
                     ->where('subcategory_id', $request->subcategory_id);
 
                     if($latitude != 0 && $longitude != 0){
@@ -3860,6 +3904,7 @@ class AdsController extends Controller
                 // ->having('distance', '<=', $radius)
                 ->where('delete_status', '!=', Status::DELETE)
                 ->where('category_id', $request->category_id)
+                ->where('title', 'like', '%'.$search_key.'%')
                 ->where('subcategory_id', $request->subcategory_id);
 
                 if($latitude != 0 && $longitude != 0){
@@ -3941,6 +3986,7 @@ class AdsController extends Controller
                 //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 // ->having('distance', '<=', $radius)
                 ->where('delete_status', '!=', Status::DELETE)
+                ->where('title', 'like', '%'.$search_key.'%')
                 ->where('category_id', $request->category_id);
                 if($latitude != 0 && $longitude != 0){
 
@@ -4590,7 +4636,7 @@ class AdsController extends Controller
             $ads->area                  = $request->area;
             $ads->sub_area                  = $request->sub_area;
             $ads->sub_area2                  = $request->sub_area2;
-            $ads->status                = Status::REQUEST;
+            $ads->status                = Status::REREQUEST;
             $ads->notification_status   = 0;
             $ads->update();
                

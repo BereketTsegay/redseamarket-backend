@@ -57,7 +57,11 @@
                             @foreach ($adsRequest as $row)
                                 <tr>
                                     <th scope="row">{{ $i }}</th>
-                                    <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->created_at)) }}<br>
+                                    @if($row->status==5)
+                                     <p style="color:red;">Re-request ad</p>
+                                    @endif
+                                    </td>
                                     <td>{{ $row->Category->name }}</td>
                                     <td>{{ $row->title }}</td>
                                     <td>{{ $row->User->name }}</td>

@@ -45,7 +45,7 @@
 
                                 <div class="row mt-4">
                                     <p class="col-md-6">Transaction Id :   @foreach($ad->PaymentDoc as $ad_payment) {{$loop->iteration}} - {{$ad_payment->payment_id}}  @endforeach</p>
-                                    <p class="col-md-3">Ad payment : {{$ad->Currency->currency_code}} {{$ad->Payment->amount}}</p>
+                                    <p class="col-md-3">Ad payment : $ {{$ad->Payment->amount}}</p>
                                     {{-- <p class="col-md-3">Wallet(USD) :  {{$ad->User->wallet}}</p> --}}
                                     
                                 </div>
