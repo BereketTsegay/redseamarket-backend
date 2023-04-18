@@ -303,6 +303,12 @@ class OtherController extends Controller
             if(isset($request->subcategory)){
                 $myAds->where('ads.subcategory_id', $request->subcategory);
             }
+            if(isset($request->area)){
+                $myAds->where('ads.area', $request->area);
+            }
+            if(isset($request->subArea)){
+                $myAds->where('ads.sub_area', $request->subArea);
+            }
 
             if($request->search_key){
 
@@ -1973,7 +1979,11 @@ class OtherController extends Controller
 
        $user_id=Auth::user()->id;
        $ads=Ads::where('customer_id',$user_id)->get()->pluck('id');
-       $payments=Payment::whereIn('ads_id',$ads)->where('parent','!=',0)->with('Ad')->get();
+       $payments=Payment::whereIn('ads_id',$ads)->where('parent','!=',0)->with('Ad')->orderBy('created_at','desc')->get()
+       ->map(function($payment){
+           $payment->document=json_decode($payment->document);
+           return $payment;
+       });
 
        return response()->json([
         'status'    => 'success',

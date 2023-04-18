@@ -141,7 +141,7 @@
                                         </div>
                                     </div> --}}
                                     <div class="form-group my-2">
-                                        <label for="SortOrder">Value</label>
+                                        <label for="SortOrder">Value($)</label>
                                         <input type="text" name="value" value="{{ $category->percentage }}" class="form-control @error('value') is-invalid @enderror" placeholder="Value" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('value')
