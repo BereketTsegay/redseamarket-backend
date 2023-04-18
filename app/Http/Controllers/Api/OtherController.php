@@ -484,7 +484,12 @@ class OtherController extends Controller
                 //return $countryAds;
                 $myAds->whereIn('ads.id', $countryAds);
             }
-
+            if(isset($request->area)){
+                $myAds->where('ads.area', $request->area);
+            }
+            if(isset($request->subArea)){
+                $myAds->where('ads.sub_area', $request->subArea);
+            }
             if($request->condition){
                 $myAds->with(['MotoreValue' => function($q) use($request){
                     $q->where('condition', $request->condition);
