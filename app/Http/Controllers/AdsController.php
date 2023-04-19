@@ -37,7 +37,7 @@ class AdsController extends Controller
         $ad = Ads::where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->where('status', Status::ACTIVE)
-        ->paginate(10);
+        ->get();
 
         return view('ads.ad_list', compact('ad'));
     }
@@ -1175,12 +1175,11 @@ class AdsController extends Controller
 
     public function adRequestIndex(){
 
-        $adsRequest = Ads::where('status', Status::REQUEST)
-        ->where('status', Status::REREQUEST)
+        $adsRequest = Ads::whereIn('status', [Status::REQUEST,Status::REREQUEST])
         ->where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->paginate(10);
-
+//    return Status::REREQUEST;
         $reason = RejectReason::where('status', Status::ACTIVE)
         ->where('type', 0)
         ->orderBy('reson')

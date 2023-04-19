@@ -22,22 +22,22 @@
                     <table id="datatablesSimple" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Date</th>
-                                <th>Category</th>
-                                <th>Title</th>
-                                <th>User</th>
-                                <th>Active</th>
-                                <th>Action</th>
+                                <th style="width: 5%">#</th>
+                                <th style="width: 15%">Date</th>
+                                <th style="width: 15%">Category</th>
+                                <th style="width: 30%">Title</th>
+                                <th style="width: 10%">User</th>
+                                <th style="width: 10%">Active</th>
+                                <th style="width: 15%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
+                            {{-- @php
                                 $i= ($ad->currentpage() - 1 ) * $ad->perpage() + 1;
-                            @endphp
+                            @endphp --}}
                             @foreach ($ad as $row)
                             <tr>
-                                <th scope="row">{{ $i }}</th>
+                                <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
                                 <td>{{ $row->Category->name }}</td>
                                 <td>{{ $row->title }}</td>
@@ -67,12 +67,12 @@
                                     </div>
                                 </td>
                             </tr>
-                            @php
+                            {{-- @php
                                 $i++;
-                            @endphp
+                            @endphp --}}
                             @endforeach
                         </tbody>
-                        {{ $ad->links('pagination::bootstrap-4') }}
+                        {{-- {{ $ad->links('pagination::bootstrap-4') }} --}}
                     </table>
                 </div>
             </div>
