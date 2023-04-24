@@ -233,7 +233,7 @@
                                     @endif
                                 @endforeach
                               @if($ad->featured_flag==1)
-                                @if($ad->Payment->document)
+                                @if($ad->Payment&&$ad->Payment->document)
                                     
                                 @else
                                     
