@@ -147,7 +147,7 @@
                                         @endforeach
                                     </div>
                                     @endif
-                                @elseif ($ad->category_id == 2)
+                                @elseif (($ad->category_id == 2)&&($ad->PropertyRend))
                                     <div class="row">
                                         <p class="col-md-6">Size :</p>
                                         <p class="col-md-6">{{ $ad->PropertyRend->size }}</p>
@@ -169,7 +169,7 @@
                                         <p class="col-md-6">{{ $ad->PropertyRend->parking == 1 ? 'Yes' : 'No' }}</p>
                                     </div>
 
-                                @elseif ($ad->category_id == 3)
+                                @elseif (($ad->category_id == 3)&&($ad->PropertySale))
                                     <div class="row">
                                         <p class="col-md-6">Size :</p>
                                         <p class="col-md-6">{{ $ad->PropertySale->size }}</p>
