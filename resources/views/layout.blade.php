@@ -14,8 +14,8 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
-        @stack('style')
+        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> --}}
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>        @stack('style')
         <style>
             /* Center the loader */
 #loader {
@@ -170,16 +170,16 @@
                             @endif
 @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_MASTERS))
 
-<a class="nav-link collapsed {{ request()->is('mst*') ? 'active' : '' }} {{ request()->is('*custom_field*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMst" aria-expanded="false" aria-controls="collapseAds">
+<a class="nav-link collapsed {{ request()->is('mst*') ? 'active' : '' }} {{ request()->is('*custom_field*') ? 'active' : '' }} {{ request()->is('countries*') ? 'active' : '' }} {{ request()->is('country_currency*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMst" aria-expanded="false" aria-controls="collapseAds">
     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
     Masters
     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
 </a>
-<div class="collapse {{ request()->is('*mst*') ? 'show' : '' }} " id="collapseMst" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+<div class="collapse {{ request()->is('*mst*') ? 'show' : '' }} {{ request()->is('countries*') ? 'show' : '' }} {{ request()->is('country_currency*') ? 'show' : '' }}" id="collapseMst" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
     <nav class="sb-sidenav-menu-nested nav">
         <a class="nav-link {{ request()->is('make_mst*') ? 'active' : '' }}" href="{{ route('make_mst.index') }}">Make</a>
         <a class="nav-link {{ request()->is('model_mst*') ? 'active' : '' }}" href="{{ route('model_mst.index') }}">Model</a>
-        <a class="nav-link {{ request()->is('varient_mst*') ? 'active' : '' }}" href="{{ route('varient_mst.index') }}">Varient</a>
+        <a class="nav-link {{ request()->is('varient_mst*') ? 'active' : '' }}" href="{{ route('varient_mst.index') }}">Variant</a>
         <a class="nav-link {{ request()->is('countries*') ? 'active' : '' }}" href="{{ route('countries.index') }}">Country</a>
         <a class="nav-link {{ request()->is('country_currency*') ? 'active' : '' }}" href="{{ route('country_currency.index') }}">Currency</a>
     </nav>
@@ -232,6 +232,14 @@
                                             <div class="badge badge-primary">{{$adsInaciveCount}}</div>
                                         @endif
                                         </a>
+
+                                        <a class="nav-link {{ request()->is('job/request/*') ? 'active' : '' }}" href="{{ route('job.index') }}">Job Request
+                                            {{-- @if ($adsInaciveCount != 0)
+                                            <div class="badge badge-primary">{{$adsInaciveCount}}</div>
+                                        @endif --}}
+                                        </a>
+
+
 
                                     </nav>
                                 </div>
@@ -315,7 +323,8 @@
                             </a>
                             <div class="collapse {{ request()->is('*profile*') ? 'show' : '' }}" id="collapseSettings" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link {{ request()->is('*profile*') ? 'active' : '' }}" href="{{ route('admin.profile') }}">Porfile</a>
+                                    <a class="nav-link" href="{{ route('admin.featured') }}">Featured</a>
+                                    <a class="nav-link {{ request()->is('*profile*') ? 'active' : '' }}" href="{{ route('admin.profile') }}">Profile</a>
                                     <a class="nav-link" href="#" onclick="changePassword()">Change Password</a>
                                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                                 </nav>
@@ -354,8 +363,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    {{-- <script src="{{ asset('assets/demo/chart-area-demo.js') }}"></script> --}}
-    {{-- <script src="{{ asset('assets/demo/chart-bar-demo.js') }}"></script> --}}
+    
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -365,6 +373,8 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
+
+    
     <script>
         $(document).ready(function(){
             $("#loader-container").fadeOut();

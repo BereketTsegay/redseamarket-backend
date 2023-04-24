@@ -105,8 +105,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group my-2 col-md-6">
-                                        <label for="Price">Price</label>
-                                        <input type="number" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
+                                        <label for="Price">Price($)</label>
+                                        <input type="number" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" min="1" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('price')
                                                 {{ $message }}
@@ -170,6 +170,23 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="Description">View Countries</label>
+
+                                        <select class="form-control js-example-basic-multiple select2" name="viewCountries[]" multiple="multiple" required>
+                                             @foreach ($country as $data)
+                                             <option value="{{$data->id}}">{{$data->name}}</option>
+                                             @endforeach
+                                          </select>
+                                          
+                                         
+                                         
+                                    </div>
+                                </div>
+
+                            
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4">
@@ -280,6 +297,7 @@
 @push('script')
 
     <script>
+           // $('#Country_select2').select2();
 
         $('.slug').keyup(function() {
             $('#canonical_name').val(getSlug($(this).val()));
@@ -725,7 +743,7 @@
             else if(id == 2 || id == 3){
                 custom_field += `<div class="col-md-6 form-group my-2">
                                     <label for="Size">Size </label>
-                                    <input type="number" class="form-control @error('size') 'is-invalid' @enderror" name="size" id="Size" placeholder="Size" >
+                                    <input type="number" class="form-control @error('size') 'is-invalid' @enderror" min="1" name="size" id="Size" placeholder="Size" >
                                     <div class="invalid-feedback">
                                         @error('size')
                                             {{ $message }}
@@ -735,7 +753,7 @@
 
                 custom_field += `<div class="col-md-6 form-group my-2">
                                     <label for="Room">Rooms </label>
-                                    <input type="number" class="form-control @error('rooms') 'is-invalid' @enderror" name="rooms" id="Room" placeholder="Rooms" >
+                                    <input type="number" class="form-control @error('rooms') min="1" 'is-invalid' @enderror" name="rooms" id="Room" placeholder="Rooms" >
                                     <div class="invalid-feedback">
                                         @error('rooms')
                                             {{ $message }}
@@ -1037,7 +1055,7 @@
     </script>
 
     {{-- Location picker --}}
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEysollDCaGfbiPxh-VBvv31u2msCwa1c&libraries=places&callback=initialize" async defer></script>
         
     <script>
         function initialize() {

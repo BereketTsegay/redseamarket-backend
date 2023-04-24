@@ -100,8 +100,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group my-2 col-md-6">
-                                        <label for="Price">Price</label>
-                                        <input type="number" name="price" value="{{ $ad->price }}" class="form-control @error('price') is-invalid @enderror" placeholder="Price" autocomplete="off">
+                                        <label for="Price">Price($)</label>
+                                        <input type="number" name="price" value="{{ $ad->price }}" class="form-control @error('price') is-invalid @enderror" min="1" placeholder="Price" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('price')
                                                 {{ $message }}
@@ -161,6 +161,19 @@
                                                 {{ Session::get('description_error') }}
                                             @endif
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group my-2 col-md-6">
+                                        <label for="Description">View Countries</label>
+
+                                        <select class="form-control js-example-basic-multiple select2" name="viewCountries[]" multiple="multiple" required>
+                                             @foreach ($country as $data)
+                                             <option value="{{$data->id}}" @if(in_array($data->id,$viewCountries)) selected @endif>{{$data->name}}</option>
+                                             @endforeach
+                                        </select>
+
                                     </div>
                                 </div>
 
@@ -253,8 +266,8 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <input type="hidden" name="address_latitude" value="{{ old('address_latitude') ?? 0 }}" id="address-latitude">
-                                    <input type="hidden" name="address_longitude" value="{{ old('address_longitude') ?? 0  }}" id="address-longitude">
+                                    <input type="hidden" name="address_latitude" value="{{ $ad->latitude ? $ad->latitude : old('address_latitude') }}" id="address-latitude">
+                                    <input type="hidden" name="address_longitude" value="{{ $ad->longitude ? $ad->latitude : old('address_longitude')  }}" id="address-longitude">
                                 </div>
                                 <div class="my-4" id="address-map-container" style="width:100%;height:400px; ">
                                     <div style="width: 100%; height: 100%" id="address-map"></div>
@@ -720,7 +733,7 @@
             else if(id == 2 || id == 3){
                 custom_field += `<div class="col-md-6 form-group my-2">
                                     <label for="Size">Size </label>
-                                    <input type="number" class="form-control @error('size') 'is-invalid' @enderror" name="size" id="Size" placeholder="Size" >
+                                    <input type="number" class="form-control @error('size') 'is-invalid' min="1" @enderror" name="size" id="Size" placeholder="Size" >
                                     <div class="invalid-feedback">
                                         @error('size')
                                             {{ $message }}
@@ -730,7 +743,7 @@
 
                 custom_field += `<div class="col-md-6 form-group my-2">
                                     <label for="Room">Rooms </label>
-                                    <input type="number" class="form-control @error('rooms') 'is-invalid' @enderror" name="rooms" id="Room" placeholder="Rooms" >
+                                    <input type="number" class="form-control @error('rooms') 'is-invalid' @enderror" min="1" name="rooms" id="Room" placeholder="Rooms" >
                                     <div class="invalid-feedback">
                                         @error('rooms')
                                             {{ $message }}
@@ -954,9 +967,12 @@
     </script>
 
     {{-- Location picker --}}
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEysollDCaGfbiPxh-VBvv31u2msCwa1c&libraries=places&callback=initialize" async defer></script>
         
     <script>
+
+       
+
         function initialize() {
 
             $('#address-input').on('keyup keypress', function(e) {
@@ -974,11 +990,12 @@
 
                 const input = locationInputs[i];
                 const fieldKey = input.id.replace("-input", "");
+               // console.log(fieldKey);
                 const isEdit = document.getElementById(fieldKey + "-latitude").value != '' && document.getElementById(fieldKey + "-longitude").value != '';
 
                 const latitude = parseFloat(document.getElementById(fieldKey + "-latitude").value) || 23.4241;
                 const longitude = parseFloat(document.getElementById(fieldKey + "-longitude").value) || 53.8478;
-
+       
                 const map = new google.maps.Map(document.getElementById(fieldKey + '-map'), {
                     center: {lat: latitude, lng: longitude},
                     zoom: 13

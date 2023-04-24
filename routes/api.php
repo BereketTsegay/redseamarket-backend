@@ -31,6 +31,8 @@ Route::post('/customer/get/master/dependency', [\App\Http\Controllers\Api\AdsCon
 Route::post('/customer/get/category', [\App\Http\Controllers\Api\DashboardController::class, 'getCategory']);
 Route::post('/customer/get/subcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubcategory']);
 Route::post('/customer/get/subsubcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getSubSubcategory']);
+Route::post('/customer/get/job/subsubcategory', [\App\Http\Controllers\Api\DashboardController::class, 'getjobSubSubcategory']);
+
 
 Route::post('/customer/ad/view', [\App\Http\Controllers\Api\AdsController::class, 'adView']);
 Route::post('/customer/search/ads', [\App\Http\Controllers\Api\OtherController::class, 'searchAds']);
@@ -38,6 +40,7 @@ Route::post('/customer/get/category/ads', [\App\Http\Controllers\Api\OtherContro
 Route::post('/customer/get/subcategory/ads', [\App\Http\Controllers\Api\OtherController::class, 'getSubcategoryAds']);
 Route::post('/customer/get/property/filter', [\App\Http\Controllers\Api\AdsController::class, 'getPropertyFilter']);
 Route::post('/customer/get/motor/list', [\App\Http\Controllers\Api\OtherController::class, 'getMototList']);
+Route::post('/customer/get/job/list', [\App\Http\Controllers\Api\OtherController::class, 'getJobList']);
 
 Route::post('/customer/get/country', [\App\Http\Controllers\Api\OtherController::class,'getCountry']);
 Route::post('/customer/get/state', [\App\Http\Controllers\Api\OtherController::class, 'getState']);
@@ -74,6 +77,11 @@ Route::post('/search/autocomplete', [\App\Http\Controllers\Api\AdsController::cl
 Route::post('/contactus/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'contactEnquiry']);
 
 Route::post('/menu/list', [\App\Http\Controllers\Api\DashboardController::class, 'MenuList']);
+Route::get('/category/list', [\App\Http\Controllers\Api\OtherController::class, 'allCategories']);
+Route::post('/uploade/cv_document', [\App\Http\Controllers\Api\OtherController::class, 'cvDocument']);
+
+
+Route::get('/featured', [\App\Http\Controllers\Api\AdsController::class, 'featured']);
 
 Route::middleware('auth:api')->group( function () {
    
@@ -82,6 +90,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/ads/store', [\App\Http\Controllers\Api\AdsController::class, 'adStore']);
     Route::post('/customer/ads/update', [\App\Http\Controllers\Api\AdsController::class, 'updateData']);
     Route::post('/customer/view/profile', [\App\Http\Controllers\Api\LoginController::class, 'myProfile']);
+    Route::post('/customer/view/transactions', [\App\Http\Controllers\Api\OtherController::class, 'Transactions']);
     Route::post('/customer/update/profile', [\App\Http\Controllers\Api\LoginController::class, 'updateProfile']);
     Route::post('/customer/ad/favourite', [\App\Http\Controllers\Api\AdsController::class, 'favouriteGet']);
     Route::post('/customer/view/favourite', [\App\Http\Controllers\Api\OtherController::class, 'favouriteView']);
@@ -90,8 +99,11 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/change/password', [\App\Http\Controllers\Api\LoginController::class, 'changePassword']);
     Route::post('/customer/uploade/payment_slip', [\App\Http\Controllers\Api\OtherController::class, 'paymentDocument']);
     Route::post('/customer/get/ad-selCountry', [\App\Http\Controllers\Api\AdsController::class, 'adsCountries']);
+    Route::post('/customer/get/ad-cvdocuments', [\App\Http\Controllers\Api\AdsController::class, 'jobRequestDocs']);
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
     Route::post('/customer/ads/remove_image', [\App\Http\Controllers\Api\AdsController::class, 'removeImage']);
+    Route::post('/customer/ad/delete', [\App\Http\Controllers\Api\AdsController::class, 'removeAd']);
+
 });
 

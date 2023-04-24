@@ -62,7 +62,7 @@ class MakeMstController extends Controller
         $make_mst->status           = $status;
         $make_mst->save();
 
-        session()->flash('success', 'MakeMst has been created');
+        session()->flash('success', 'Make has been created');
         return redirect()->route('make_mst.index');
 
     }
@@ -129,7 +129,7 @@ class MakeMstController extends Controller
             'status'            => $status
         ]);
 
-        session()->flash('success', 'MakeMst has been updated');
+        session()->flash('success', 'Make has been updated');
         return redirect()->route('make_mst.index');
     }
 
@@ -137,7 +137,7 @@ class MakeMstController extends Controller
 
         MakeMst::where('id', $id)->delete();
 
-        session()->flash('success', 'MakeMst has been deleted');
+        session()->flash('success', 'Make has been deleted');
         return redirect()->route('make_mst.index');
     }
 

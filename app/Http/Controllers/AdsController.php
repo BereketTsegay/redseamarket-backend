@@ -25,6 +25,10 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AdsCountry;
+use App\Models\JobDocument;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AdsReject;
 
 class AdsController extends Controller
 {
@@ -33,7 +37,7 @@ class AdsController extends Controller
         $ad = Ads::where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->where('status', Status::ACTIVE)
-        ->paginate(10);
+        ->get();
 
         return view('ads.ad_list', compact('ad'));
     }
@@ -64,7 +68,7 @@ class AdsController extends Controller
     }
 
     public function store(Request $request){
-        
+       // return $request;
         $request->validate([
             'category'          => 'required|numeric',
             // 'title'             => 'required',
@@ -74,7 +78,7 @@ class AdsController extends Controller
             'canonical_name'    => 'required',
             'country'           => 'required|numeric',
             // 'city'              => 'required|numeric',
-            // 'description'       => 'required',
+             'viewCountries'       => 'required',
             'seller_name'       => 'required',
             'Phone'             => 'required|numeric',
             'email'             => 'required|email',
@@ -229,6 +233,15 @@ class AdsController extends Controller
             }
         }
 
+
+        if($request->viewCountries){
+            foreach($request->viewCountries as $country){
+                $ads_countryMap=new AdsCountry();
+                $ads_countryMap->ads_id=$ad->id;
+                $ads_countryMap->country_id=$country;
+                $ads_countryMap->save();
+            }
+        }
         if($request->category == 1){
 
             $motor                      = new MotorCustomeValues();
@@ -513,7 +526,7 @@ class AdsController extends Controller
 
         $ad = Ads::where('id', $id)
         ->first();
-
+        
         $category = Category::where('delete_status', '!=', Status::DELETE)
         ->where('status', Status::ACTIVE)
         ->get();
@@ -521,11 +534,14 @@ class AdsController extends Controller
         $country = Country::orderBy('name')
         ->get();
 
-        return view('ads.edit_ad', compact('ad', 'category', 'country'));
+        $viewCountries=AdsCountry::where('ads_id',$id)->get()->pluck('country_id')->toArray();
+      // return $ad;
+
+        return view('ads.edit_ad', compact('ad', 'category', 'country','viewCountries'));
     }
 
     public function update(Request $request, $id){
-        
+     //   return $request;
         $request->validate([
             'category'          => 'required|numeric',
             // 'title'             => 'required',
@@ -543,28 +559,28 @@ class AdsController extends Controller
             'image.*'           => 'mimes:png,jpg,jpeg',
         ]);
 
-        if($request->category == 1){
-            $request->validate([
-                'make'              => 'required|numeric',
-                'model'             => 'required|numeric',
-                // 'varient'           => 'required|numeric',
-                'registered_year'   => 'required|numeric',
-                'fuel'              => 'required',
-                'transmission'      => 'required',
-                'condition'         => 'required',
-                'mileage'           => 'required|numeric',
-                'features.*'        => 'required',
-            ]);
-        }
+        // if($request->category == 1){
+        //     $request->validate([
+        //         'make'              => 'required|numeric',
+        //         'model'             => 'required|numeric',
+        //         // 'varient'           => 'required|numeric',
+        //         'registered_year'   => 'required|numeric',
+        //         'fuel'              => 'required',
+        //         'transmission'      => 'required',
+        //         'condition'         => 'required',
+        //         'mileage'           => 'required|numeric',
+        //         'features.*'        => 'required',
+        //     ]);
+        // }
 
-        elseif($request->category == 2 || $request->category == 3){
-            $request->validate([
-                'size'      => 'required|numeric',
-                'rooms'     => 'required|numeric',
-                'furnished' => 'required',
-                'building'  => 'required',
-            ]);
-        }
+        // elseif($request->category == 2 || $request->category == 3){
+        //     $request->validate([
+        //         'size'      => 'required|numeric',
+        //         'rooms'     => 'required|numeric',
+        //         'furnished' => 'required',
+        //         'building'  => 'required',
+        //     ]);
+        // }
 
 
         $ad = Ads::where('id', $id)
@@ -657,6 +673,19 @@ class AdsController extends Controller
             'status'            => $status,
         ]);
         $ad=Ads::find($id);
+
+            
+        if($request->viewCountries){
+            AdsCountry::where('ads_id',$id)->delete();
+
+            foreach($request->viewCountries as $country){
+                $ads_countryMap=new AdsCountry();
+                $ads_countryMap->ads_id=$id;
+                $ads_countryMap->country_id=$country;
+                $ads_countryMap->save();
+            }
+        }
+
         if($ad->featured_flag==1)
         {
             if($ad->Payment){
@@ -664,7 +693,7 @@ class AdsController extends Controller
         $payment->amount        = $request->price;
         $payment->name          = $request->seller_name;
         $payment->email         = $request->email;
-        $payment->phone         = $request->Phone;
+        $payment->phone         = $request->phone;
         $payment->payment_type  = 1; // 1 for Payment through account or direct
         $payment->status        = 'Admin Entry';
         $payment->update();
@@ -675,77 +704,77 @@ class AdsController extends Controller
         $payment->ads_id        = $ad->id;
         $payment->name          = $request->seller_name;
         $payment->email         = $request->email;
-        $payment->phone         = $request->Phone;
+        $payment->phone         = $request->phone;
         $payment->payment_type  = 1; // 1 for Payment through account or direct
         $payment->status        = 'Admin Entry';
         $payment->save();
              }
          }
-        if($request->category == 1){
+        // if($request->category == 1){
 
-            MotorCustomeValues::where('ads_id', $id)
-            ->update([
-                'make_id'           => $request->make,
-                'model_id'          => $request->model,
-                // 'varient_id'        => $request->varient,
-                'registration_year' => $request->registered_year,
-                'fuel_type'         => $request->fuel,
-                'transmission'      => $request->transmission,
-                'condition'         => $request->condition,
-                'milage'            => $request->mileage,
-            ]);
+        //     MotorCustomeValues::where('ads_id', $id)
+        //     ->update([
+        //         'make_id'           => $request->make,
+        //         'model_id'          => $request->model,
+        //         // 'varient_id'        => $request->varient,
+        //         'registration_year' => $request->registered_year,
+        //         'fuel_type'         => $request->fuel,
+        //         'transmission'      => $request->transmission,
+        //         'condition'         => $request->condition,
+        //         'milage'            => $request->mileage,
+        //     ]);
 
-            MotorFeatures::where('ads_id', $id)
-            ->delete();
+        //     MotorFeatures::where('ads_id', $id)
+        //     ->delete();
 
-            if($request->features){
+        //     if($request->features){
 
-                foreach($request->features as $feature1){
+        //         foreach($request->features as $feature1){
                     
-                    $feature            = new MotorFeatures();
-                    $feature->ads_id    = $ad->id;
-                    $feature->value     = $feature1;
-                    $feature->save();
-                }
-            }
-        }
-        elseif($request->category == 2){
+        //             $feature            = new MotorFeatures();
+        //             $feature->ads_id    = $ad->id;
+        //             $feature->value     = $feature1;
+        //             $feature->save();
+        //         }
+        //     }
+        // }
+        // elseif($request->category == 2){
 
-            if($request->parking == 'Parking'){
-                $parking = 1;
-            }
-            else{
-                $parking = 0;
-            }
+        //     if($request->parking == 'Parking'){
+        //         $parking = 1;
+        //     }
+        //     else{
+        //         $parking = 0;
+        //     }
 
-            PropertyRendCustomeValues::where('ads_id', $id)
-            ->update([
-                'size'          => $request->size,
-                'room'          => $request->rooms,
-                'furnished'     => $request->furnished,
-                'building_type' => $request->building,
-                'parking'       => $parking,
-            ]);
-        }
-        elseif($request->category == 3){
+        //     PropertyRendCustomeValues::where('ads_id', $id)
+        //     ->update([
+        //         'size'          => $request->size,
+        //         'room'          => $request->rooms,
+        //         'furnished'     => $request->furnished,
+        //         'building_type' => $request->building,
+        //         'parking'       => $parking,
+        //     ]);
+        // }
+        // elseif($request->category == 3){
 
-            if($request->parking == 'Parking'){
-                $parking = 1;
-            }
-            else{
-                $parking = 0;
-            }
+        //     if($request->parking == 'Parking'){
+        //         $parking = 1;
+        //     }
+        //     else{
+        //         $parking = 0;
+        //     }
 
-            PropertySaleCustomeValues::where('ads_id', $id)
-            ->update([
-                'size'          => $request->size,
-                'room'          => $request->rooms,
-                'furnished'     => $request->furnished,
-                'building_type' => $request->building,
-                'parking'       => $parking,
-            ]);
+        //     PropertySaleCustomeValues::where('ads_id', $id)
+        //     ->update([
+        //         'size'          => $request->size,
+        //         'room'          => $request->rooms,
+        //         'furnished'     => $request->furnished,
+        //         'building_type' => $request->building,
+        //         'parking'       => $parking,
+        //     ]);
 
-        }
+        // }
 
         if($request->hasFile('image')){
 
@@ -1111,6 +1140,10 @@ class AdsController extends Controller
             'accept_at'    => \DB::raw('CURRENT_TIMESTAMP'),
             'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
         ]);
+        $lastpayment=Payment::where('ads_id',$id)->latest()->first();
+        // return $lastpayment;
+         $lastpayment->status="payment accepted";
+         $lastpayment->update();
 
         session()->flash('success', 'Ad has been accepted');
         return redirect()->route('ads.index');
@@ -1123,6 +1156,10 @@ class AdsController extends Controller
             'status'    => Status::ACTIVE,
             'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
         ]);
+        $lastpayment=Payment::where('ads_id',$id)->latest()->first();
+        // return $lastpayment;
+         $lastpayment->status="payment accepted";
+         $lastpayment->update();
 
         session()->flash('success', 'Ad has been activated');
         return redirect()->route('ads.index');
@@ -1138,10 +1175,11 @@ class AdsController extends Controller
 
     public function adRequestIndex(){
 
-        $adsRequest = Ads::where('status', Status::REQUEST)
+        $adsRequest = Ads::whereIn('status', [Status::REQUEST,Status::REREQUEST])
+        ->where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->paginate(10);
-
+//    return Status::REREQUEST;
         $reason = RejectReason::where('status', Status::ACTIVE)
         ->where('type', 0)
         ->orderBy('reson')
@@ -1179,27 +1217,73 @@ class AdsController extends Controller
                // return $request;
 
         $user = User::find($request->user_id);
-        $user->wallet=$request->wallet;
-        $user->update();
-        session()->flash('success', 'Wallet Updated Successfully!');
-        return back();
+        if($user->wallet>$request->cutwallet || $request->cutwallet==0){
+            $user->wallet=$request->wallet+$request->addwallet-$request->cutwallet;
+            $user->update();
+
+            Ads::where('id', $request->ad_id)
+            ->update([
+                'status'    => Status::ACTIVE,
+                'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
+            ]);
+            session()->flash('success', 'Ad has been activated');
+            return redirect()->route('ads.index');
+        }
+        else{
+            session()->flash('error', 'invalid wallet amount');
+            return back();
+        }
+
+       
+       
     }
 
     public function adRequestDocument($id){
 
         $ad = Ads::where('id', $id)
         ->first();
-        return view('ads.request.ad_request_document', compact('ad'));
+        $ads=Ads::where('customer_id',$ad->customer_id)->get()->pluck('id');
+        $payments=Payment::whereIn('ads_id',$ads)->where('parent','!=',0)->with('Ad')->get();
+
+        $reason = RejectReason::where('status', Status::ACTIVE)
+        ->where('type', 0)
+        ->orderBy('reson')
+        ->get();
+      // return $ad;
+        return view('ads.request.ad_request_document', compact('ad','reason','payments'));
     }
 
     public function adReject(Request $request){
+      //  return $request;
+      $ad=Ads::find($request->ad_id);
 
-        Ads::where('id', $request->ad_id)
+     // return $ad;
+      if($ad->featured_flag==true){
+        $lastpayment=Payment::where('ads_id',$request->ad_id)->latest()->first();
+        // return $lastpayment;
+         $lastpayment->status="payment rejected";
+         $lastpayment->update();
+      }
+     
+
+       Ads::where('id', $request->ad_id)
         ->update([
             'status'            => Status::REJECTED,
             'reject_reason_id'  => $request->reason,
         ]);
 
+       
+
+        $ad=Ads::find($request->ad_id);
+       
+        $reason=RejectReason::find($request->reason);
+        $data = [
+            'name'  => $ad->title,
+            'reason'   => $reason->reson,
+            'description'=>$request->description,
+        ];
+      
+        Mail::to($ad->User->email)->send(new AdsReject($data));
         session()->flash('success', 'Ad has been rejected');
         return redirect()->route('ad_request.index');
     }
@@ -1251,6 +1335,17 @@ class AdsController extends Controller
         ->update([
             'status'    => 1,
         ]);
+    }
+
+    public function jobRequest(){
+        $datas=JobDocument::select('ads_id')->groupBy('ads_id')->get();
+      //  return $datas;
+        return view('ads.jobs.job_enqiry_list',compact('datas'));
+    }
+    public function jobRequestDocs($id){
+        $datas=JobDocument::where('ads_id',$id)->get();
+      //  return $datas;
+        return view('ads.jobs.document_list',compact('datas'));
     }
 
 

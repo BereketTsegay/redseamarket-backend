@@ -25,7 +25,7 @@ class BannerController extends Controller
 
         $request->validate([
             'name'      => 'required',
-            'country'   => 'required',
+            'country'   => 'required|unique:banners,country_id',
             'image'     => 'required|mimes:png,jpg,jpeg|dimensions:width=1920,height=506',
         ]);
 

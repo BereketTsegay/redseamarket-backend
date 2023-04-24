@@ -29,7 +29,7 @@
                                 <th>Status</th>
                                 <th>Action</th>
                                 <th>Add to Category</th>
-                                <th>Subcategorys</th>
+                                <th>Subcategories</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -102,7 +102,7 @@
           {{-- </button> --}}
             </div>
             <div class="modal-body">
-                Are you sure, do you want to delete?
+                Do you want to delete?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

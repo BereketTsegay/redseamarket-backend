@@ -50,7 +50,7 @@ class VarientMstController extends Controller
         $varient_mst->status           = $status;
         $varient_mst->save();
 
-        session()->flash('success', 'VarientMst has been created');
+        session()->flash('success', 'Variant has been created');
         return redirect()->route('varient_mst.index');
 
     }
@@ -92,7 +92,7 @@ class VarientMstController extends Controller
             'status'            => $status
         ]);
 
-        session()->flash('success', 'VarientMst has been updated');
+        session()->flash('success', 'Variant has been updated');
         return redirect()->route('varient_mst.index');
     }
 
@@ -100,7 +100,7 @@ class VarientMstController extends Controller
 
         VarientMst::where('id', $id)->delete();
 
-        session()->flash('success', 'VarientMst has been deleted');
+        session()->flash('success', 'Variant has been deleted');
         return redirect()->route('varient_mst.index');
     }
 

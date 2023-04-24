@@ -50,17 +50,25 @@
                                     @endif
                                 </div>
                                 <div class="row">
-                                    <p class="col-md-6">Price :</p>
+                                    <p class="col-md-6">Price($) :</p>
                                     <p class="col-md-6">{{ $ad->price }}</p>
                                 </div>
-                                @if($ad->featured_flag && $ad->Payment->payment_type != 0)
+                                @if($ad->Payment)
+                                <div class="row">
+                                    <p class="col-md-6">featured payment($) :</p>
+                                    <p class="col-md-6">{{ $ad->Payment->amount }}</p>
+                                </div>
+                               @endif
+                                {{-- @if($ad->featured_flag && $ad->Payment->payment_type != 0)
                                     @if($ad->Payment) 
                                         <div class="row">
                                             <p class="col-md-6">Payment Document :</p>
+                                            @if($ad->Payment->document)
                                             <p class="col-md-6"><a href="{{ asset($ad->Payment->document ? $ad->Payment->document : '/no-document') }}" target='blank'>View Document</a></p>
+                                            @endif
                                         </div>
                                     @endif
-                                @endif
+                                @endif --}}
                                 <div class="row">
                                     <p class="col-md-6">Status :</p>
                                     <p class="col-md-6">{!! $ad->status == 1 ? '<span class="text-success">Active</span>' : '<span class="text-secondary">Disabled</span>' !!}</p>
@@ -271,7 +279,7 @@
           {{-- </button> --}}
             </div>
             <div class="modal-body">
-                Are you sure, do you want to delete?
+                Do you want to delete?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -31,6 +31,10 @@ use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 use App\Models\AdsCountry;
+use App\Models\Category;
+use App\Models\JobDocument;
+use AmrShawky\LaravelCurrency\Facade\Currency;
+use Illuminate\Support\Str;
 
 class OtherController extends Controller
 {
@@ -102,11 +106,11 @@ class OtherController extends Controller
 
     public function myAds(){
 
-        // try{
+        try{
 
-            $myAds = tap(Ads::where('customer_id', Auth::user()->id)
+            $myAds = tap(Ads::with('Category')->where('customer_id', Auth::user()->id)
             ->orderBy('created_at', 'desc')
-            ->where('status', '!=', Status::REJECTED)
+            // ->where('status', '!=', Status::REJECTED)
             ->where('delete_status', '!=', Status::DELETE)
             ->paginate(12), function ($paginatedInstance){
                 return $paginatedInstance->getCollection()->transform(function($a){
@@ -160,13 +164,13 @@ class OtherController extends Controller
                 'ads'       => $myAds,
             ], 200);
 
-        // }
-        // catch(\Exception $e){
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function favouriteStoreOrRemove(Request $request){
@@ -225,7 +229,8 @@ class OtherController extends Controller
     }
 
     public function searchAds(Request $request){
-        
+        $search_key = $request->search_key ?? null;
+        $country=$request->country ?? 1;
         try{
             
             // $rules = [
@@ -250,64 +255,102 @@ class OtherController extends Controller
             $longitude = $request->longitude;
 
             $radius = 100; // Km
+            $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
+             //return $countryAds;
 
-            $myAds = Ads::where('status', Status::ACTIVE)
+            $myAds = Ads::select('ads.*')
+            ->join('ads_countries','ads_countries.ads_id','ads.id')
+            ->where('ads_countries.country_id',$request->country)
+            ->where('ads.status', Status::ACTIVE)
+           
             // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
             //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             // ->having('distance', '<=', $radius)
-            ->where('delete_status', '!=', Status::DELETE);
+            ->whereIn('ads.id', $countryAds)
+            ->where('ads.delete_status', '!=', Status::DELETE)
+            ->where('ads.title', 'like', '%'.$search_key.'%')
+            ->with(['Category','Subcategory']);
+            // ->where('ads.canonical_name', 'like', '%'.$search_key.'%');
+            // ->where('description', 'like', '%'.$search_key.'%');
+
+            // ->where('category.name','like', '%'.$search_key.'%');
+            // ->where('category.name','like', '%'.$search_key.'%');
+           //   return $myAds->get();
+
 
             if($latitude != 0 && $longitude != 0){
 
-                $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius);
+                // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius);
             }
 
-            if(isset($request->country)){
-                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
-
-                $myAds->whereIn('id', $countryAds);
-            }
+            // if(isset($request->country)){
+            //     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+            //   //  return $countryAds;
+            //     $myAds->whereIn('id', $countryAds);
+            // }
 
             if(isset($request->city)){
 
-                $myAds->where('city_id', $request->city);
+                $myAds->where('ads.city_id', $request->city);
             }
 
             if(isset($request->category)){
-                $myAds->where('category_id', $request->category);
+                $myAds->where('ads.category_id', $request->category);
             }
 
             if(isset($request->subcategory)){
-                $myAds->where('subcategory_id', $request->subcategory);
+                $myAds->where('ads.subcategory_id', $request->subcategory);
+            }
+            if(isset($request->area)){
+                $myAds->where('ads.area', $request->area);
+            }
+            if(isset($request->subArea)){
+                $myAds->where('ads.sub_area', $request->subArea);
             }
 
             if($request->search_key){
-                $myAds->where(function($a) use($request){
-                    $a->orwhere('title', 'like', '%'.$request->search_key.'%')
-                    ->orwhere('canonical_name', 'like', '%'.$request->search_key.'%');
-                });
+
+                // $myAds->where(function($a) use($request){
+                //     $a->where('title', 'like', '%'.$request->search_key.'%')
+                //     ->where('canonical_name', 'like', '%'.$request->search_key.'%');
+                // })
+                
+                // $myAds->WhereHas('Category', function ($query) use ($request) {
+                //     $query->where('name', 'like','%'.$request->search_key.'%');
+                // })
+                // ->WhereHas('Subcategory', function ($query) use ($request) {
+                //     $query->where('name', 'like','%'.$request->search_key.'%');
+                // });
+               
             }
+
+         
 
             if(isset($request->seller)){
 
                 if($request->seller == 0 || $request->seller == '0'){
-                    $myAds->where('featured_flag', 0);
+                    $myAds->where('ads.featured_flag', 0);
                 }
                 else{
-                    $myAds->where('featured_flag', 1);
+                    $myAds->where('ads.featured_flag', 1);
                 }
             }
+            if($request->priceFrom && $request->priceTo){
+                $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo])->where('ads_countries.country_id',$request->country);
 
+            }
             if($request->priceFrom){
-                $myAds->where('price', '>=', $request->priceFrom);
+                $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
             }
 
             if($request->priceTo){
-                $myAds->where('price', '<=', $request->priceTo);
+                $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
             }
-
+            $myAds->orderBy('ads.created_at','DESC');
+          
+           
             $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                 return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -410,32 +453,43 @@ class OtherController extends Controller
 
             $radius = 100; // Km
 
-            $myAds = Ads::where('status', Status::ACTIVE)
-            ->where('category_id', 1)
+            $myAds = Ads::select('ads.*')
+            ->join('ads_countries','ads_countries.ads_id','ads.id')
+            ->where('ads_countries.country_id',$request->country)
+            ->where('ads.status', Status::ACTIVE)
+            ->where('ads.category_id', 1)
+            
             // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
             //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             // ->having('distance', '<=', $radius)
-            ->where('delete_status', '!=', Status::DELETE);
+            ->where('ads.delete_status', '!=', Status::DELETE);
 
             if($latitude != 0 && $longitude != 0){
 
-                $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                ->having('distance', '<=', $radius);
+                // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius);
             }
 
             if($request->city){
-                $myAds->where('city_id', $request->city);
+                $myAds->where('ads.city_id', $request->city);
             }
 
             if($request->subcategory){
-                $myAds->where('subcategory_id', $request->subcategory);
+                $myAds->where('ads.subcategory_id', $request->subcategory);
             }
 
             if($request->country){
-                $myAds->where('country_id', $request->country);
+                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                //return $countryAds;
+                $myAds->whereIn('ads.id', $countryAds);
             }
-
+            if(isset($request->area)){
+                $myAds->where('ads.area', $request->area);
+            }
+            if(isset($request->subArea)){
+                $myAds->where('ads.sub_area', $request->subArea);
+            }
             if($request->condition){
                 $myAds->with(['MotoreValue' => function($q) use($request){
                     $q->where('condition', $request->condition);
@@ -456,14 +510,14 @@ class OtherController extends Controller
             }
 
             if($request->priceFrom && $request->priceTo){
-                $myAds->where('price', '>=', $request->priceFrom)
-                ->where('price', '<=', $request->priceTo);
+                $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo])->where('ads_countries.country_id',$request->country);
+
             }
             elseif($request->priceFrom){
-                $myAds->where('price', '>=', $request->priceFrom);
+                $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
             }
             elseif($request->priceTo){
-                $myAds->where('price', '<=', $request->priceTo);;
+                $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
             }
 
             if($request->yearFrom && $request->yearTo){
@@ -523,12 +577,14 @@ class OtherController extends Controller
             if(isset($request->seller)){
                 
                 if($request->seller == 0){
-                    $myAds->where('featured_flag', 0);
+                    $myAds->where('ads.featured_flag', 0);
                 }
                 else{
-                    $myAds->where('featured_flag', '!=', 0);
+                    $myAds->where('ads.featured_flag', '!=', 0);
                 }
             }
+           
+            $myAds->orderBy('ads.id','DESC');
 
             $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                 return $paginatedInstance->getCollection()->transform(function($a){
@@ -605,6 +661,165 @@ class OtherController extends Controller
                 'message'   => 'Something went wrong',
             ], 301);
         }
+    }
+
+    public function getJobList(Request $request){
+        $search_key = $request->search_key ?? null;
+
+        // try{
+
+         //   $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+
+            // $rules = [
+            //     'latitude'      => 'required',
+            //     'longitude'     => 'required',
+            // ];
+    
+            // $validate = Validator::make($request->all(), $rules);
+    
+            // if($validate->fails()){
+    
+            //     return response()->json([
+            //         'status'    => 'error',
+            //         'message'   => 'Invalid request',
+            //         'code'      => 400,
+            //         'errors'    => $validate->errors(),
+            //     ], 200);
+            // }
+
+            $latitude = $request->latitude;
+            $longitude = $request->longitude;
+
+            $radius = 100; // Km
+
+            $myAds = Ads::select('ads.*')
+            ->join('ads_countries','ads_countries.ads_id','ads.id')
+            ->where('ads_countries.country_id',$request->country)
+            ->where('ads.status', Status::ACTIVE)
+            ->where('ads.category_id',$request->category)
+            ->where('ads.title', 'like', '%'.$search_key.'%')
+            ->where('ads.delete_status', '!=', Status::DELETE);
+           // return $myAds->get();
+            if($latitude != 0 && $longitude != 0){
+
+                // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                // ->having('distance', '<=', $radius);
+            }
+
+            if($request->city){
+                $myAds->where('ads.city_id', $request->city);
+            }
+
+            if($request->subcategory){
+                $myAds->where('ads.subcategory_id', $request->subcategory);
+            }
+
+            if($request->country){
+                $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                //return $countryAds;
+                $myAds->whereIn('ads.id', $countryAds);
+            }
+            
+            if(isset($request->area)){
+                $myAds->where('ads.area', $request->area);
+            }
+            if(isset($request->subArea)){
+                $myAds->where('ads.sub_area', $request->subArea);
+            }
+
+            if($request->priceFrom && $request->priceTo){
+                $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
+                // $myAds->where('price', '>=', $request->priceFrom)
+                // ->where('price', '<=', $request->priceTo);
+            }
+            elseif($request->priceFrom){
+                $myAds->where('ads_countries.price', '>=', $request->priceFrom);
+            }
+            elseif($request->priceTo){
+                $myAds->where('ads_countries.price', '<=', $request->priceTo);
+            }
+
+          
+            $myAds->orderBy('ads.id','DESC');
+
+
+           
+            $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
+                return $paginatedInstance->getCollection()->transform(function($a){
+
+                    $a->image = array_filter([
+                        $a->Image->map(function($q) use($a){
+                            $q->image;
+                            unset($q->ads_id, $q->img_flag);
+                            return $q;
+                        }),
+                    ]);
+
+                    $a->country_name = $a->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                    $a->state_name = $a->State->name;
+                    $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                    $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+
+                    if($a->category_id == 1){
+                        $a->MotoreValue;
+                        $a->make = $a->MotoreValue->Make->name;
+                        $a->model = $a->MotoreValue->Model->name;
+                        $a->MotorFeatures;
+    
+                        unset($a->MotoreValue->Make, $a->MotoreValue->Model);
+                    }
+                    elseif($a->category_id == 2){
+                        $a->PropertyRend;
+                    }
+                    elseif($a->category_id ==3){
+                        $a->PropertySale;
+                    }
+
+                    if($a->city_id != 0){
+                        $a->city_name = $a->City->name;
+                    }
+                    else{
+                        $a->city_name = $a->State->name;
+                    }
+                    $a->CustomValue->map(function($c){
+                        
+                        if($c->Field->description_area_flag == 0){
+                            $c->position = 'top';
+                            $c->name = $c->Field->name;
+                        }
+                        elseif($c->Field->description_area_flag == 1){
+                            $c->position = 'details_page';
+                            $c->name = $c->Field->name;
+                        }
+                        else{
+                            $c->position = 'none';
+                            $c->name = $c->Field->name;
+                        }
+                        unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                        return $c;
+                    });
+
+                    unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                    return $a;
+                });
+            });
+
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Showing result',
+                'code'      => 200,
+                'ads'       => $myAds,
+            ], 200);
+
+        // }
+        // catch(\Exception $e){
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function getCountry(){
@@ -711,7 +926,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'code'      => 200,
-                'message'   => 'Your enquiry has been plced.',
+                'message'   => 'Your enquiry has been placed.',
             ], 200);
             }
 //        }
@@ -726,7 +941,6 @@ class OtherController extends Controller
     }
 
     public function getCategoryAds(Request $request){
-
         $rules = [
             'category'    => 'required',
             // 'latitude'          => 'required',
@@ -757,43 +971,59 @@ class OtherController extends Controller
                 $city = City::where('id', $request->city)
                 ->first();
             
-                $myAds = Ads::where(function($a) use($request, $city){
-                    $a->orwhere('city_id', $request->city)
+                $myAds = Ads::select('ads.*')
+                ->join('ads_countries','ads_countries.ads_id','ads.id')
+                ->where('ads_countries.country_id',$request->country)
+                ->where(function($a) use($request, $city){
+                    $a->orwhere('ads.city_id', $request->city)
                     ->orwhere(function($a) use($city){
-                        $a->where('city_id', 0)
-                        ->where('state_id', $city->state_id);
+                        $a->where('ads.city_id', 0)
+                        ->where('ads.state_id', $city->state_id);
                     });
                 })
                 // selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                 //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 // ->having('distance', '<=', $radius)
-                ->where('status', Status::ACTIVE)
-                ->where('category_id', $request->category)
-                ->where('delete_status', '!=', Status::DELETE);
+                ->where('ads.status', Status::ACTIVE)
+                ->where('ads.category_id', $request->category)
+                ->where('ads.delete_status', '!=', Status::DELETE);
 
                 if($latitude != 0 && $longitude != 0){
 
-                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                    ->having('distance', '<=', $radius);
+                    // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    // ->having('distance', '<=', $radius);
                 }
 
                 if(isset($request->country)){
                     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $myAds->whereIn('id', $countryAds);
+                    $myAds->whereIn('ads.id', $countryAds);
                 }
-
+               
                 if(isset($request->seller)){
-                    $myAds->where('featured_flag', $request->seller);
+                    $myAds->where('ads.featured_flag', $request->seller);
                 }
-                if(isset($request->priceFrom)){
-                    $myAds->where('price', '>=', $request->priceFrom);
+                if(isset($request->area)){
+                   
+                    $myAds->where('ads.area', $request->area);
                 }
-                if(isset($request->priceTo)){
-                    $myAds->where('price', '<=', $request->priceTo);
+                if(isset($request->subArea)){
+                    $myAds->where('ads.sub_area', $request->subArea);
                 }
+                if($request->priceFrom && $request->priceTo){
+                    $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
+                    
+                }
+                // elseif(isset($request->priceFrom)){
+                //     $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
+                // }
+                // else{
+                //     $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
+                // }
 
+                $myAds->groupBy('ads.id');
+                $myAds->orderBy('ads.id','DESC');
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -858,12 +1088,15 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = Ads::where('status', Status::ACTIVE)
+                $myAds = Ads::select('ads.*')
+                ->join('ads_countries','ads_countries.ads_id','ads.id')
+                ->where('ads_countries.country_id',$request->country)
+                ->where('ads.status', Status::ACTIVE)
                 // selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                 //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 // ->having('distance', '<=', $radius)
-                ->where('category_id', $request->category)
-                ->where('delete_status', '!=', Status::DELETE);
+                ->where('ads.category_id', $request->category)
+                ->where('ads.delete_status', '!=', Status::DELETE);
 
                 if($latitude != 0 && $longitude != 0){
 
@@ -875,20 +1108,31 @@ class OtherController extends Controller
                 if(isset($request->country)){
                     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $myAds->whereIn('id', $countryAds);
+                    $myAds->whereIn('ads.id', $countryAds);
                 }
 
                 if(isset($request->seller)){
-                    $myAds->where('featured_flag', $request->seller);
+                    $myAds->where('ads.featured_flag', $request->seller);
                 }
-
-                if(isset($request->priceFrom)){
-                    $myAds->where('price', '>=', $request->priceFrom);
+                if(isset($request->area)){
+                   
+                    $myAds->where('ads.area', $request->area);
                 }
-                if(isset($request->priceTo)){
-                    $myAds->where('price', '<=', $request->priceTo);
+                if(isset($request->subArea)){
+                    $myAds->where('ads.sub_area', $request->subArea);
                 }
-
+                if($request->priceFrom && $request->priceTo){
+                    $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
+                    
+                }
+                // if(isset($request->priceFrom)){
+                //     $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
+                // }
+                // if(isset($request->priceTo)){
+                //     $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
+                // }
+              
+                $myAds->orderBy('ads.id','DESC');
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -1013,33 +1257,37 @@ class OtherController extends Controller
                 $city = City::where('id', $request->city)
                 ->first();
             
-                $myAds = Ads::whereIn('subcategory_id', array_values($array))
+                $myAds = Ads::select('ads.*')
+                ->join('ads_countries','ads_countries.ads_id','ads.id')
+                ->where('ads_countries.country_id',$request->country)
+                ->whereIn('ads.subcategory_id', array_values($array))
                 // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                 //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 // ->having('distance', '<=', $radius)
                 ->where(function($a) use($request, $city){
-                    $a->orwhere('city_id', $request->city)
+                    $a->orwhere('ads.city_id', $request->city)
                     ->where(function($a) use($city){
-                        $a->where('city_id', 0)
-                        ->where('state_id', $city->state_id);
+                        $a->where('ads.city_id', 0)
+                        ->where('ads.state_id', $city->state_id);
                     });
                 })
-                ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE);
+                ->where('ads.status', Status::ACTIVE)
+                ->where('ads.delete_status', '!=', Status::DELETE);
 
                 if($latitude != 0 && $longitude != 0){
 
-                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                    ->having('distance', '<=', $radius);
+                    // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    // ->having('distance', '<=', $radius);
                 }
 
                 if(isset($request->country)){
                     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $myAds->whereIn('id', $request->country);
+                    $myAds->whereIn('ads.id', $request->country);
                 }
-
+               
+                $myAds->orderBy('ads.id','DESC');
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -1103,26 +1351,30 @@ class OtherController extends Controller
             }
             else{
 
-                $myAds = Ads::whereIn('subcategory_id', array_values($array))
+                $myAds = Ads::select('ads.*')
+                ->join('ads_countries','ads_countries.ads_id','ads.id')
+                ->where('ads_countries.country_id',$request->country)
+                ->whereIn('ads.subcategory_id', array_values($array))
                 // ->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
                 //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 // ->having('distance', '<=', $radius)
-                ->where('status', Status::ACTIVE)
-                ->where('delete_status', '!=', Status::DELETE);
+                ->where('ads.status', Status::ACTIVE)
+                ->where('ads.delete_status', '!=', Status::DELETE);
 
                 if($latitude != 0 && $longitude != 0){
 
-                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                    ->having('distance', '<=', $radius);
+                    // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
+                    //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+                    // ->having('distance', '<=', $radius);
                 }
 
                 if(isset($request->country)){
                     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $myAds->whereIn('id', $countryAds);
+                    $myAds->whereIn('ads.id', $countryAds);
                 }
-
+               
+                $myAds->orderBy('ads.id','DESC');
                 $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
@@ -1323,10 +1575,11 @@ class OtherController extends Controller
                 'country'       => $request->country,
             ],
         ]);
+       // 'currency'              => $request->currency,
 
         $intent = PaymentIntent::create([
-            'amount'                => $request->amount,
-            'currency'              => $request->currency,
+            'amount'                => round($request->amount*100),
+            'currency'              => 'usd',
             'customer'              => $customer->id,
             'payment_method_types'  => ['card'],
             'description'           => 'Featured Ad payment',
@@ -1375,10 +1628,17 @@ class OtherController extends Controller
             $currency = CurrencyCode::where('country_id', $request->country)
             ->first();
 
+           $usdval= Currency::convert()
+                ->from($currency->currency_code)
+                ->to('USD')
+                ->round(5)
+                ->get();
+
             return response()->json([
                 'status'    => 'success',
                 'code'      => '200',
                 'currency'  => $currency,
+                'usdval'    => $usdval,
             ]);
         }
         catch(\Exception $e){
@@ -1433,15 +1693,30 @@ class OtherController extends Controller
 
         $subcategory = Subcategory::where('id', $request->subcategory)
         ->first();
+        if($subcategory){
+            return response()->json([
+                'status'    => 'success',
+                'code'      => '200',
+                'subcategory'   => $subcategory,
+            ]);
+        }
 
-        return response()->json([
-            'status'    => 'success',
-            'code'      => '200',
-            'subcategory'   => $subcategory,
-        ]);
+        else{
+
+            $category = Category::where('name', $request->category)
+            ->first();
+            return response()->json([
+                'status'    => 'success',
+                'code'      => '200',
+                'subcategory'   => $category,
+            ]);
+        }
+
+       
     }
 
     public function paymentDocument(Request $request){
+       //  dd($request->payment_slip);
 
         $rules = [
             'id'                => 'required|numeric',
@@ -1460,27 +1735,61 @@ class OtherController extends Controller
                 'errors'    => $validate->errors(),
             ], 200);
         }
+       $documents=[];
 
-        if($request->payment_slip){
+        if(count($request->payment_slip)!=0){
+            for($i=0;$i<count($request->payment_slip);$i++){
+            $file=$request->payment_slip[$i]['paymentSlip'];
+            $document_part = explode(";base64,", $request->payment_slip[$i]['paymentSlip']);
+           
+          //  $image_type_aux = explode("image/", $document_part[0]);
+            $ext=Str::afterLast($document_part[0], '/');
+          // return $document_part;
+      
 
-            $document_part = explode(";base64,", $request->payment_slip);
-            $image_type_aux = explode("image/", $document_part[0]);
+            if($ext=='pdf'){
+                $image_type_aux = explode("application/", $document_part[0]);
+            }
+            else{
+                $image_type_aux = explode("image/", $document_part[0]);
+            }
             $image_type = $image_type_aux[1];
+            
             $image_base64 = base64_decode($document_part[1]);
-
+           // return $image_base64;
             $document = uniqid() . '.' .$image_type;
 
             Storage::put('public/document/'.$document, $image_base64);
 
             $document = 'storage/document/'.$document;
 
+            array_push($documents,$document);
+
+        }
         }
 
-        Payment::where('ads_id', $request->id)
-        ->update([
-            'payment_id'    => $request->transaction_id,
-            'document'      => $document,
-        ]);
+        $parentpay=Payment::where('ads_id', $request->id)->where('parent',0)->first();
+
+        $ad=Ads::find($request->id);
+        $ad->status=0;
+        $ad->update();
+        $payment=new Payment();
+        $payment->ads_id=$request->id;
+        $payment->payment_id=$request->transaction_id;
+        $payment->amount=$parentpay->amount;
+        $payment->name=$parentpay->name;
+        $payment->email=$parentpay->email;
+        $payment->phone=$parentpay->phone;
+        $payment->payment_type=$parentpay->payment_type;
+        $payment->status=$parentpay->status;
+        $payment->document=json_encode($documents);
+        $payment->parent=$parentpay->id;
+        $payment->save();
+       
+        // ->update([
+        //     'payment_id'    => $request->transaction_id,
+        //     'document'      => $document,
+        // ]);
 
         return response()->json([
             'status'    => 'success',
@@ -1488,6 +1797,53 @@ class OtherController extends Controller
             'message'   => 'Document has been uploaded',
         ], 200);
     }
+
+    public function cvDocument(Request $request){
+      //  dd($request->all());
+        $rules = [
+            'id'                => 'required|numeric',
+            'cv_doc'      => 'required',
+        ];
+
+        $validate = Validator::make($request->all(), $rules);
+    
+        if($validate->fails()){
+
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Invalid request',
+                'code'      => 400,
+                'errors'    => $validate->errors(),
+            ], 200);
+        }
+
+        if($request->cv_doc){
+
+            $document_part = explode(";base64,", $request->cv_doc);
+            $doc_type_aux = explode("application/", $document_part[0]);
+            $doc_type = $doc_type_aux[1];
+            $doc_base64 = base64_decode($document_part[1]);
+
+            $document = uniqid() . '.' .$doc_type;
+
+            Storage::put('public/document/'.$document, $doc_base64);
+
+            $document = 'storage/document/'.$document;
+
+        }
+
+       $doc= new JobDocument();
+       $doc->ads_id = $request->id;
+       $doc->document = $document;
+       $doc->save();
+
+        return response()->json([
+            'status'    => 'success',
+            'code'      => '200',
+            'message'   => 'Document has been uploaded',
+        ], 200);
+    }
+
 
     public function privacyPolicy(){
 
@@ -1598,7 +1954,7 @@ class OtherController extends Controller
             return response()->json([
                 'status'    => 'success',
                 'code'      => 200,
-                'message'   => 'Your enquiry has been plced.',
+                'message'   => 'Your enquiry has been successfully placed.',
             ], 200);
 
         }
@@ -1612,4 +1968,31 @@ class OtherController extends Controller
         }
     }
 
+    public function allCategories(){
+
+        $data = Category::where('delete_status', '!=', Status::DELETE)
+        ->where('status', Status::ACTIVE)
+        ->with('Subcategory')->withCount('Subcategory')->orderBy('subcategory_count','DESC')->get();
+
+        return response()->json([
+            'status'    => 'success',
+            'data'   => $data,
+        ], 200);
+    }
+
+    public function Transactions(Request $request){
+
+       $user_id=Auth::user()->id;
+       $ads=Ads::where('customer_id',$user_id)->get()->pluck('id');
+       $payments=Payment::whereIn('ads_id',$ads)->where('parent','!=',0)->with('Ad')->orderBy('created_at','desc')->get()
+       ->map(function($payment){
+           $payment->document=json_decode($payment->document);
+           return $payment;
+       });
+
+       return response()->json([
+        'status'    => 'success',
+        'data'   => $payments,
+    ], 200);
+    }
 }

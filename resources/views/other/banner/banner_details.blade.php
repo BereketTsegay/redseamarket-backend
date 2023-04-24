@@ -23,7 +23,7 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Country :</p>
-                                    <p class="col-md-6">{{ $banner->Country->name }}</p>
+                                    <p class="col-md-6">@if($banner->Country){{ $banner->Country->name }}@endif</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Status :</p>

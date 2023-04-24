@@ -55,6 +55,12 @@ Route::group(['middleware' => ['revalidate']], function () {
 
         // });
 
+        // featured
+
+        Route::get('/featured', [App\Http\Controllers\FeaturedController::class, 'index'])->name('admin.featured');
+        Route::post('/featured/update', [App\Http\Controllers\FeaturedController::class, 'update'])->name('admin.featured.update');
+
+
         // Global
 
         Route::get('/global/state/get', [App\Http\Controllers\CategoryController::class, 'getState']);
@@ -77,7 +83,7 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::post('/users/update/{id}', [App\Http\Controllers\LoginController::class, 'userUpdate'])->name('user.update');
         Route::get('/users/ads/{type}/{id}', [App\Http\Controllers\LoginController::class, 'userAds'])->name('user.ads');
         Route::post('/users/change/password/{id}', [App\Http\Controllers\LoginController::class, 'userChangePassword'])->name('user.change.password');
-        Route::post('/users/delete/{id}', [App\Http\Controllers\UserRoleController::class, 'userDelete'])->name('user.delete');
+        Route::post('/users/delete/{id}', [App\Http\Controllers\LoginController::class, 'userDelete'])->name('user.delete');
 
         /* ========== Ads ========== */
         // MakeMst
@@ -101,12 +107,12 @@ Route::group(['middleware' => ['revalidate']], function () {
 
          // VarientMst
 
-         Route::get('/varient_mst', [App\Http\Controllers\VarientMstController::class, 'index'])->name('varient_mst.index');
-         Route::get('/varient_mst/create', [App\Http\Controllers\VarientMstController::class, 'create'])->name('varient_mst.create');
-         Route::post('/varient_mst/store', [App\Http\Controllers\VarientMstController::class, 'store'])->name('varient_mst.store');
-         Route::get('/varient_mst/edit/{id}', [App\Http\Controllers\VarientMstController::class, 'edit'])->name('varient_mst.edit');
-         Route::post('/varient_mst/update/{id}', [App\Http\Controllers\VarientMstController::class, 'update'])->name('varient_mst.update');
-         Route::post('/varient_mst/delete/{id}', [App\Http\Controllers\VarientMstController::class, 'delete'])->name('varient_mst.delete');
+         Route::get('/variant_mst', [App\Http\Controllers\VarientMstController::class, 'index'])->name('varient_mst.index');
+         Route::get('/variant_mst/create', [App\Http\Controllers\VarientMstController::class, 'create'])->name('varient_mst.create');
+         Route::post('/variant_mst/store', [App\Http\Controllers\VarientMstController::class, 'store'])->name('varient_mst.store');
+         Route::get('/variant_mst/edit/{id}', [App\Http\Controllers\VarientMstController::class, 'edit'])->name('varient_mst.edit');
+         Route::post('/variant_mst/update/{id}', [App\Http\Controllers\VarientMstController::class, 'update'])->name('varient_mst.update');
+         Route::post('/variant_mst/delete/{id}', [App\Http\Controllers\VarientMstController::class, 'delete'])->name('varient_mst.delete');
        
          //country
          Route::get('/countries', [App\Http\Controllers\ConntryController::class, 'CountryIndex'])->name('countries.index');
@@ -198,6 +204,8 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/ad/edit/{id}', [App\Http\Controllers\AdsController::class, 'edit'])->name('ads.edit');
         Route::post('/ad/update/{id}', [App\Http\Controllers\AdsController::class, 'update'])->name('ads.update');
         Route::post('/ad/delete/{id}', [App\Http\Controllers\AdsController::class, 'delete'])->name('ads.delete');
+        Route::get('/ad/job/request/list', [App\Http\Controllers\AdsController::class, 'jobRequest'])->name('job.index');
+        Route::get('/ad/job/request/documents/{id}', [App\Http\Controllers\AdsController::class, 'jobRequestDocs'])->name('job.documents');
 
         Route::get('/get/custom/field', [App\Http\Controllers\AdsController::class, 'getCustomField'])->name('ad.get.custom_field');
         Route::get('/get/master/dependency', [App\Http\Controllers\AdsController::class, 'getMasterDependency'])->name('ad.get.master.dependency');
@@ -246,6 +254,8 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::get('/testimonial/view/{id}', [App\Http\Controllers\TestimonialController::class, 'view'])->name('testimonial.view');
         Route::get('/testimonial/edit/{id}', [App\Http\Controllers\TestimonialController::class, 'edit'])->name('testimonial.edit');
         Route::post('/testimonial/update/{id}', [App\Http\Controllers\TestimonialController::class, 'update'])->name('testimonial.update');
+        Route::get('/testimonial/delete/{id}', [App\Http\Controllers\TestimonialController::class, 'delete'])->name('testimonial.delete');
+
 
         // Reson
 

@@ -15,6 +15,7 @@ class Status{
     const REJECTED = 2;
     const INACTIVE = 3;
     const REFUND = 4;
+    const REREQUEST = 5;
 
     // Image
     

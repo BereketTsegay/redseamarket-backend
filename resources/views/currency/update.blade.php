@@ -31,8 +31,8 @@
                                     </div>
 
                                     <div class="form-group my-2">
-                                        <label for="SortOrder">Currency Prifix</label>
-                                        <input type="text" name="currency_code" value=" {{ $data->currency_code }}" class="form-control @error('currency_code') is-invalid @enderror" placeholder="Currency Prifix" autocomplete="off">
+                                        <label for="SortOrder">Currency Prefix</label>
+                                        <input type="text" name="currency_code" value=" {{ $data->currency_code }}" class="form-control @error('currency_code') is-invalid @enderror" placeholder="Currency Prefix" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('currency_code')
                                                 {{ $message }}
@@ -59,7 +59,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group my-2">
-                                            <label for="SortOrder">Currency Value(1 Doller)</label>
+                                            <label for="SortOrder">Currency Value(1 USD)</label>
                                             <input type="text" name="currency_value" value=" {{ $data->value }}" class="form-control @error('currency_value') is-invalid @enderror" placeholder="Currency Prifix" autocomplete="off">
                                             <div class="invalid-feedback">
                                                 @error('currency_value')

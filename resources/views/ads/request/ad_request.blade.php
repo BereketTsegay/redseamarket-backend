@@ -57,7 +57,11 @@
                             @foreach ($adsRequest as $row)
                                 <tr>
                                     <th scope="row">{{ $i }}</th>
-                                    <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->created_at)) }}<br>
+                                    @if($row->status==5)
+                                     <p style="color:red;">Re-request ad</p>
+                                    @endif
+                                    </td>
                                     <td>{{ $row->Category->name }}</td>
                                     <td>{{ $row->title }}</td>
                                     <td>{{ $row->User->name }}</td>
@@ -72,9 +76,13 @@
                                                     <a class="mb-2" href="{{ route('ad_request.document', $row->id) }}" ><button class="btn btn-warning">View Document</button></a>
                                                 @endif
                                                 <a href="{{ route('ad_request.details', $row->id) }}" ><button class="btn btn-secondary my-1">View</button></a>
+                                                @if ($row->featured_flag && $row->Payment->payment_type == 0)
                                                 <form action="{{ route('ad.accept', $row->id) }}" method="POST">@csrf<button type="submit" class="btn btn-primary">Accept</button></form>
+                                                @endif
                                                 <button type="button" onclick="rejectAd({{$row->id}})" class="btn btn-danger my-1" data-toggle="modal" data-target="#rejectModal">Reject</button>
+                                                @if ($row->featured_flag && $row->Payment->payment_type != 0)
                                                 <button type="button" onclick="refundAd({{$row->id}})" class="btn btn-success my-1" data-toggle="modal" data-target="#refundModal">Refund</button>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>
@@ -208,14 +216,22 @@
                     <div class="container">
                         <div class="form-group">
                             <label for="Reason">Reason</label>
-                            <select name="reason" class="form-control" id="Reason">
+                            <select name="reason" class="form-control" id="Reason" required>
                                 <option value="">Select</option>
                                 @foreach ($reason as $row3)
                                     <option value="{{ $row3->id }}">{{ $row3->reson }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <input type="hidden" name="ad_id" value="" id="rejectAd_id">
+                        <div class="form-group">
+                            <label for="description">Note</label>
+                            <textarea name="description" class="form-control" id="description"  rows="3"></textarea>
+                        </div>
+                        <input type="hidden" name="ad_id" id="rejectAd_id">
+                        <div class="form-group" id="reson_description">
+                            
+                        </div>
+                        {{-- <input type="hidden" name="ad_id" value="" id="rejectAd_id"> --}}
                         <div class="form-group" id="reson_description">
                             
                         </div>
@@ -245,17 +261,15 @@
                     <div class="container">
                         <div class="form-group">
                             <label for="Reason">Reason</label>
-                            <select name="reason" class="form-control" id="Reason">
+                            <select name="reason" class="form-control" id="Reason" required>
                                 <option value="">Select</option>
                                 @foreach ($refund as $row4)
                                     <option value="{{ $row4->id }}">{{ $row4->reson }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <input type="hidden" name="ad_id" id="refundAd_id">
-                        <div class="form-group" id="reson_description">
-                            
-                        </div>
+
+                       
                     </div>
                 </div>
                 <div class="modal-footer">

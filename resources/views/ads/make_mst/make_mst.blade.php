@@ -5,18 +5,18 @@
     <main>
         <div class="container-fluid px-4">
             
-            <a href="{{ route('make_mst.create') }}"><button type="button" class="btn btn-primary float-end">Create MakeMaster</button></a>
+            <a href="{{ route('make_mst.create') }}"><button type="button" class="btn btn-primary float-end">Create Make Master</button></a>
             
-            <h2 class="mt-4">MakeMasters</h2>
+            <h2 class="mt-4">Make Masters</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">MakeMaster</li>
+                <li class="breadcrumb-item active">Make Master</li>
             </ol>
             
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    MakeMaster
+                    Make Master
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple" class="table table-striped table-bordered">
@@ -78,7 +78,7 @@
           {{-- </button> --}}
             </div>
             <div class="modal-body">
-                Are you sure, do you want to delete?
+                Do you want to delete?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

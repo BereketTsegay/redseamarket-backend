@@ -114,7 +114,7 @@
           {{-- </button> --}}
             </div>
             <div class="modal-body">
-                Are you sure, do you want to delete?
+                Do you want to delete?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -139,6 +139,9 @@
                         <div class="form-group my-2">
                             <label for="Name">Name</label>
                             <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="Name" placeholder="Name">
+                            @if($errors->has('name'))
+                            <div class="error">{{ $errors->first('name') }}</div>
+                        @endif
                         </div>
                         <div class="form-group my-2">
                             <label for="Description">Description</label>

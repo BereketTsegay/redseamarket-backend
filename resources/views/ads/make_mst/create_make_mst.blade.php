@@ -6,11 +6,11 @@
         <div class="container-fluid px-4">
             
             
-            <h2 class="mt-4">Create MakeMaster</h2>
+            <h2 class="mt-4">Create Make Master</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('make_mst.index') }}">MakeMaster</a></li>
-                <li class="breadcrumb-item active">Create MakeMaster</li>
+                <li class="breadcrumb-item"><a href="{{ route('make_mst.index') }}">Make Master</a></li>
+                <li class="breadcrumb-item active">Create Make Master</li>
             </ol>
             
             <div class="card mb-4">

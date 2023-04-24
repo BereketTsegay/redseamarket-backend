@@ -24,7 +24,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Currency Name</th>
-                                <th>Currency Prifix</th>
+                                <th>Currency Prefix</th>
                                 <th>Currency Value($1)</th>
                                 <th>Country</th>
                                 <th>Action</th>
@@ -78,7 +78,7 @@
           {{-- </button> --}}
             </div>
             <div class="modal-body">
-                Are you sure, do you want to delete?
+                Do you want to delete?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

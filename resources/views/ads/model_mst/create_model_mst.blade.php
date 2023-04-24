@@ -6,11 +6,11 @@
         <div class="container-fluid px-4">
             
             
-            <h2 class="mt-4">Create ModelMaster</h2>
+            <h2 class="mt-4">Create Model Master</h2>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('model_mst.index') }}">ModelMaster</a></li>
-                <li class="breadcrumb-item active">Create ModelMaster</li>
+                <li class="breadcrumb-item"><a href="{{ route('model_mst.index') }}">Model Master</a></li>
+                <li class="breadcrumb-item active">Create Model Master</li>
             </ol>
             
             <div class="card mb-4">

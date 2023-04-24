@@ -93,8 +93,8 @@ class CategoryController extends Controller
         $category->image            = $image;
         // $category->icon_class_id    = $request->icon_class;
         // $category->country_id       = $request->country;
-        // $category->state_id         = $request->state;
-        // $category->city_id          = $request->city;
+        $category->type         = $request->type;
+        $category->percentage          = $request->value;
         $category->sort_order       = $request->sort_order;
         $category->expire_days        = $request->expire_days;
         $category->status           = $status;
@@ -178,8 +178,9 @@ class CategoryController extends Controller
 
             $count = Category::where('display_flag', Status::ACTIVE)->where('delete_status', '!=', Status::DELETE)
             ->count();
-            
-            if($count <= 7){
+            $category = Category::where('id', $id)
+            ->first();
+            if($count <= 7 || $category->display_flag==1){
                 $display_flag = Status::ACTIVE;
             }
             else{
@@ -208,6 +209,8 @@ class CategoryController extends Controller
             // 'country_id'        => $request->country,
             // 'state_id'          => $request->state,
             // 'city_id'           => $request->city,
+            'type'         => $request->type,
+            'percentage'          => $request->value,
             'sort_order'        => $request->sort_order,
             'expire_days'        => $request->expire_days,
             'status'            => $status,

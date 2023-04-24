@@ -73,7 +73,7 @@
           {{-- </button> --}}
             </div>
             <div class="modal-body">
-                Are you sure, do you want to delete?
+                Do you want to delete?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -97,7 +97,7 @@
                     <div class="container">
                         <div class="form-group my-2">
                             <label for="Name">Name</label>
-                            <input type="text" name="name" class="form-control" id="Name" placeholder="Name">
+                            <input type="text" name="name" class="form-control" id="Name" placeholder="Name" value="{{old('name')}}">
                         </div>
                         <div class="form-group my-2">
                             <label for="Type">Country</label>
@@ -107,11 +107,17 @@
                                     <option value="{{ $row1->id }}">{{ $row1->name }}</option>
                                 @endforeach
                             </Select>
+                            @if($errors->has('country'))
+                                <div class="error">{{ $errors->first('country') }}</div>
+                            @endif
                         </div>
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
-                            <input type="file" name="image" class="form-control" id="Image">
+                            <input type="file" name="image" class="form-control" id="Image" value="{{old('image')}}">
                             <div class="text-danger">Image Width: 1920px, Height: 506px </div>
+                            @if($errors->has('image'))
+                            <div class="error">{{ $errors->first('image') }}</div>
+                        @endif
                         </div>
                         <div class="form-group my-2">
                             <label for="Status">Status</label>
