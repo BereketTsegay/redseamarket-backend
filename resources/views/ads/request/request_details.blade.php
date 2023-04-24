@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Transaction Id :</p>
-                                    <p class="col-md-6">{{ $ad->Payment->payment_id }}</p>
+                                    <p class="col-md-6">{{ $ad->Payment?$ad->Payment->payment_id:'' }}</p>
                                 </div>
                                 @if($ad->Payment)
                                 <div class="row">
