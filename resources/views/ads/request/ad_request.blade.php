@@ -72,7 +72,7 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                @if ($row->featured_flag && $row->Payment->payment_type != 0)
+                                                @if ($row->featured_flag && $row->Payment && $row->Payment->payment_type != 0)
                                                     <a class="mb-2" href="{{ route('ad_request.document', $row->id) }}" ><button class="btn btn-warning">View Document</button></a>
                                                 @endif
                                                 <a href="{{ route('ad_request.details', $row->id) }}" ><button class="btn btn-secondary my-1">View</button></a>
