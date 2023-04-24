@@ -59,7 +59,7 @@
                                     <p class="col-md-6">{{ $ad->Payment->amount }}</p>
                                 </div>
                                @endif
-                                @if($ad->featured_flag && $ad->Payment->payment_type != 0)
+                                @if($ad->featured_flag && $ad->Payment && $ad->Payment->payment_type != 0)
                                     @if($ad->Payment) 
                                         <div class="row">
                                             <p class="col-md-6">Payment Document :</p>
