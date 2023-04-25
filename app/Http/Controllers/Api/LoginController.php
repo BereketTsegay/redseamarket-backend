@@ -84,6 +84,7 @@ class LoginController extends Controller
                 'user'      => $user->name,
                 'token'     => $token,
                 'wallet'    => $user->wallet,
+                'email_verify' => $user->email_verified_flag,
             ], 200);
         }
         else{
