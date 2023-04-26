@@ -22,6 +22,7 @@ Route::post('/customer/city/list', [\App\Http\Controllers\Api\OtherController::c
 Route::post('/verify/email', [\App\Http\Controllers\Api\LoginController::class, 'vefifyEmail']);
 Route::post('/vefify/opt', [\App\Http\Controllers\Api\LoginController::class, 'verifyOtp']);
 Route::post('/forgotpassword/password/reset', [\App\Http\Controllers\Api\LoginController::class, 'passwordReset']);
+Route::post('/verify/resent/otp', [\App\Http\Controllers\Api\LoginController::class, 'newOtp']);
 
     // Ads Section
 Route::post('/customer/ads/get_details', [\App\Http\Controllers\Api\AdsController::class, 'getDetails']);  

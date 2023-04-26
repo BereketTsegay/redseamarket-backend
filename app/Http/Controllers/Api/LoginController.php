@@ -84,6 +84,7 @@ class LoginController extends Controller
                 'user'      => $user->name,
                 'token'     => $token,
                 'wallet'    => $user->wallet,
+                'email'     => $user->email,
                 'email_verify' => $user->email_verified_flag,
             ], 200);
         }
@@ -258,7 +259,7 @@ class LoginController extends Controller
 
                         return response()->json([
                             'status'    => 'success',
-                            'message'   => 'Registration Successful',
+                            'message'   => 'Verification Successful',
                             'code'      => '200',
                             'user'      => $user->name,
                             'token'     => $token,
@@ -666,6 +667,37 @@ class LoginController extends Controller
                 'message'   => 'Something went wrong',
             ], 301);
         }
+    }
+
+    public function newOtp(Request $request){
+
+        $uid = rand(000000, 999999);
+
+        Otp::where('email', $request->email)
+        ->update([
+            'expiry_status' => true,
+        ]);
+
+        $otp                = new Otp();
+        $otp->email         = $request->email;
+        $otp->otp           = $uid;
+        $otp->expiry_status = false;
+        $otp->attempt       = 0;
+        $otp->save();
+
+        $code = [
+            'name'  => $request->name,
+            'otp'   => $uid,
+        ];
+
+        Mail::to($request->email)->send(new VerifyEmail($code));
+
+       
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'Otp sent Successfuly',
+                'code'      => '200',
+            ], 200);
     }
 
 }
