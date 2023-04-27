@@ -29,7 +29,8 @@
                                             @enderror
                                         </div>
                                     </div>
-
+                                </div>
+                                    <div class="col-md-6">
                                     <div class="form-group my-2">
                                         <label for="SortOrder">Country Code</label>
                                         <input type="text" name="code" value="{{ old('code') }}" class="form-control @error('code') is-invalid @enderror" placeholder="code" autocomplete="off">
@@ -42,20 +43,51 @@
 
                                   
                                 </div>
-                                    <div class="col-md-6">
+                                    
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
                                     
                                        
-                                        <div class="form-group my-2">
-                                            <label for="SortOrder">Phone Code</label>
-                                            <input type="text" name="phonecode" value="{{ old('phonecode') }}" class="form-control @error('phonecode') is-invalid @enderror" placeholder="phone code" autocomplete="off">
-                                            <div class="invalid-feedback">
-                                                @error('phonecode')
-                                                    {{ $message }}
-                                                @enderror
-                                            </div>
+                                    <div class="form-group my-2">
+                                        <label for="SortOrder">Phone Code</label>
+                                        <input type="text" name="phonecode" value="{{ old('phonecode') }}" class="form-control @error('phonecode') is-invalid @enderror" placeholder="phone code" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('phonecode')
+                                                {{ $message }}
+                                            @enderror
                                         </div>
+                                    </div>
+                            </div>
+                                <div class="col-md-6">
+                                    
+                                       
+                                    <div class="form-group my-2">
+                                        <label for="SortOrder">Phone Number Length(for validation)</label>
+                                        <input type="number" name="phonelength" value="{{ old('phonelength') }}" class="form-control @error('phonelength') is-invalid @enderror" placeholder="length" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('phonelength')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                            </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="status"  id="flexCheckChecked" checked>
+                                        <label class="form-check-label" for="flexCheckChecked">
+                                         Active
+                                        </label>
+                                      </div>
                                 </div>
-                                
+
                             </div>
                             <button type="submit" class="btn btn-primary my-3">Create</button>
                         </form>

@@ -824,8 +824,7 @@ class OtherController extends Controller
 
     public function getCountry(){
         try{
-            $country = Country::orderBy('name')
-            ->get();
+            $country = Country::where('status',1)->orderBy('name')->get();
 
             return response()->json([
                 'status'    => 'success',
