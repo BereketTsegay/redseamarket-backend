@@ -85,4 +85,9 @@ class Ads extends Model
     public function Currency(){
         return $this->hasOne(CurrencyCode::class, 'id', 'country_id');
     }
+
+    public function Enquiries(){
+        return $this->hasMany(Enquiry::class, 'ads_id', 'id');
+    }
+
 }

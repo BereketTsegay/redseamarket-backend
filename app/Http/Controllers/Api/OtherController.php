@@ -33,6 +33,7 @@ use Stripe\Stripe;
 use App\Models\AdsCountry;
 use App\Models\Category;
 use App\Models\JobDocument;
+use App\Models\Enquiry as adEnq;
 use AmrShawky\LaravelCurrency\Facade\Currency;
 use Illuminate\Support\Str;
 
@@ -108,7 +109,7 @@ class OtherController extends Controller
 
         try{
 
-            $myAds = tap(Ads::with('Category')->where('customer_id', Auth::user()->id)
+            $myAds = tap(Ads::with('Category')->with('Enquiries')->where('customer_id', Auth::user()->id)
             ->orderBy('created_at', 'desc')
             // ->where('status', '!=', Status::REJECTED)
             ->where('delete_status', '!=', Status::DELETE)
@@ -1803,7 +1804,7 @@ class OtherController extends Controller
             'id'                => 'required|numeric',
             'cv_doc'      => 'required',
         ];
-
+        $user=Auth::user();
         $validate = Validator::make($request->all(), $rules);
     
         if($validate->fails()){
@@ -1834,6 +1835,7 @@ class OtherController extends Controller
        $doc= new JobDocument();
        $doc->ads_id = $request->id;
        $doc->document = $document;
+       $doc->user_id = $user->id;
        $doc->save();
 
         return response()->json([
@@ -1841,6 +1843,26 @@ class OtherController extends Controller
             'code'      => '200',
             'message'   => 'Document has been uploaded',
         ], 200);
+    }
+
+    public function checkDocument(Request $request){
+
+        $user=Auth::user();
+        $document=JobDocument::where('ads_id',$request->ads_id)->where('user_id',$user->id)->first();
+        if($document){
+            return response()->json([
+                'status'    => 1,
+                'code'      => '200',
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'status'    => 0,
+                'code'      => '200',
+            ], 200);
+        }
+
+        
     }
 
 
@@ -1992,6 +2014,17 @@ class OtherController extends Controller
        return response()->json([
         'status'    => 'success',
         'data'   => $payments,
+    ], 200);
+    }
+
+    public function adEnquirylist(Request $request){
+
+       // $user_id=Auth::user()->id;
+       $ads_enquiry=adEnq::where('ad_id',$request->ad_id)->get();
+
+       return response()->json([
+        'status'    => 'success',
+        'data'   => $ads_enquiry,
     ], 200);
     }
 }
