@@ -1845,7 +1845,8 @@ class OtherController extends Controller
         ], 200);
     }
 
-    public function checkDocument(Request $request){
+        public function checkDocument(Request $request){
+
 
         $user=Auth::user();
         $document=JobDocument::where('ads_id',$request->ads_id)->where('user_id',$user->id)->first();
