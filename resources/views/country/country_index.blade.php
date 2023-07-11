@@ -26,6 +26,7 @@
                                 <th>Country Name</th>
                                 <th>Country Code</th>
                                 <th>Country Phone Code</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -36,7 +37,7 @@
                                     <td>{{ $row->name }}</td>
                                     <td>{{ $row->code }}</td>
                                     <td>{{ $row->phonecode }}</td>
-
+                                    <td>  @if($row->status==1)<p style="color:green">Active<p> @else <p style="color:rgb(228, 11, 11)">Inactive<p>  @endif</td>
                                     <td>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -54,6 +55,7 @@
                                             </div>
                                         </div>
                                     </td>
+                                    
                                 </tr>
                             @endforeach
                         </tbody>

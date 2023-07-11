@@ -48,10 +48,10 @@
 
                                                     <a href="{{ route('country_currency.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                                    
-                                                    <button type="button" onclick="itemDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteItemModal">Delete</button>
+                                                    {{-- <button type="button" onclick="itemDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteItemModal">Delete</button>
                                                     <form id="delete_item_form{{$row->id}}" action="{{ route('country_currency.delete', $row->id) }}" method="POST">
                                                       @csrf
-                                                    </form>
+                                                    </form> --}}
                                                   
                                             </div>
                                         </div>

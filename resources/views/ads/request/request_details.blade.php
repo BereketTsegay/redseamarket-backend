@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Transaction Id :</p>
-                                    <p class="col-md-6">{{ $ad->Payment->payment_id }}</p>
+                                    <p class="col-md-6">{{ $ad->Payment?$ad->Payment->payment_id:'' }}</p>
                                 </div>
                                 @if($ad->Payment)
                                 <div class="row">
@@ -59,7 +59,7 @@
                                     <p class="col-md-6">{{ $ad->Payment->amount }}</p>
                                 </div>
                                @endif
-                                @if($ad->featured_flag && $ad->Payment->payment_type != 0)
+                                @if($ad->featured_flag && $ad->Payment && $ad->Payment->payment_type != 0)
                                     @if($ad->Payment) 
                                         <div class="row">
                                             <p class="col-md-6">Payment Document :</p>
@@ -147,7 +147,7 @@
                                         @endforeach
                                     </div>
                                     @endif
-                                @elseif ($ad->category_id == 2)
+                                @elseif (($ad->category_id == 2)&&($ad->PropertyRend))
                                     <div class="row">
                                         <p class="col-md-6">Size :</p>
                                         <p class="col-md-6">{{ $ad->PropertyRend->size }}</p>
@@ -169,7 +169,7 @@
                                         <p class="col-md-6">{{ $ad->PropertyRend->parking == 1 ? 'Yes' : 'No' }}</p>
                                     </div>
 
-                                @elseif ($ad->category_id == 3)
+                                @elseif (($ad->category_id == 3)&&($ad->PropertySale))
                                     <div class="row">
                                         <p class="col-md-6">Size :</p>
                                         <p class="col-md-6">{{ $ad->PropertySale->size }}</p>
@@ -233,7 +233,7 @@
                                     @endif
                                 @endforeach
                               @if($ad->featured_flag==1)
-                                @if($ad->Payment->document)
+                                @if($ad->Payment&&$ad->Payment->document)
                                     
                                 @else
                                     
