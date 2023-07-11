@@ -22,6 +22,7 @@ Route::post('/customer/city/list', [\App\Http\Controllers\Api\OtherController::c
 Route::post('/verify/email', [\App\Http\Controllers\Api\LoginController::class, 'vefifyEmail']);
 Route::post('/vefify/opt', [\App\Http\Controllers\Api\LoginController::class, 'verifyOtp']);
 Route::post('/forgotpassword/password/reset', [\App\Http\Controllers\Api\LoginController::class, 'passwordReset']);
+Route::post('/verify/resent/otp', [\App\Http\Controllers\Api\LoginController::class, 'newOtp']);
 
     // Ads Section
 Route::post('/customer/ads/get_details', [\App\Http\Controllers\Api\AdsController::class, 'getDetails']);  
@@ -67,6 +68,7 @@ Route::post('/customer/get/home/banner', [\App\Http\Controllers\Api\OtherControl
 
 // ad enquiry
 Route::post('/customer/ads/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquiry']);
+Route::post('/customer/get/ad/enquiry', [\App\Http\Controllers\Api\OtherController::class, 'adEnquirylist']);
 
 
 Route::post('/privacy/policy', [\App\Http\Controllers\Api\OtherController::class, 'privacyPolicy']);
@@ -78,7 +80,6 @@ Route::post('/contactus/enquiry', [\App\Http\Controllers\Api\OtherController::cl
 
 Route::post('/menu/list', [\App\Http\Controllers\Api\DashboardController::class, 'MenuList']);
 Route::get('/category/list', [\App\Http\Controllers\Api\OtherController::class, 'allCategories']);
-Route::post('/uploade/cv_document', [\App\Http\Controllers\Api\OtherController::class, 'cvDocument']);
 
 
 Route::get('/featured', [\App\Http\Controllers\Api\AdsController::class, 'featured']);
@@ -104,6 +105,8 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
     Route::post('/customer/ads/remove_image', [\App\Http\Controllers\Api\AdsController::class, 'removeImage']);
     Route::post('/customer/ad/delete', [\App\Http\Controllers\Api\AdsController::class, 'removeAd']);
+    Route::post('/uploade/cv_document', [\App\Http\Controllers\Api\OtherController::class, 'cvDocument']);
+    Route::post('/check/user/apply_document', [\App\Http\Controllers\Api\OtherController::class, 'checkDocument']);
 
 });
 

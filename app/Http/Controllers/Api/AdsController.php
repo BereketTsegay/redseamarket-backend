@@ -4955,7 +4955,7 @@ class AdsController extends Controller
     }
 
     public function jobRequestDocs(Request $request){
-        $datas=JobDocument::where('ads_id',$request->ads_id)->get();
+        $datas=JobDocument::with('User')->where('ads_id',$request->ads_id)->get();
       //  return $datas;
       return response()->json([
         'status'    => 'success',

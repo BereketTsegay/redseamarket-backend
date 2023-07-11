@@ -29,7 +29,8 @@
                                             @enderror
                                         </div>
                                     </div>
-
+                                </div>
+                                    <div class="col-md-6">
                                     <div class="form-group my-2">
                                         <label for="SortOrder">Country Code</label>
                                         <input type="text" name="code" value="{{ $data->code }}" class="form-control @error('code') is-invalid @enderror" placeholder="code" autocomplete="off">
@@ -42,6 +43,8 @@
 
                                   
                                 </div>
+                            </div>
+                            <div class="row">
                                     <div class="col-md-6">
                                     
                                        
@@ -55,7 +58,33 @@
                                             </div>
                                         </div>
                                 </div>
+
+                                <div class="col-md-6">
+                                    
+                                       
+                                    <div class="form-group my-2">
+                                        <label for="SortOrder">Phone Number Length(for validation)</label>
+                                        <input type="number" name="phonelength" value="{{ $data->phone_length }}" class="form-control @error('phonelength') is-invalid @enderror" placeholder="length" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('phonelength')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                            </div>
                                 
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="status"  id="flexCheckChecked" @if($data->status) checked @endif>
+                                        <label class="form-check-label" for="flexCheckChecked">
+                                         Active
+                                        </label>
+                                      </div>
+                                </div>
+
                             </div>
                             <button type="submit" class="btn btn-primary my-3">Update</button>
                         </form>

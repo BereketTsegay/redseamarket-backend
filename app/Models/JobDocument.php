@@ -15,4 +15,7 @@ class JobDocument extends Model
     public function requestCount($id){
         return JobDocument::where('ads_id',$id)->count();
     }
+    public function User(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

@@ -28,14 +28,24 @@ class ConntryController extends Controller
       // return $request;
         $request->validate([
             'name'      => 'required|unique:countries,name',
-            'code'      => 'required|',
+            'code'      => 'required',
             'phonecode' => 'required',
+            'phonelength' => 'required',
         ]);
+
+        if($request->status){
+            $status=1;
+        }
+        else{
+            $status=0; 
+        }
 
         $data=new Country();
         $data->name=$request->name;
         $data->code=$request->code;
         $data->phonecode=$request->phonecode;
+        $data->phone_length=$request->phonelength;
+        $data->status=$status;
         $data->save();
 
         session()->flash('success', 'Country has been created');
@@ -54,12 +64,23 @@ class ConntryController extends Controller
             'name'         => 'required|unique:countries,name,'.$id,
             'code'         => 'required',
             'phonecode'    => 'required',
+            'phonelength' => 'required',
+
         ]);
+
+        if($request->status){
+            $status=1;
+        }
+        else{
+            $status=0; 
+        }
 
         $data=Country::find($id);
         $data->name=$request->name;
         $data->code=$request->code;
         $data->phonecode=$request->phonecode;
+        $data->phone_length=$request->phonelength;
+        $data->status=$status;
         $data->update();
 
         session()->flash('success', 'Country has been updated');
