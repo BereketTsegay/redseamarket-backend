@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::group(['namespace'=>'App/Api'],function (){
+Route::group(['namespace'=>'App','prefix' => 'app'],function (){
 
     Route::post('/user/login', [\App\Http\Controllers\Api\LoginController::class, 'login']);
     Route::post('/user/register', [\App\Http\Controllers\Api\LoginController::class, 'register']);
@@ -78,7 +78,7 @@ Route::group(['namespace'=>'App/Api'],function (){
 });
 
 
-Route::group(['namespace' => 'App/Api','middleware' => 'auth:api'], function () {
+Route::group(['namespace' => 'App','middleware' => 'auth:api','prefix' => 'app'], function () {
 
     Route::post('/customer/loged/dashboard', [\App\Http\Controllers\Api\DashboardController::class, 'LogedDashboard']);
 
