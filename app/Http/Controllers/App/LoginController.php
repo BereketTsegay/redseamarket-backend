@@ -41,7 +41,7 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)
         ->where('type', UserType::USER)
         ->where('status', Status::ACTIVE)
-        ->where('email_verified_flag', '!=', Status::REQUEST)
+        // ->where('email_verified_flag', '!=', Status::REQUEST)
         ->where('delete_status','!=', Status::DELETE)
         ->first();
 
@@ -55,6 +55,38 @@ class LoginController extends Controller
                 'code'      => 400,
                 'message'   => 'Invalid email or password',
             ], 200);
+        }
+        else{
+
+            if($user->email_verified_flag == Status::REQUEST){
+
+                $uid = rand(000000, 999999);
+
+                Otp::where('email', $request->email)
+                    ->update([
+                        'expiry_status' => true,
+                    ]);
+
+                $otp                = new Otp();
+                $otp->email         = $request->email;
+                $otp->otp           = $uid;
+                $otp->expiry_status = false;
+                $otp->attempt       = 0;
+                $otp->save();
+        
+                $code = [
+                    'name'  => $request->name,
+                    'otp'   => $uid,
+                ];
+        
+                Mail::to($request->email)->send(new VerifyEmail($code));
+
+                return response()->json([
+                    'status'    => 'error',
+                    'code'      => 400,
+                    'message'   => 'User Not Verified',
+                ], 200);
+            }
         }
 
         // if($block){
