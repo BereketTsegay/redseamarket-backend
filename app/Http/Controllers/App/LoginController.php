@@ -41,6 +41,7 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)
         ->where('type', UserType::USER)
         ->where('status', Status::ACTIVE)
+        ->where('email_verified_flag', '!=', Status::REQUEST)
         ->where('delete_status','!=', Status::DELETE)
         ->first();
 
