@@ -11,7 +11,7 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/user/forgot/send/password/toMail', [\App\Http\Controllers\App\LoginController::class, 'sendPasswordToMail']);
     Route::post('/customer/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'dashboard']);
     Route::post('/customer/city/list', [\App\Http\Controllers\App\OtherController::class, 'cityList']);
-    Route::post('/verify/email', [\App\Http\Controllers\App\LoginController::class, 'vefifyEmail']);
+  //  Route::post('/verify/email', [\App\Http\Controllers\App\LoginController::class, 'vefifyEmail']);
     Route::post('/vefify/opt', [\App\Http\Controllers\App\LoginController::class, 'verifyOtp']);
     Route::post('/forgotpassword/password/reset', [\App\Http\Controllers\App\LoginController::class, 'passwordReset']);
     Route::post('/verify/resent/otp', [\App\Http\Controllers\App\LoginController::class, 'newOtp']);

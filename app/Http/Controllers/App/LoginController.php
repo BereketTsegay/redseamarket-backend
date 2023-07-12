@@ -686,7 +686,7 @@ class LoginController extends Controller
         $otp->save();
 
         $code = [
-            'name'  => $request->name,
+            'name'  => $request->email,
             'otp'   => $uid,
         ];
 
