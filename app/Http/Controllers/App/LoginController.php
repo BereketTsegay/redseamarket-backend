@@ -705,7 +705,8 @@ class LoginController extends Controller
     public function newOtp(Request $request){
 
         $uid = rand(000000, 999999);
-
+        $user = User::where('email', $request->email)
+        ->first();
         Otp::where('email', $request->email)
         ->update([
             'expiry_status' => true,
@@ -719,7 +720,7 @@ class LoginController extends Controller
         $otp->save();
 
         $code = [
-            'name'  => $request->email,
+            'name'  => $user->name,
             'otp'   => $uid,
         ];
 
