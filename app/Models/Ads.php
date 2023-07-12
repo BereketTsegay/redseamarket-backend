@@ -39,7 +39,7 @@ class Ads extends Model
     }
 
     public function CustomValue(){
-        return $this->hasMany(AdsCustomValue::class, 'ads_id', 'id');
+        return $this->hasMany(AdsCustomValue::class, 'ads_id', 'id')->with('Field')->get();
     }
 
     public function SellerInformation(){
