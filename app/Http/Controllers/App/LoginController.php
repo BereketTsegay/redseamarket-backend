@@ -456,7 +456,10 @@ class LoginController extends Controller
                     ->update([
                         'expiry_status'   => true,
                     ]);
-
+                    User::where('email', $request->email)
+                    ->update([
+                        'email_verified_flag'  => Status::ACTIVE,
+                    ]);
                     return response()->json([
                         'status'    => 'success',
                         'message'   => 'Otp has been verified',
