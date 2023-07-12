@@ -87,6 +87,40 @@ class LoginController extends Controller
                     'message'   => 'User Not Verified',
                 ], 200);
             }
+            else{
+                if(!Hash::check($request->password, $user->password)){
+            
+                    return response()->json([
+                        'status'    => 'error',
+                        'message'   => 'Invalid email or password',
+                        'code'      => 400,
+                    ], 200);
+                }
+        
+                if(Auth::loginUsingId($user->id)){
+        
+                    $token = Auth::user()->createToken('TutsForWeb')->accessToken;
+        
+                    return response()->json([
+                        'status'    => 'success',
+                        'code'      => 200,
+                        'message'   => 'Welcome '. $user->name,
+                        'user'      => $user->name,
+                        'token'     => $token,
+                        'wallet'    => $user->wallet,
+                        'email'     => $user->email,
+                        'email_verify' => $user->email_verified_flag,
+                    ], 200);
+                }
+                else{
+        
+                    return response()->json([
+                        'status'    => 'error',
+                        'code'      => 401,
+                        'message'   => 'Unauthorised',
+                    ], 200);
+                }
+            }
         }
 
         // if($block){
@@ -97,38 +131,7 @@ class LoginController extends Controller
         //     ], 200);
         // }
 
-        if(!Hash::check($request->password, $user->password)){
-            
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Invalid email or password',
-                'code'      => 400,
-            ], 200);
-        }
-
-        if(Auth::loginUsingId($user->id)){
-
-            $token = Auth::user()->createToken('TutsForWeb')->accessToken;
-
-            return response()->json([
-                'status'    => 'success',
-                'code'      => 200,
-                'message'   => 'Welcome '. $user->name,
-                'user'      => $user->name,
-                'token'     => $token,
-                'wallet'    => $user->wallet,
-                'email'     => $user->email,
-                'email_verify' => $user->email_verified_flag,
-            ], 200);
-        }
-        else{
-
-            return response()->json([
-                'status'    => 'error',
-                'code'      => 401,
-                'message'   => 'Unauthorised',
-            ], 200);
-        }
+        
     }
 
     public function register(Request $request){
