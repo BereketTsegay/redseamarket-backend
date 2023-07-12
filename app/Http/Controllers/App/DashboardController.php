@@ -557,7 +557,7 @@ class DashboardController extends Controller
                     'user_name'         => $userName,
                     'category_default'  => $categoryDefault,
                     'categories'        => $category,
-                    'otherCategory'     => $otherCategory,
+                    // 'otherCategory'     => $otherCategory,
                 ],
             ], 200);
 
