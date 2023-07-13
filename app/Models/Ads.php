@@ -38,6 +38,10 @@ class Ads extends Model
         return $this->hasMany(AdsImage::class, 'ads_id', 'id');
     }
 
+    public function adImage(){
+        return $this->hasOne(AdsImage::class, 'ads_id', 'id');
+    }
+
     public function CustomValue(){
         return $this->hasMany(AdsCustomValue::class, 'ads_id', 'id')->with('Field');
     }
