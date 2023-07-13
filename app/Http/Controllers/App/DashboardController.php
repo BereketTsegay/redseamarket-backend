@@ -554,9 +554,10 @@ class DashboardController extends Controller
                 'data'      => [
                     'loged_user_status' => $user,
                     'user_name'         => $userName,
+                    'categories'     => $otherCategory,
                     // 'category_default'  => $categoryDefault,
-                    'categories'        => $category,
-                    // 'otherCategory'     => $otherCategory,
+                    'categories_ads'        => $category,
+                    
                 ],
             ], 200);
 
