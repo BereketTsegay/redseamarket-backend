@@ -548,7 +548,6 @@ class DashboardController extends Controller
                 });
             }
 
-
             return response()->json([
                 'status'    => 'success',
                 'code'      => 200,
