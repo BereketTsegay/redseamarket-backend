@@ -142,8 +142,8 @@ class DashboardController extends Controller
                 $otherCategory = Category::where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
                 ->orderBy('sort_order')->get();
-                
-               $banners=Banner::where('status',1)->get();
+
+               $banners=Banner::where('status',1)->where('country_id',$request->country)->first();
            
 
             return response()->json([
