@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\FuncCall;
 use App\Models\AdsCountry;
-
+use App\Models\Banner;
 class DashboardController extends Controller
 {
 
     public function dashboard(Request $request){
 
         
-        // try{
+        try{
                 
                 if(Auth::user()){
                     $user = true;
@@ -142,7 +142,8 @@ class DashboardController extends Controller
                 $otherCategory = Category::where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
                 ->orderBy('sort_order')->get();
-               
+                
+               $banners=Banner::where('status',1)->get();
            
 
             return response()->json([
@@ -152,20 +153,20 @@ class DashboardController extends Controller
                     'loged_user_status' => $user,
                     'user_name'         => $userName,
                     'categories'     => $otherCategory,
-                    // 'category_default'  => $categoryDefault,
+                    'slider'  => $banners,
                     'categories_ads'        => $category,
                     
                 ],
             ], 200);
 
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
    
