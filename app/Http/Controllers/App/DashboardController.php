@@ -499,13 +499,12 @@ class DashboardController extends Controller
                 $otherCategory = Category::where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
                 ->where('display_flag', '!=', Status::ACTIVE)
-                ->orderBy('sort_order')
-                ->with(['Subcategory' => function($a){
-                    $a->where('delete_status', '!=', Status::DELETE)
-                    ->where('status', Status::ACTIVE)
-                    ->where('parent_id', 0)
-                    ->orderby('sort_order');
-                }]);
+                ->orderBy('sort_order');
+                // ->with(['Subcategory' => function($a){
+                //     $a->where('delete_status', '!=', Status::DELETE)
+                //     ->where('status', Status::ACTIVE)
+                //     ->where('parent_id', 0)
+                //     ->orderby('sort_order');}]);
 
                 // if($latitude != 0 && $longitude != 0){
 
