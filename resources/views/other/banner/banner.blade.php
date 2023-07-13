@@ -47,7 +47,7 @@
                                             </button>
                                             <div class="dropdown-menu text-center">
                                                 <a href="{{ route('banner.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
-                                                <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->name}}', '{{$row->type}}', {{$row->status}})" data-toggle="modal" data-target="#editBannerModal">Edit</button>
+                                                <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->name}}', '{{$row->type}}', '{{$row->status}}','{{$row->country_id}}')" data-toggle="modal" data-target="#editBannerModal">Edit</button>
                                                 <button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
                                                 <form id="delete_Banner_form{{$row->id}}" action="{{ route('banner.delete', $row->id) }}" method="POST">
                                                     @csrf
@@ -153,7 +153,7 @@
                             <label for="EditName">Name</label>
                             <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="editName" placeholder="Name">
                         </div>
-                        <div class="form-group my-2">
+                        <div class="form-group my-2 selitem">
                             <label for="Type">Country</label>
                             <Select name="country" id="editPosition" class="form-control">
                                 <option value="">Select Country</option>
@@ -192,7 +192,7 @@
             $('#delete_Banner_form'+ids).submit();
         }
 
-        editBanner = (id, name, position, status) => {
+        editBanner = (id, name, position, status,country) => {
             let option = '';
             let editStatus = '';
             $('#editId').val(id);
@@ -226,6 +226,10 @@
                         }
                     }
                     $('#editPosition').html(option);
+
+                    $(".selitem").find('#editPosition').val(country)
+
+
                 }
             })
             
