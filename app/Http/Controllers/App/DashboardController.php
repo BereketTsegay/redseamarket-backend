@@ -101,7 +101,7 @@ class DashboardController extends Controller
                         $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                         $b->state = $b->State->name;
                         $b->city = $b->City ? $b->City->name : $b->State->name ;
-                        $b->adImage->image;
+                        $b->adImage['image'];
                         $b->CustomValue->map(function($c){
                             
                             if($c->Field->description_area_flag == 0){
