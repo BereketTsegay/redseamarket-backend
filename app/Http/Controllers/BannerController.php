@@ -11,8 +11,7 @@ class BannerController extends Controller
 {
     public function index(){
 
-        $banner = Banner::where('status', Status::ACTIVE)
-        ->orderBy('created_at', 'desc')
+        $banner = Banner::orderBy('created_at', 'desc')
         ->get();
 
         $country = Country::orderBy('name')
