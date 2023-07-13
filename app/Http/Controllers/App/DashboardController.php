@@ -245,26 +245,19 @@ class DashboardController extends Controller
                 $otherCategory = Category::where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
                 ->where('display_flag', '!=', Status::ACTIVE)
-                ->orderBy('sort_order')
-                ->with(['Subcategory' => function($a){
-                    $a->where('delete_status', '!=', Status::DELETE)
-                    ->where('status', Status::ACTIVE)
-                    ->where('parent_id', 0)
-                    ->orderby('sort_order')
-                    ->take(4);
-                }]);
+                ->orderBy('sort_order')->get();
 
-                if(isset($request->country)){
-                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                // if(isset($request->country)){
+                //     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $otherCategory->with(['Ads' => function($b) use($request, $city,$countryAds){
-                        $b->where('status', Status::ACTIVE)
-                        ->whereIn('id', $countryAds)
-                        ->where(function($q) use($request, $city){
-                            $q->orwhere('city_id', $request->city);
+                //     $otherCategory->with(['Ads' => function($b) use($request, $city,$countryAds){
+                //         $b->where('status', Status::ACTIVE)
+                //         ->whereIn('id', $countryAds)
+                //         ->where(function($q) use($request, $city){
+                //             $q->orwhere('city_id', $request->city);
                            
-                        });
-                    }]);
+                //         });
+                //     }]);
                     // ->whereHas('Ads', function($b) use($request, $city){
                     //     $b->where('status', Status::ACTIVE)
                     //     ->where('country_id', $request->country)
@@ -276,24 +269,24 @@ class DashboardController extends Controller
                     //         });
                     //     });
                     // });
-                }
+                // }
 
-                $otherCategory = $otherCategory->get()->map(function($a){
+                // $otherCategory = $otherCategory->get()->map(function($a){
 
-                    $a->Subcategory->map(function($c){
-                        $c->SubcategoryChild->map(function($d){
+                //     $a->Subcategory->map(function($c){
+                //         $c->SubcategoryChild->map(function($d){
 
-                            unset($d->sort_order, $d->delete_status, $d->status);
-                            return $d;
-                        });
+                //             unset($d->sort_order, $d->delete_status, $d->status);
+                //             return $d;
+                //         });
 
-                        unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
-                        return $c;
-                    });
+                //         unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
+                //         return $c;
+                //     });
                     
-                    unset($a->country_id, $a->state_id, $a->city_id, $a->delete_status, $a->sort_order, $a->status, $a->icon_class_id,);
-                    return $a;
-                });
+                //     unset($a->country_id, $a->state_id, $a->city_id, $a->delete_status, $a->sort_order, $a->status, $a->icon_class_id,);
+                //     return $a;
+                // });
 
             }
             else{
@@ -499,7 +492,7 @@ class DashboardController extends Controller
                 $otherCategory = Category::where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
                 ->where('display_flag', '!=', Status::ACTIVE)
-                ->orderBy('sort_order');
+                ->orderBy('sort_order')->get();
                 // ->with(['Subcategory' => function($a){
                 //     $a->where('delete_status', '!=', Status::DELETE)
                 //     ->where('status', Status::ACTIVE)
@@ -516,35 +509,32 @@ class DashboardController extends Controller
                 //     });
                 // }
 
-                if(isset($request->country)){
-                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
+                // if(isset($request->country)){
+                //     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
 
-                    $otherCategory->with(['Ads' => function($b) use($request,$countryAds){
-                        $b->where('status', Status::ACTIVE)
-                        ->whereIn('id', $countryAds);
-                    }]);
-                    // ->whereHas('Ads',function($b) use($request){
-                    //     $b->where('status', Status::ACTIVE)
-                    //     ->where('country_id', $request->country);
-                    // });
-                }
+                //     $otherCategory->with(['Ads' => function($b) use($request,$countryAds){
+                //         $b->where('status', Status::ACTIVE)
+                //         ->whereIn('id', $countryAds);
+                //     }]);
+                  
+                // }
 
-                $otherCategory = $otherCategory->get()->map(function($a){
+                // $otherCategory = $otherCategory->get()->map(function($a){
 
-                    $a->Subcategory->map(function($c){
-                        $c->SubcategoryChild->map(function($d){
+                //     $a->Subcategory->map(function($c){
+                //         $c->SubcategoryChild->map(function($d){
 
-                            unset($d->sort_order, $d->delete_status, $d->status);
-                            return $d;
-                        });
+                //             unset($d->sort_order, $d->delete_status, $d->status);
+                //             return $d;
+                //         });
 
-                        unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
-                        return $c;
-                    });
+                //         unset($c->category_id, $c->parent_id, $c->type, $c->status, $c->sort_order, $c->delete_status, $c->percentage);
+                //         return $c;
+                //     });
                     
-                    unset($a->country_id, $a->state_id, $a->city_id, $a->delete_status, $a->sort_order, $a->status, $a->icon_class_id,);
-                    return $a;
-                });
+                //     unset($a->country_id, $a->state_id, $a->city_id, $a->delete_status, $a->sort_order, $a->status, $a->icon_class_id,);
+                //     return $a;
+                // });
             }
 
             return response()->json([
