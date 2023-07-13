@@ -24,6 +24,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
+                                <th>Country</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -33,6 +34,7 @@
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $row->name }}</td>
+                                    <td>{{ $row->Country->name }}</td>
                                     @if($row->status == 1)
                                     <td class="text-success">Active</td>
                                     @else
