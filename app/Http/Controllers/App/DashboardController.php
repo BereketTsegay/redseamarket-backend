@@ -114,15 +114,15 @@ class DashboardController extends Controller
                             return $c;
                         });
 
-                        $b->image = array_filter([
-                            $b->Image->map(function($q) use($b){
-                                $q->image;
-                                unset($q->ads_id, $q->img_flag);
-                                return $q;
-                            }),
-                        ]);
+                        // $b->image = array_filter([
+                        //     $b->Image->map(function($q) use($b){
+                        //         $q->image;
+                        //         unset($q->ads_id, $q->img_flag);
+                        //         return $q;
+                        //     }),
+                        // ]);
                             
-                        unset($b->Image->ads_id, $b->Image->img_flag);
+                        // unset($b->Image->ads_id, $b->Image->img_flag);
                         unset($b->Country, $b->State, $b->City, $b->category_id, $b->subcategory_id, $b->country_id, $b->state_id, $b->city_id, $b->sellerinformation_id, $b->customer_id, $b->payment_id, $b->delete_status, $b->status, $b->reject_reason_id);
                         return $b;
                     });
@@ -217,15 +217,15 @@ class DashboardController extends Controller
                             return $c;
                         });
 
-                        $b->image = array_filter([
-                            $b->Image->map(function($q) use($b){
-                                $q->image;
-                                unset($q->ads_id, $q->img_flag);
-                                return $q;
-                            }),
-                        ]);
+                        // $b->image = array_filter([
+                        //     $b->Image->map(function($q) use($b){
+                        //         $q->image;
+                        //         unset($q->ads_id, $q->img_flag);
+                        //         return $q;
+                        //     }),
+                        // ]);
                             
-                        unset($b->Image->ads_id, $b->Image->img_flag);
+                        // unset($b->Image->ads_id, $b->Image->img_flag);
                         unset($b->Country, $b->State, $b->City, $b->category_id, $b->subcategory_id, $b->country_id, $b->state_id, $b->city_id, $b->sellerinformation_id, $b->customer_id, $b->payment_id, $b->delete_status, $b->status, $b->reject_reason_id);
                         return $b;
                     });
