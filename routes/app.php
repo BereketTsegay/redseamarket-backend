@@ -80,7 +80,7 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
 
 Route::group(['namespace' => 'App','middleware' => 'auth:api','prefix' => 'app'], function () {
 
-    Route::post('/customer/loged/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'LogedDashboard']);
+    // Route::post('/customer/loged/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'LogedDashboard']);
 
     Route::post('/customer/ads/store', [\App\Http\Controllers\App\AdsController::class, 'adStore']);
     Route::post('/customer/ads/update', [\App\Http\Controllers\App\AdsController::class, 'updateData']);
