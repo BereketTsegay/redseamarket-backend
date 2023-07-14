@@ -20,7 +20,6 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     // Route::post('/customer/ads/get_details', [\App\Http\Controllers\App\AdsController::class, 'getDetails']);  
     Route::post('/customer/ads/custom_field_and_dependency', [\App\Http\Controllers\App\AdsController::class, 'customFieldsAndDependency']);
     Route::post('/customer/get/master/dependency', [\App\Http\Controllers\App\AdsController::class, 'getMasterDependency']);
-    
     Route::post('/customer/get/category', [\App\Http\Controllers\App\DashboardController::class, 'getCategory']);
     Route::post('/customer/get/subcategory', [\App\Http\Controllers\App\DashboardController::class, 'getSubcategory']);
     Route::post('/customer/get/subsubcategory', [\App\Http\Controllers\App\DashboardController::class, 'getSubSubcategory']);
