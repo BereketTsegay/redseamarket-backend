@@ -490,7 +490,7 @@ class LoginController extends Controller
         try{
 
             $rules = [
-                'password'  => 'required|confirmed',
+                'password'  => 'required',
                 'email'     => 'required|email',
             ];
 
