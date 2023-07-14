@@ -16,7 +16,7 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/forgotpassword/password/reset', [\App\Http\Controllers\App\LoginController::class, 'passwordReset']);
     Route::post('/verify/resent/otp', [\App\Http\Controllers\App\LoginController::class, 'newOtp']);
     
-        // Ads Section
+    // Ads Section
     // Route::post('/customer/ads/get_details', [\App\Http\Controllers\App\AdsController::class, 'getDetails']);  
     Route::post('/customer/ads/custom_field_and_dependency', [\App\Http\Controllers\App\AdsController::class, 'customFieldsAndDependency']);
     Route::post('/customer/get/master/dependency', [\App\Http\Controllers\App\AdsController::class, 'getMasterDependency']);
