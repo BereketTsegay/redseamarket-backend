@@ -959,7 +959,7 @@ class OtherController extends Controller
             ], 200);
         }
 
-        // try{
+        try{
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;
@@ -1024,8 +1024,8 @@ class OtherController extends Controller
 
                 $myAds->groupBy('ads.id');
                 $myAds->orderBy('ads.id','DESC');
-                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->transform(function($a){
+                $myAds =  $myAds = $myAds->get();
+                  return $myAds->map(function($a){
 
                         $a->image = array_filter([
                             $a->Image->map(function($q) use($a){
@@ -1083,7 +1083,7 @@ class OtherController extends Controller
                         unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
                         return $a;
                     });
-                });
+                
 
             }
             else{
@@ -1202,15 +1202,15 @@ class OtherController extends Controller
                     'ads'       => $myAds,
                 ], 200);
             
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
     
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function getSubcategoryAds(Request $request){
