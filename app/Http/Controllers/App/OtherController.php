@@ -1133,7 +1133,7 @@ class OtherController extends Controller
                 // }
               
                 $myAds->orderBy('ads.id','DESC');
-                $myAds = tap($myAds->paginate(10), function ($paginatedInstance){
+                $myAds = tap($myAds->get(), function ($paginatedInstance){
                     return $paginatedInstance->getCollection()->transform(function($a){
 
                         $a->image = array_filter([
