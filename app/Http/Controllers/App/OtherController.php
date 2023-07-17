@@ -1133,8 +1133,8 @@ class OtherController extends Controller
                 // }
               
                 $myAds->orderBy('ads.id','DESC');
-                $myAds = tap($myAds->get(), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->transform(function($a){
+                $myAds = $myAds->get();
+                    return $myAds->map(function($a){
 
                         $a->image = array_filter([
                             $a->Image->map(function($q) use($a){
@@ -1192,7 +1192,7 @@ class OtherController extends Controller
                         unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
                         return $a;
                     });
-                });
+                
             }
 
                 return response()->json([
