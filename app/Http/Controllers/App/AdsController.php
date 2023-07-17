@@ -80,7 +80,7 @@ class AdsController extends Controller
                             $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
                             $a->variant = $a->MotoreValue->Variant ? $a->MotoreValue->Variant->name : '';
     
-                            unset($a->MotoreValue->Make, $a->MotoreValue->Model, $a->MotoreValue->Variant);
+                            unset($a->make, $a->model, $a->variant);
                         }
                         $a->MotorFeatures;
     
