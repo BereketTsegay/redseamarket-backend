@@ -99,14 +99,17 @@ class DashboardController extends Controller
                     
                     $a->Ads->map(function($b){
                           //dd($b);
-                        $favourite = Favorite::where('ads_id', $b->id)
-                        ->where('customer_id', Auth::user()->id)
-                        ->count();
+                          if($b->id){
+                            $favourite = Favorite::where('ads_id', $b->id)
+                            ->where('customer_id', Auth::user()->id)
+                            ->count();
+                            $b->isFavourite=$favourite;
+                          }
+                       
                         $b->country = $b->Country->name;
                         $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                         $b->state = $b->State->name;
                         $b->city = $b->City ? $b->City->name : $b->State->name ;
-                        $b->isFavourite=$favourite;
                         $b->adImage;
                         $b->CustomValue->map(function($c){
                             
