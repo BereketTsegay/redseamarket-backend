@@ -63,7 +63,7 @@ class OtherController extends Controller
                     $favourite = Favorite::where('ads_id', $a->Ads->id)
                     ->where('customer_id', Auth::user()->id)
                     ->count();
-                    $a->isFavourite=$favourite;
+                    $a->Ads->isFavourite=$favourite;
                     if($a->city_id != 0){
                         $a->city_name = $a->City->name;
                     }
