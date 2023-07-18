@@ -1063,7 +1063,7 @@ class OtherController extends Controller
                         $a->country_name = $a->Country->name;
                         $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
-                        $b->isFavourite=$favourite;
+                        $a->isFavourite=$favourite;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
 
