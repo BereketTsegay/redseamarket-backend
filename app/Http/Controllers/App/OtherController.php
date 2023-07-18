@@ -45,8 +45,8 @@ class OtherController extends Controller
 
             $favourite = tap(Favorite::where('customer_id', Auth::user()->id)
                 ->whereHas('Ads')
-                ->paginate(12), function ($paginatedInstance){
-                    return $paginatedInstance->getCollection()->map(function($a){
+                ->get(), function ($paginatedInstance){
+                    return $paginatedInstance->map(function($a){
 
                     $a->Ads;
                     $a->Ads->image = array_filter([
@@ -60,6 +60,10 @@ class OtherController extends Controller
                     $a->Ads->country_name = $a->Ads->Country->name;
                     $a->currency = $a->Ads->Country->Currency ? $a->Ads->Country->Currency->currency_code : '';
                     $a->Ads->state_name = $a->Ads->State->name;
+                    $favourite = Favorite::where('ads_id', $a->Ads->id)
+                    ->where('customer_id', Auth::user()->id)
+                    ->count();
+                    $a->isFavourite=$favourite;
                     if($a->city_id != 0){
                         $a->city_name = $a->City->name;
                     }
@@ -113,8 +117,8 @@ class OtherController extends Controller
             ->orderBy('created_at', 'desc')
             // ->where('status', '!=', Status::REJECTED)
             ->where('delete_status', '!=', Status::DELETE)
-            ->paginate(12), function ($paginatedInstance){
-                return $paginatedInstance->getCollection()->transform(function($a){
+            ->get(), function ($paginatedInstance){
+                return $paginatedInstance->map(function($a){
 
                     $a->image = array_filter([
                         $a->Image->map(function($q) use($a){
@@ -129,6 +133,10 @@ class OtherController extends Controller
                     $a->country_name = $a->Country->name;
                     $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                     $a->state_name = $a->State->name;
+                    $favourite = Favorite::where('ads_id', $a->id)
+                    ->where('customer_id', Auth::user()->id)
+                    ->count();
+                    $a->isFavourite=$favourite;
                     if($a->city_id != 0){
                         $a->city_name = $a->City->name;
                     }
@@ -1049,10 +1057,13 @@ class OtherController extends Controller
                         elseif($a->category_id == 3){
                             $a->PropertySale;
                         }
-
+                        $favourite = Favorite::where('ads_id', $a->id)
+                        ->where('customer_id', Auth::user()->id)
+                        ->count();
                         $a->country_name = $a->Country->name;
                         $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
+                        $b->isFavourite=$favourite;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
 

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\FuncCall;
 use App\Models\AdsCountry;
 use App\Models\Banner;
+use App\Models\Favorite;
+
 class DashboardController extends Controller
 {
 
@@ -97,10 +99,14 @@ class DashboardController extends Controller
                     
                     $a->Ads->map(function($b){
 
+                        $favourite = Favorite::where('ads_id', $b->id)
+                        ->where('customer_id', Auth::user()->id)
+                        ->count();
                         $b->country = $b->Country->name;
                         $b->currency = $b->Country->Currency ? $b->Country->Currency->currency_code : '';
                         $b->state = $b->State->name;
                         $b->city = $b->City ? $b->City->name : $b->State->name ;
+                        $b->isFavourite=$favourite;
                         $b->adImage;
                         $b->CustomValue->map(function($c){
                             

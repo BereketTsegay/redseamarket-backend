@@ -104,7 +104,10 @@ class AdsController extends Controller
                     $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
     
                     $a->Payment;
-    
+                    $favourite = Favorite::where('ads_id', $a->id)
+                    ->where('customer_id', Auth::user()->id)
+                    ->count();
+                    $a->isFavourite=$favourite;
                     $a->country_name = $a->Country->name;
                     $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                     $a->state_name = $a->State->name;
