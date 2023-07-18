@@ -25,17 +25,12 @@ class DashboardController extends Controller
 
         
         // try{
-                return Auth::user();
-                if(Auth::user()){
+              //  return Auth::user();
+                
                     $user = true;
                     $userName = Auth::user()->name;
                     $user_id = Auth::user()->id;
-                }
-                else{
-                    $user = false;
-                    $userName = '';
-                    $user_id ="";
-                }
+               
             
 
             $latitude = $request->latitude;
