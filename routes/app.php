@@ -25,7 +25,6 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/customer/get/job/subsubcategory', [\App\Http\Controllers\App\DashboardController::class, 'getjobSubSubcategory']);
     
     
-    Route::post('/customer/ad/view', [\App\Http\Controllers\App\AdsController::class, 'adView']);
     Route::post('/customer/search/ads', [\App\Http\Controllers\App\OtherController::class, 'searchAds']);
     Route::post('/customer/get/subcategory/ads', [\App\Http\Controllers\App\OtherController::class, 'getSubcategoryAds']);
     Route::post('/customer/get/property/filter', [\App\Http\Controllers\App\AdsController::class, 'getPropertyFilter']);
@@ -94,6 +93,7 @@ Route::group(['namespace' => 'App','middleware' => 'auth:api','prefix' => 'app']
     Route::post('/customer/get/ad-cvdocuments', [\App\Http\Controllers\App\AdsController::class, 'jobRequestDocs']);
 
     Route::post('/customer/get/category/ads', [\App\Http\Controllers\App\OtherController::class, 'getCategoryAds']);
+    Route::post('/customer/ad/view', [\App\Http\Controllers\App\AdsController::class, 'adView']);
 
 
 
