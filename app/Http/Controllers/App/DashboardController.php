@@ -25,7 +25,7 @@ class DashboardController extends Controller
 
         
         // try{
-                
+                return Auth::user();
                 if(Auth::user()){
                     $user = true;
                     $userName = Auth::user()->name;
