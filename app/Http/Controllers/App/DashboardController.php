@@ -24,7 +24,7 @@ class DashboardController extends Controller
     public function dashboard(Request $request){
 
         
-        // try{
+        try{
               //  return Auth::user();
                 
                     $user = true;
@@ -164,14 +164,14 @@ class DashboardController extends Controller
                 ],
             ], 200);
 
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
    
