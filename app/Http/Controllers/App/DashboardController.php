@@ -98,7 +98,7 @@ class DashboardController extends Controller
                     });
                     
                     $a->Ads->map(function($b){
-
+                          dd($b);
                         $favourite = Favorite::where('ads_id', $b->id)
                         ->where('customer_id', Auth::user()->id)
                         ->count();
