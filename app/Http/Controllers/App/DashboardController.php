@@ -34,7 +34,7 @@ class DashboardController extends Controller
                 {
                     $user = false;
                     $userName = '';
-                    $user_id="";
+                    $user_id ="";
                 }
             
 
@@ -100,9 +100,7 @@ class DashboardController extends Controller
                     });
                     
                     $a->Ads->map(function($b){
-                          dd($user_id);
-                         
-                            
+                          //dd($user_id);
                             $favourite = Favorite::where('ads_id', $b->id)
                             ->where('customer_id', $user_id)
                             ->count();
