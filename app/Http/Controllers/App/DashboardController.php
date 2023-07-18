@@ -31,7 +31,7 @@ class DashboardController extends Controller
                     $userName = Auth::user()->name;
                     $user_id = Auth::user()->id;
                 }
-                {
+                else{
                     $user = false;
                     $userName = '';
                     $user_id ="";
