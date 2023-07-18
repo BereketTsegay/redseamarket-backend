@@ -1060,10 +1060,10 @@ class OtherController extends Controller
                         $favourite = Favorite::where('ads_id', $a->id)
                         ->where('customer_id', Auth::user()->id)
                         ->count();
+                        $a->isFavourite=$favourite;
                         $a->country_name = $a->Country->name;
                         $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
-                        $a->isFavourite=$favourite;
                         $a->created_on = date('d-M-Y', strtotime($a->created_at));
                         $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
 
@@ -1169,7 +1169,10 @@ class OtherController extends Controller
                         elseif($a->category_id == 3){
                             $a->PropertySale;
                         }
-
+                        $favourite = Favorite::where('ads_id', $a->id)
+                        ->where('customer_id', Auth::user()->id)
+                        ->count();
+                        $a->isFavourite=$favourite;
                         $a->country_name = $a->Country->name;
                         $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                         $a->state_name = $a->State->name;
