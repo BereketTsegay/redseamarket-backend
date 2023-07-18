@@ -29,10 +29,12 @@ class DashboardController extends Controller
                 if(Auth::user()){
                     $user = true;
                     $userName = Auth::user()->name;
+                    $user_id = Auth::user()->id;
                 }
                 {
                     $user = false;
                     $userName = '';
+                    $user_id="";
                 }
             
 
@@ -98,11 +100,11 @@ class DashboardController extends Controller
                     });
                     
                     $a->Ads->map(function($b){
-                          //dd($b);
+                          dd($user_id);
                          
                             
                             $favourite = Favorite::where('ads_id', $b->id)
-                            ->where('customer_id', Auth::user()->id)
+                            ->where('customer_id', $user_id)
                             ->count();
                             $b->isFavourite=$favourite;
                          

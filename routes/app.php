@@ -9,7 +9,6 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/user/login', [\App\Http\Controllers\App\LoginController::class, 'login']);
     Route::post('/user/register', [\App\Http\Controllers\App\LoginController::class, 'register']);
     Route::post('/forgot/password/send/toMail', [\App\Http\Controllers\App\LoginController::class, 'sendPasswordToMail']);
-    Route::post('/customer/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'dashboard']);
     Route::post('/customer/city/list', [\App\Http\Controllers\App\OtherController::class, 'cityList']);
   //  Route::post('/verify/email', [\App\Http\Controllers\App\LoginController::class, 'vefifyEmail']);
     Route::post('/verify/otp', [\App\Http\Controllers\App\LoginController::class, 'verifyOtp']);
@@ -80,7 +79,7 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
 Route::group(['namespace' => 'App','middleware' => 'auth:api','prefix' => 'app'], function () {
 
     // Route::post('/customer/loged/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'LogedDashboard']);
-
+    Route::post('/customer/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'dashboard']);
     Route::post('/customer/ads/store', [\App\Http\Controllers\App\AdsController::class, 'adStore']);
     Route::post('/customer/ads/update', [\App\Http\Controllers\App\AdsController::class, 'updateData']);
     Route::post('/customer/view/profile', [\App\Http\Controllers\App\LoginController::class, 'myProfile']);
