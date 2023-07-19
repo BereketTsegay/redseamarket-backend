@@ -60,7 +60,7 @@ class LoginController extends Controller
 
             if($user->email_verified_flag == Status::REQUEST){
 
-                $uid = rand(0000, 9999);
+                $uid = rand(1000, 9999);
 
                 Otp::where('email', $request->email)
                     ->update([
@@ -167,7 +167,7 @@ class LoginController extends Controller
             ], 200);
         }
 
-        $uid = rand(0000, 9999);
+        $uid = rand(1000, 9999);
 
         $existingUser = User::where('email', $request->email)
         ->where('email_verified_flag', Status::REQUEST)
@@ -365,7 +365,7 @@ class LoginController extends Controller
                 'expiry_status' => true,
             ]);
 
-            $uid = rand(0000, 9999);
+            $uid = rand(1000, 9999);
 
             $otp                = new Otp();
             $otp->email         = $request->email;
@@ -710,7 +710,7 @@ class LoginController extends Controller
 
     public function newOtp(Request $request){
 
-        $uid = rand(0000, 9999);
+        $uid = rand(1000, 9999);
         $user = User::where('email', $request->email)
         ->first();
         Otp::where('email', $request->email)

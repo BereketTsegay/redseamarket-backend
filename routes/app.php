@@ -74,7 +74,7 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
 });
 
 
-Route::group(['namespace' => 'App','middleware' => 'auth:api','prefix' => 'app'], function () {
+    Route::group(['namespace' => 'App','middleware' => 'auth:api','prefix' => 'app'], function () {
 
     // Route::post('/customer/loged/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'LogedDashboard']);
     Route::post('/customer/dashboard', [\App\Http\Controllers\App\DashboardController::class, 'dashboard']);
