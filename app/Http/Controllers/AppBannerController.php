@@ -63,6 +63,8 @@ class AppBannerController extends Controller
             'title'      => 'required',
             ]);
 
+            $data=AppBanner::find($request->id);
+
         if($request->hasFile('image')){
 
             $file = uniqid().'.'.$request->image->getClientOriginalExtension();
@@ -70,6 +72,7 @@ class AppBannerController extends Controller
             $request->image->storeAs('public/banner', $file);
 
             $image = 'storage/banner/'.$file;
+            $data->file=$image;
         }
         else{
             $banner = AppBanner::where('id', $request->id)
@@ -85,12 +88,11 @@ class AppBannerController extends Controller
             $status = Status::INACTIVE;
         }
 
-        AppBanner::where('id', $request->id)
-        ->update([
-            'title'          => $request->title,
-            'file'         => $image,
-            'status'        => $status,
-        ]);
+        $data->title=$request->title;
+        $data->status=$status;
+
+        $data->update();
+       
 
         session()->flash('success', 'Banner has been updated');
         return back();
