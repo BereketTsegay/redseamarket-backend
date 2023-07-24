@@ -41,7 +41,7 @@ class AppBannerController extends Controller
 
         $banner             = new AppBanner();
         $banner->title       = $request->title;
-        $banner->image      = $image;
+        $banner->file      = $image;
         $banner->status     = $status;
         $banner->save();
 
@@ -89,7 +89,7 @@ class AppBannerController extends Controller
         AppBanner::where('id', $request->id)
         ->update([
             'title'          => $request->title,
-            'image'         => $image,
+            'file'         => $image,
             'status'        => $status,
         ]);
 
