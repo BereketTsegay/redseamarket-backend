@@ -158,6 +158,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
                                 Banners
                             </a>
+                            <a class="nav-link {{ request()->is('*appbanner*') ? 'active' : '' }}" href="{{ route('appbanner.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
+                                App Banners
+                            </a>
                             @endif
 
                             @if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_TESTIMONIAL))

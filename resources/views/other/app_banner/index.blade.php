@@ -86,7 +86,7 @@
 <div class="modal fade" id="createBannerModal" tabindex="-1" role="dialog" aria-labelledby="createBannerModalModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('banner.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('appbanner.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                 <h5 class="modal-title" id="createBannerModalModalLabel">Create Banner</h5>
@@ -96,21 +96,10 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="form-group my-2">
-                            <label for="Name">Name</label>
-                            <input type="text" name="name" class="form-control" id="Name" placeholder="Name" value="{{old('name')}}">
+                            <label for="Name">Title</label>
+                            <input type="text" name="title" class="form-control" id="title" placeholder="title" value="{{old('title')}}">
                         </div>
-                        <div class="form-group my-2">
-                            <label for="Type">Country</label>
-                            <Select name="country" class="form-control">
-                                <option value="">Select Country</option>
-                                @foreach ($country as $row1)
-                                    <option value="{{ $row1->id }}">{{ $row1->name }}</option>
-                                @endforeach
-                            </Select>
-                            @if($errors->has('country'))
-                                <div class="error">{{ $errors->first('country') }}</div>
-                            @endif
-                        </div>
+                        
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
                             <input type="file" name="image" class="form-control" id="Image" value="{{old('image')}}">
@@ -137,7 +126,7 @@
 <div class="modal fade" id="editBannerModal" tabindex="-1" role="dialog" aria-labelledby="editBannerModalModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('banner.update') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('appbanner.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" id="editId">
                 <div class="modal-header">
@@ -151,13 +140,7 @@
                             <label for="EditName">Name</label>
                             <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="editName" placeholder="Name">
                         </div>
-                        <div class="form-group my-2 selitem">
-                            <label for="Type">Country</label>
-                            <Select name="country" id="editPosition" class="form-control">
-                                <option value="">Select Country</option>
-                                
-                            </Select>
-                        </div>
+                       
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
                             <input type="file" name="image" class="form-control" id="Image">
@@ -190,7 +173,7 @@
             $('#delete_Banner_form'+ids).submit();
         }
 
-        editBanner = (id, name, position, status,countryid) => {
+        editBanner = (id, name, status) => {
             let option = '';
             let editStatus = '';
             $('#editId').val(id);
@@ -204,34 +187,7 @@
                 editStatus = `<label for="Status">Status</label>
                             <input type="checkbox" name="status">`;
             }
-            let country = [];
-            $.ajax({
-                url: '/api/customer/get/country',
-                method: 'post',
-                success:function(data){
-                    
-                    if(data.status == 'success'){
-                        country = data.country;
-                    }
-                    
-                    for(let i = 0; i < country.length; i++){
-                        
-                        if(country[i].id == id){
-                            option += `<option selected value="${country[i].id}">${country[i].name}</option>`;
-                        }
-                        else{
-                            option += `<option value="${country[i].id}">${country[i].name}</option>`;
-                        }
-                    }
-                    $('#editPosition').html(option);
-
-                    $(".selitem").find('#editPosition').val(countryid)
-
-
-                }
-            })
-            
-            
+                     
             $('#editStatus').html(editStatus);
         }
 

@@ -62,7 +62,7 @@
                                      <p style="color:red;">Re-request ad</p>
                                     @endif
                                     </td>
-                                    <td>{{ $row->Category->name }}</td>
+                                    <td>@if($row->Category){{$row->Category->name }}@endif</td>
                                     <td>{{ $row->title }}</td>
                                     <td>{{ $row->User->name }}</td>
 

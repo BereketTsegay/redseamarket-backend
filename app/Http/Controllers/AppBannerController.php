@@ -4,27 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Common\Status;
-use App\Models\Banner;
+use App\Models\AppBanner;
 
 class AppBannerController extends Controller
 {
     public function index(){
 
-        $banner = Banner::orderBy('created_at', 'desc')
+        $banner = AppBanner::orderBy('created_at', 'desc')
         ->get();
 
-        $country = Country::orderBy('name')
-        ->get();
-
-        return view('other.banner.banner', compact('banner', 'country'));
+       
+        return view('other.app_banner.index', compact('banner'));
     }
 
     public function store(Request $request){
 
         $request->validate([
             'name'      => 'required',
-            'country'   => 'required|unique:banners,country_id',
-            'image'     => 'required|mimes:png,jpg,jpeg|dimensions:width=1920,height=506',
+            'image'     => 'required',
         ]);
 
         if($request->hasFile('image')){
@@ -42,7 +39,7 @@ class AppBannerController extends Controller
             $status = Status::INACTIVE;
         }
 
-        $banner             = new Banner();
+        $banner             = new AppBanner();
         $banner->name       = $request->name;
         $banner->country_id = $request->country;
         $banner->image      = $image;
@@ -55,7 +52,7 @@ class AppBannerController extends Controller
 
     public function view($id){
 
-        $banner = Banner::where('id', $id)
+        $banner = AppBanner::where('id', $id)
         ->first();
 
         return view('other.banner.banner_details', compact('banner'));
@@ -77,7 +74,7 @@ class AppBannerController extends Controller
             $image = 'storage/banner/'.$file;
         }
         else{
-            $banner = Banner::where('id', $request->id)
+            $banner = AppBanner::where('id', $request->id)
             ->first();
 
             $image = $banner->image;
@@ -90,7 +87,7 @@ class AppBannerController extends Controller
             $status = Status::INACTIVE;
         }
 
-        Banner::where('id', $request->id)
+        AppBanner::where('id', $request->id)
         ->update([
             'name'          => $request->name,
             'country_id'    => $request->country,

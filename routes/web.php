@@ -239,6 +239,13 @@ Route::group(['middleware' => ['revalidate']], function () {
         Route::post('/banner/update', [App\Http\Controllers\BannerController::class, 'update'])->name('banner.update');
         Route::post('/banner/delete/{id}', [App\Http\Controllers\BannerController::class, 'delete'])->name('banner.delete');
 
+          // Banner
+
+          Route::get('/appbanner', [App\Http\Controllers\BannerController::class, 'index'])->name('appbanner.index');
+          Route::post('/appbanner/store', [App\Http\Controllers\BannerController::class, 'store'])->name('appbanner.store');
+        //   Route::get('/banner/view/{id}', [App\Http\Controllers\BannerController::class, 'view'])->name('banner.view');
+          Route::post('/appbanner/update', [App\Http\Controllers\BannerController::class, 'update'])->name('appbanner.update');
+  
         // Social
 
         Route::get('/social', [App\Http\Controllers\SocialLinkController::class, 'index'])->name('social.index');
