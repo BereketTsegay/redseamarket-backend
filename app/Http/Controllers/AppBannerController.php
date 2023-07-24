@@ -54,7 +54,7 @@ class AppBannerController extends Controller
         $banner = AppBanner::where('id', $id)
         ->first();
 
-        return view('other.banner.banner_details', compact('banner'));
+        return view('other.app_banner.app_banner_detail', compact('banner'));
     }
 
     public function update(Request $request){

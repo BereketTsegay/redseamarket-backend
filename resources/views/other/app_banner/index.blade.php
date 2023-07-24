@@ -44,7 +44,7 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu text-center">
-                                                <a href="{{ route('banner.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
+                                                <a href="{{ route('appbanner.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
                                                 <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->title}}','{{$row->status}}')" data-toggle="modal" data-target="#editBannerModal">Edit</button>
                                                 {{-- <button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
                                                 <form id="delete_Banner_form{{$row->id}}" action="{{ route('banner.delete', $row->id) }}" method="POST">
