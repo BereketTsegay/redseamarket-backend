@@ -94,6 +94,6 @@ class AppBannerController extends Controller
         ]);
 
         session()->flash('success', 'Banner has been updated');
-        return redirect()->route('banner.index');
+        return back();
     }
 }
