@@ -61,8 +61,7 @@ class AppBannerController extends Controller
         
         $request->validate([
             'title'      => 'required',
-            'image'   => 'required',
-        ]);
+            ]);
 
         if($request->hasFile('image')){
 
