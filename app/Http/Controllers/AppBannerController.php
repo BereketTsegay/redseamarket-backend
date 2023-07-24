@@ -41,7 +41,6 @@ class AppBannerController extends Controller
 
         $banner             = new AppBanner();
         $banner->title       = $request->title;
-        $banner->country_id = $request->country;
         $banner->image      = $image;
         $banner->status     = $status;
         $banner->save();
