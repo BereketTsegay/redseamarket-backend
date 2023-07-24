@@ -103,7 +103,7 @@
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
                             <input type="file" name="image" class="form-control" id="Image" value="{{old('image')}}">
-                            <div class="text-danger">Image Width: 1920px, Height: 506px </div>
+                            {{-- <div class="text-danger">Image Width: 1920px, Height: 506px </div> --}}
                             @if($errors->has('image'))
                             <div class="error">{{ $errors->first('image') }}</div>
                         @endif

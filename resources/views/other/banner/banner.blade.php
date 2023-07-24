@@ -163,6 +163,7 @@
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
                             <input type="file" name="image" class="form-control" id="Image">
+                            <div class="text-danger">Image Width: 1920px, Height: 506px </div>
                         </div>
                         <div class="form-group my-2" id="editStatus">
                             <label for="Status">Status</label>
