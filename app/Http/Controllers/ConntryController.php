@@ -31,6 +31,7 @@ class ConntryController extends Controller
             'code'      => 'required',
             'phonecode' => 'required',
             'phonelength' => 'required',
+            'flag'        => 'required',
         ]);
 
         if($request->status){
@@ -40,12 +41,21 @@ class ConntryController extends Controller
             $status=0; 
         }
 
+        if($request->hasFile('flag')){
+            $file = uniqid().'.'.$request->image->getClientOriginalExtension();
+
+            $request->image->storeAs('public/flag', $file);
+
+            $flag = 'storage/flag/'.$file;
+        }
+
         $data=new Country();
         $data->name=$request->name;
         $data->code=$request->code;
         $data->phonecode=$request->phonecode;
         $data->phone_length=$request->phonelength;
         $data->status=$status;
+        $data->flag=$flag;
         $data->save();
 
         session()->flash('success', 'Country has been created');
@@ -76,6 +86,18 @@ class ConntryController extends Controller
         }
 
         $data=Country::find($id);
+
+        
+        if($request->hasFile('flag')){
+            $file = uniqid().'.'.$request->image->getClientOriginalExtension();
+
+            $request->image->storeAs('public/flag', $file);
+
+            $flag = 'storage/flag/'.$file;
+            $data->flag=$flag;
+
+        }
+
         $data->name=$request->name;
         $data->code=$request->code;
         $data->phonecode=$request->phonecode;

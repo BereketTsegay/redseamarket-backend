@@ -80,6 +80,18 @@
                             <div class="row">
 
                                 <div class="col-md-6">
+                                    <div class="form-group my-2">
+                                        <label for="flag">Flag</label>
+                                        <input type="file" name="flag" autocomplete="off" class="flag form-control @error('flag') is-invalid @enderror">
+                                        <div class="invalid-feedback">
+                                            @error('flag')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="status"  id="flexCheckChecked" checked>
                                         <label class="form-check-label" for="flexCheckChecked">
@@ -87,6 +99,8 @@
                                         </label>
                                       </div>
                                 </div>
+
+                              
 
                             </div>
                             <button type="submit" class="btn btn-primary my-3">Create</button>
