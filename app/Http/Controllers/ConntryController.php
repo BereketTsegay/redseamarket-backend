@@ -44,7 +44,7 @@ class ConntryController extends Controller
         if($request->hasFile('flag')){
             $file = uniqid().'.'.$request->flag->getClientOriginalExtension();
 
-            $request->image->storeAs('public/flag', $file);
+            $request->flag->storeAs('public/flag', $file);
 
             $flag = 'storage/flag/'.$file;
         }
@@ -91,7 +91,7 @@ class ConntryController extends Controller
         if($request->hasFile('flag')){
             $file = uniqid().'.'.$request->flag->getClientOriginalExtension();
 
-            $request->image->storeAs('public/flag', $file);
+            $request->flag->storeAs('public/flag', $file);
 
             $flag = 'storage/flag/'.$file;
             $data->flag=$flag;
