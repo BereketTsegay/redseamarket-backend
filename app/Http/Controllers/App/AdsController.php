@@ -461,7 +461,7 @@ class AdsController extends Controller
 
                 foreach($request->image as $row){
 
-                    $image = $row['file'];
+                    $image = $row;
 
                     $image_parts = explode(";base64,", $image);
                     $image_type_aux = explode("image/", $image_parts[0]);
