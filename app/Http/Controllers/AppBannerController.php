@@ -20,7 +20,7 @@ class AppBannerController extends Controller
     public function store(Request $request){
 
         $request->validate([
-            'name'      => 'required',
+            'title'      => 'required',
             'image'     => 'required',
         ]);
 
@@ -40,7 +40,7 @@ class AppBannerController extends Controller
         }
 
         $banner             = new AppBanner();
-        $banner->name       = $request->name;
+        $banner->title       = $request->title;
         $banner->country_id = $request->country;
         $banner->image      = $image;
         $banner->status     = $status;
@@ -89,8 +89,7 @@ class AppBannerController extends Controller
 
         AppBanner::where('id', $request->id)
         ->update([
-            'name'          => $request->name,
-            'country_id'    => $request->country,
+            'title'          => $request->title,
             'image'         => $image,
             'status'        => $status,
         ]);
