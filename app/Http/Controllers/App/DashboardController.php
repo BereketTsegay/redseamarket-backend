@@ -17,6 +17,7 @@ use PhpParser\Node\Expr\FuncCall;
 use App\Models\AdsCountry;
 use App\Models\Banner;
 use App\Models\Favorite;
+use App\Models\AppBanner;
 
 class DashboardController extends Controller
 {
@@ -148,7 +149,7 @@ class DashboardController extends Controller
                 ->where('status', Status::ACTIVE)
                 ->orderBy('sort_order')->get();
 
-               $banners=Banner::where('status',1)->where('country_id',$request->country)->first();
+               $banners=AppBanner::where('status',1)->get();
            
 
             return response()->json([
