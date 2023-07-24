@@ -46,7 +46,7 @@ class AppBannerController extends Controller
         $banner->save();
 
         session()->flash('success', 'Banner has been stored');
-        return redirect()->route('banner.index');
+        return back();
     }
 
     public function view($id){
