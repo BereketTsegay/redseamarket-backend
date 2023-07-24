@@ -45,11 +45,11 @@
                                             </button>
                                             <div class="dropdown-menu text-center">
                                                 <a href="{{ route('banner.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
-                                                <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->name}}', '{{$row->type}}', '{{$row->status}}','{{$row->country_id}}')" data-toggle="modal" data-target="#editBannerModal">Edit</button>
-                                                <button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
+                                                <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->title}}','{{$row->status}}')" data-toggle="modal" data-target="#editBannerModal">Edit</button>
+                                                {{-- <button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
                                                 <form id="delete_Banner_form{{$row->id}}" action="{{ route('banner.delete', $row->id) }}" method="POST">
                                                     @csrf
-                                                </form>
+                                                </form> --}}
                                     </td>
                                 </tr>
                             @endforeach
