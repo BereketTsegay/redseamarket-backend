@@ -19,7 +19,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <p class="col-md-6">Name :</p>
-                                    <p class="col-md-6">{{ $banner->name }}</p>
+                                    <p class="col-md-6">{{ $banner->title }}</p>
                                 </div>
                               
                                 <div class="row">
@@ -28,7 +28,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <a href="{{ asset($banner->file) }}" target="blank"><img src="{{ asset($banner->image) }}" alt="image" width="250px"></a>
+                                <a href="{{ asset($banner->file) }}" target="blank"><img src="{{ asset($banner->file) }}" alt="image" width="250px"></a>
                             </div>
                         </div>
                     </div>
