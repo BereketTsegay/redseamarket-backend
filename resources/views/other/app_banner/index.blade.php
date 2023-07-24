@@ -137,8 +137,8 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="form-group my-2">
-                            <label for="EditName">Name</label>
-                            <input type="text" value="{{ old('name') }}" name="name" class="form-control" id="editName" placeholder="Name">
+                            <label for="EditName">Title</label>
+                            <input type="text" value="{{ old('title') }}" name="title" class="form-control" id="editName" placeholder="title">
                         </div>
                        
                         <div class="form-group my-2">
