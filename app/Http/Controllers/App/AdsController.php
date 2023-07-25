@@ -4995,4 +4995,19 @@ class AdsController extends Controller
         ], 200);
     }
 
+    public function categoryImage(Request $request){
+
+       
+        if($request->hasFile('image')){
+            $data=Category::find($request->category_id);
+            $image = uniqid().'.'.$request->image->getClientOriginalExtension();
+            
+            $request->image->storeAs('public/category', $image);
+
+            $image = 'storage/category/'.$image;
+            $data->image=$image;
+            $data->update();
+        }
+    }
+
 }

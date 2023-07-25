@@ -95,6 +95,7 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/customer/get/category/ads', [\App\Http\Controllers\App\OtherController::class, 'getCategoryAds']);
     Route::post('/customer/ad/view', [\App\Http\Controllers\App\AdsController::class, 'adView']);
 
+    Route::post('/category/image/update', [\App\Http\Controllers\App\AdsController::class, 'categoryImage']);
 
 
     Route::post('/customer/logout', [\App\Http\Controllers\App\LoginController::class, 'logout']);
