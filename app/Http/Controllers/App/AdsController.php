@@ -5007,7 +5007,13 @@ class AdsController extends Controller
             $image = 'storage/category/'.$image;
             $data->image=$image;
             $data->update();
+
+            return response()->json([
+                'status'    => 'success',
+                'data'   => $data,           
+            ], 200);
         }
+
     }
 
 }
