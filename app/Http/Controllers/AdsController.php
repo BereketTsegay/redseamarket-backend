@@ -1179,7 +1179,7 @@ class AdsController extends Controller
         ->where('delete_status', '!=', Status::DELETE)
         ->orderBy('created_at', 'desc')
         ->paginate(10);
-        return $adsRequest;
+        return $adsRequest->Image;
         $reason = RejectReason::where('status', Status::ACTIVE)
         ->where('type', 0)
         ->orderBy('reson')
