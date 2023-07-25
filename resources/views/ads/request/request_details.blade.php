@@ -39,11 +39,11 @@
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">State :</p>
-                                    <p class="col-md-6">{{ $ad->State->name }}</p>
+                                    <p class="col-md-6">{{  $ad->State ? $ad->State->name : '' }}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">City :</p>
-                                    <p class="col-md-6">{{ $ad->City ? $ad->City->name : $ad->State->name }}</p>
+                                    <p class="col-md-6">{{ $ad->City ? $ad->City->name : '' }}</p>
                                 </div>
                                 <div class="row">
                                     <p class="col-md-6">Price($) :</p>
