@@ -1205,7 +1205,7 @@ class AdsController extends Controller
 
         $ad = Ads::where('id', $id)
         ->first();
-        return $ad->Image;
+       // return $ad->Image;
         $reason = RejectReason::where('status', Status::ACTIVE)
         ->orderBy('reson')
         ->get();
