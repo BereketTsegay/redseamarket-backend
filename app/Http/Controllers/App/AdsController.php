@@ -459,7 +459,7 @@ class AdsController extends Controller
 
             if($request->image){
 
-                foreach($request->image as $row){
+               // foreach($request->image as $row){
 
                   //  $image = $row;
 
@@ -474,13 +474,30 @@ class AdsController extends Controller
 
                     // $ad_image = 'storage/ads/'.$ad_image;
                     
+                    // $image = uniqid().'.'.$row->getClientOriginalExtension();
+                    // $row->storeAs('public/ads', $image);
+                    // $ad_image = 'storage/ads/'.$image;
+    
+                    // $adImage            = new AdsImage();
+                    // $adImage->ads_id    = $ad->id;
+                    // $adImage->image     = $ad_image;
+                    // $adImage->save();
+               // }
+            }
+
+            if($request->hasFile('image')){
+
+                foreach($request->image as $row){
+    
                     $image = uniqid().'.'.$row->getClientOriginalExtension();
+                
                     $row->storeAs('public/ads', $image);
-                    $ad_image = 'storage/ads/'.$image;
+    
+                    $image = 'storage/ads/'.$image;
     
                     $adImage            = new AdsImage();
                     $adImage->ads_id    = $ad->id;
-                    $adImage->image     = $ad_image;
+                    $adImage->image     = $image;
                     $adImage->save();
                 }
             }
