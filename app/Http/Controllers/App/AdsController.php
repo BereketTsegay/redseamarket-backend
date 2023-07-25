@@ -473,13 +473,14 @@ class AdsController extends Controller
                     // Storage::put('public/ads/'.$ad_image, $image_base64);
 
                     // $ad_image = 'storage/ads/'.$ad_image;
+
                     $image = uniqid().'.'.$row->getClientOriginalExtension();
                     $row->storeAs('public/ads', $image);
                     $image = 'storage/ads/'.$image;
     
                     $adImage            = new AdsImage();
                     $adImage->ads_id    = $ad->id;
-                    $adImage->image     = $ad_image;
+                    $adImage->image     = $image;
                     $adImage->save();
                 }
             }
