@@ -2092,9 +2092,9 @@ class OtherController extends Controller
             $data->language=$request->language;
             $data->skils=$request->skils;
             if($request->cv_file){
-                $file = uniqid().'.'.$request->$cv_file->getClientOriginalExtension();
+                $file = uniqid().'.'.$request->cv_file->getClientOriginalExtension();
                     
-                $request->$cv_file->storeAs('public/cv', $file);
+                $request->cv_file->storeAs('public/cv', $file);
 
                 $file = 'storage/cv/'.$file;
                 $data->cv_file=$file;
