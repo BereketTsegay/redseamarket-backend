@@ -2140,7 +2140,6 @@ class OtherController extends Controller
                 'certificate'     => 'required',
                 'language'     => 'required',
                 'skils'     => 'required',
-                'cv_file'     => 'required',
                 'overview'     => 'required',
                 'country_id'     => 'required',
                 'state_id'     => 'required',
