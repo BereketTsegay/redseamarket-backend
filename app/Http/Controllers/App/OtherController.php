@@ -2055,7 +2055,7 @@ class OtherController extends Controller
 
     public function jobProfileSave(Request $request){
 
-        return $request;
+     //   return $request;
 
         // try{
             $rules = [
