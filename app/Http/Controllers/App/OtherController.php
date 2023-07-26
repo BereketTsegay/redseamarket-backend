@@ -36,7 +36,8 @@ use App\Models\JobDocument;
 use App\Models\Enquiry as adEnq;
 use AmrShawky\LaravelCurrency\Facade\Currency;
 use Illuminate\Support\Str;
-
+use App\Models\JobProfile;
+use App\Models\JobProfileCompany;
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -2041,4 +2042,91 @@ class OtherController extends Controller
         'data'   => $ads_enquiry,
     ], 200);
     }
+
+    public function jobProfile(Request $request){
+       $user_id=Auth::user()->id;
+       $data= JobProfile::whith('Company')->where('user_id',$user_id)->first();
+       return response()->json([
+        'status'    => 'success',
+        'data'   => $data,
+    ], 200);
+
+    }
+
+    public function jobProfileSave(){
+
+        try{
+            $rules = [
+                'title'   => 'required',
+                'education'      => 'required',
+                'certificate'     => 'required',
+                'language'     => 'required',
+                'skils'     => 'required',
+                'cv_file'     => 'required',
+                'overview'     => 'required',
+                'country_id'     => 'required',
+                'state_id'     => 'required',
+                'city_id'     => 'required',
+                'company'     => 'required',
+
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $data=new JobProfile();
+            $data->user_id=Auth::user()->id;
+            $data->title=$request->title;
+            $data->work_experience=$request->work_experience;
+            $data->education=$request->education;
+            $data->certificate=$request->certificate;
+            $data->language=$request->language;
+            $data->skils=$request->skils;
+            if($request->cv_file){
+                $file = uniqid().'.'.$request->$cv_file->getClientOriginalExtension();
+                    
+                $request->$cv_file->storeAs('public/cv', $file);
+
+                $file = 'storage/cv/'.$file;
+                $data->cv_file=$file;
+            }
+            $data->overview=$request->overview;
+            $data->country_id=$request->country_id;
+            $data->state_id=$request->state_id;
+            $data->city_id=$request->city_id;
+            $data->save();
+
+            foreach($company as $row){
+            $company=new JobProfileCompany();
+            $company->job_profile_id=$data->id;
+            $company->from_date=$row->from_date;
+            $company->to_date=$row->to_date;
+            $company->company=$row->company;
+            $company->save();
+            }
+
+        }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
+    }
+
+    public function jobProfileUpdate(){
+        
+    }
+
 }
