@@ -2045,7 +2045,7 @@ class OtherController extends Controller
 
     public function jobProfile(Request $request){
        $user_id=Auth::user()->id;
-       $data= JobProfile::with('Company')->where('user_id',$user_id)->first();
+       $data= JobProfile::with('Company')->where('user_id',$user_id)->latest()->first();
        return response()->json([
         'status'    => 'success',
         'data'   => $data,
@@ -2057,7 +2057,7 @@ class OtherController extends Controller
 
      //   return $request;
 
-        // try{
+        try{
             $rules = [
                 'title'   => 'required',
                 'education'      => 'required',
@@ -2120,15 +2120,15 @@ class OtherController extends Controller
                 'status'    => 'success',
             ], 200);
 
-       // }
-        // catch (\Exception $e) {
+       }
+        catch (\Exception $e) {
             
     
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function jobProfileUpdate(){
