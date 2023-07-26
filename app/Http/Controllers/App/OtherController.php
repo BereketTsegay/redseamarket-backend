@@ -2105,7 +2105,7 @@ class OtherController extends Controller
             $data->city_id=$request->city_id;
             $data->save();
 
-            foreach($company as $row){
+            foreach($request->company as $row){
             $company=new JobProfileCompany();
             $company->job_profile_id=$data->id;
             $company->from_date=$row->from_date;
