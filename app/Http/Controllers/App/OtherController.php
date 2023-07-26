@@ -2053,7 +2053,7 @@ class OtherController extends Controller
 
     }
 
-    public function jobProfileSave(){
+    public function jobProfileSave(Request $request){
 
         // try{
             $rules = [
