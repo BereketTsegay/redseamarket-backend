@@ -2110,9 +2110,9 @@ class OtherController extends Controller
             foreach($request->company as $row){
             $company=new JobProfileCompany();
             $company->job_profile_id=$data->id;
-            $company->from_date=$row->from_date;
-            $company->to_date=$row->to_date;
-            $company->company=$row->company;
+            $company->from_date=$row['from_date'];
+            $company->to_date=$row['to_date'];
+            $company->company=$row['company'];
             $company->save();
             }
 
