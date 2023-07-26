@@ -2045,7 +2045,7 @@ class OtherController extends Controller
 
     public function jobProfile(Request $request){
        $user_id=Auth::user()->id;
-       $data= JobProfile::whith('Company')->where('user_id',$user_id)->first();
+       $data= JobProfile::with('Company')->where('user_id',$user_id)->first();
        return response()->json([
         'status'    => 'success',
         'data'   => $data,
