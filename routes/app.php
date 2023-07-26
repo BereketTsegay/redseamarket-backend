@@ -103,4 +103,9 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/customer/ad/delete', [\App\Http\Controllers\App\AdsController::class, 'removeAd']);
     Route::post('/uploade/cv_document', [\App\Http\Controllers\App\OtherController::class, 'cvDocument']);
     Route::post('/check/user/apply_document', [\App\Http\Controllers\App\OtherController::class, 'checkDocument']); 
+
+    Route::post('/get/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfile']);
+    Route::post('/save/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfileSave']);
+    Route::post('/update/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfileUpdate']);
+
 });

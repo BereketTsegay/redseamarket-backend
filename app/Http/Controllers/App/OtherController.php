@@ -2114,6 +2114,10 @@ class OtherController extends Controller
             $company->save();
             }
 
+            return response()->json([
+                'status'    => 'success',
+            ], 200);
+
         }
         catch (\Exception $e) {
             
