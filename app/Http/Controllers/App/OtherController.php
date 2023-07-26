@@ -2131,7 +2131,80 @@ class OtherController extends Controller
         }
     }
 
-    public function jobProfileUpdate(){
+    public function jobProfileUpdate(Request $request){
+
+        try{
+            $rules = [
+                'title'   => 'required',
+                'education'      => 'required',
+                'certificate'     => 'required',
+                'language'     => 'required',
+                'skils'     => 'required',
+                'cv_file'     => 'required',
+                'overview'     => 'required',
+                'country_id'     => 'required',
+                'state_id'     => 'required',
+                'city_id'     => 'required',
+                'company'     => 'required',
+
+            ];
+
+            $validate = Validator::make($request->all(), $rules);
+
+            if($validate->fails()){
+
+                return response()->json([
+                    'status'    => 'error',
+                    'message'   => 'Invalid request',
+                    'code'      => 400,
+                    'errors'    => $validate->errors(),
+                ], 200);
+            }
+
+            $data=JobProfile::find($request->jobprofile_id);
+            $data->user_id=Auth::user()->id;
+            $data->title=$request->title;
+            $data->work_experience=$request->work_experience;
+            $data->education=$request->education;
+            $data->certificate=$request->certificate;
+            $data->language=$request->language;
+            $data->skils=$request->skils;
+            if($request->cv_file){
+                $file = uniqid().'.'.$request->cv_file->getClientOriginalExtension();
+                    
+                $request->cv_file->storeAs('public/cv', $file);
+
+                $file = 'storage/cv/'.$file;
+                $data->cv_file=$file;
+            }
+            $data->overview=$request->overview;
+            $data->country_id=$request->country_id;
+            $data->state_id=$request->state_id;
+            $data->city_id=$request->city_id;
+            $data->update();
+            JobProfileCompany::where('job_profile_id',$data->id)->delete();
+            foreach($request->company as $row){
+            $company=new JobProfileCompany();
+            $company->job_profile_id=$data->id;
+            $company->from_date=$row['from_date'];
+            $company->to_date=$row['to_date'];
+            $company->company=$row['company'];
+            $company->save();
+            }
+
+            return response()->json([
+                'status'    => 'success',
+            ], 200);
+
+       }
+        catch (\Exception $e) {
+            
+    
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
         
     }
 
