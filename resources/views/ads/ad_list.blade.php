@@ -39,7 +39,7 @@
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ date('d-m-Y', strtotime($row->created_at)) }}</td>
-                                <td>{{ $row->Category->name }}</td>
+                                <td>@if($row->Category){{ $row->Category->name }}@endif</td>
                                 <td>{{ $row->title }}</td>
                                 <td>{{ $row->User->name }}</td>
                                 <td>
