@@ -1140,11 +1140,15 @@ class AdsController extends Controller
             'accept_at'    => \DB::raw('CURRENT_TIMESTAMP'),
             'start_at'    => \DB::raw('CURRENT_TIMESTAMP'),
         ]);
+       
+
+       
         $lastpayment=Payment::where('ads_id',$id)->latest()->first();
         // return $lastpayment;
+        if($lastpayment){
          $lastpayment->status="payment accepted";
          $lastpayment->update();
-
+        }
         session()->flash('success', 'Ad has been accepted');
         return redirect()->route('ads.index');
     }
