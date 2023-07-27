@@ -131,7 +131,7 @@
                                         <tr>
                                             <th scope="row">{{ $i }}</th>
                                             <td>{{ date('d-m-Y', strtotime($row2->created_at)) }}</td>
-                                            <td>{{ $row2->Category->name }}</td>
+                                            <td>@if($row2->Category){{ $row2->Category->name }}@endif</td>
                                             <td>{{ $row2->title }}</td>
                                             <td>{{ $row2->User->name }}</td>
                                             <td class="w-50">{{ $row2->RejectionNote->reson }}</td>
@@ -181,7 +181,7 @@
                                         <tr>
                                             <th scope="row">{{ $i }}</th>
                                             <td>{{ date('d-m-Y', strtotime($row2->created_at)) }}</td>
-                                            <td>{{ $row2->Category->name }}</td>
+                                            <td>@if($row2->Category){{ $row2->Category->name }}@endif</td>
                                             <td>{{ $row2->title }}</td>
                                             <td>{{ $row2->User->name }}</td>
                                             <td class="w-50">{{ $row2->RejectionNote->reson }}</td>
