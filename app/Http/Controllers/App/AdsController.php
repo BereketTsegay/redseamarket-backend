@@ -59,7 +59,7 @@ class AdsController extends Controller
             ], 200);
         }
 
-        try{
+        // try{
             $country_ad=AdsCountry::where('ads_id',$request->ads_id)->where('country_id',$request->country_id)->first();
             if($country_ad){
                 $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
@@ -177,15 +177,15 @@ class AdsController extends Controller
             }
            
 
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
 
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function adStore(Request $request){
