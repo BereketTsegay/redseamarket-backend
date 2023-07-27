@@ -107,6 +107,14 @@ class AdsController extends Controller
                     $favourite = Favorite::where('ads_id', $a->id)
                     ->where('customer_id', Auth::user()->id)
                     ->count();
+
+                    $document=JobDocument::where('ads_id',$request->ads_id)->where('user_id',Auth::user()->id)->first();
+                    if($document){
+                        $a->isApply=1;
+                    }else{
+                        $a->isApply=0;
+                    }
+
                     $a->isFavourite=$favourite;
                     $a->country_name = $a->Country->name;
                     $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
