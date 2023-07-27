@@ -97,13 +97,12 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
 
     Route::post('/category/image/update', [\App\Http\Controllers\App\AdsController::class, 'categoryImage']);
 
-
     Route::post('/customer/logout', [\App\Http\Controllers\App\LoginController::class, 'logout']);
     Route::post('/customer/ads/remove_image', [\App\Http\Controllers\App\AdsController::class, 'removeImage']);
     Route::post('/customer/ad/delete', [\App\Http\Controllers\App\AdsController::class, 'removeAd']);
-    Route::post('/uploade/cv_document', [\App\Http\Controllers\App\OtherController::class, 'cvDocument']);
+    Route::post('/apply/job', [\App\Http\Controllers\App\OtherController::class, 'saveJobrequest']);
     Route::post('/check/user/apply_document', [\App\Http\Controllers\App\OtherController::class, 'checkDocument']); 
-
+    
     Route::post('/get/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfile']);
     Route::post('/save/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfileSave']);
     Route::post('/update/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfileUpdate']);

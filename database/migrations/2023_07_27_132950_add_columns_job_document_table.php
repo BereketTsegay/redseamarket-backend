@@ -20,7 +20,6 @@ class AddColumnsJobDocumentTable extends Migration
             $table->string('notice_period')->nullable();
             $table->string('relevent_field')->nullable();
             $table->string('current_company')->nullable();
-            $table->string('cv_file')->nullable();
         });
     }
 

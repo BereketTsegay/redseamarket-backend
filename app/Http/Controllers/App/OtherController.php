@@ -1860,6 +1860,34 @@ class OtherController extends Controller
         ], 200);
     }
 
+    public function saveJobrequest(Request $request){
+      
+
+        $user=Auth::user();
+
+        $file = uniqid().'.'.$request->cv_file->getClientOriginalExtension();
+        $request->storeAs('public/document/', $file);
+        $file = 'storage/document/'.$file;
+
+        $doc= new JobDocument();
+        $doc->ads_id = $request->ad_id;
+        $doc->document = $file;
+        $doc->user_id = $user->id;
+        $doc->total_experience = $request->total_experience;
+        $doc->current_ctc = $request->current_ctc;
+        $doc->expect_ctc = $request->expect_ctc;
+        $doc->notice_period = $request->notice_period;
+        $doc->relevent_field = $request->relevent_field;
+        $doc->current_company = $request->current_company;
+        $doc->save();
+
+        return response()->json([
+            'status'    => 'success',
+            'code'      => '200',
+        ], 200);
+
+    }
+
     public function checkDocument(Request $request){
 
         $user=Auth::user();
