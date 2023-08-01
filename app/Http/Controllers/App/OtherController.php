@@ -2236,4 +2236,22 @@ class OtherController extends Controller
         
     }
 
+    public function jobProfileList(){
+
+        $user_id=Auth::user()->id;
+        $data=JobProfile::whereNot('user_id',$user_id)->get();
+        return response()->json([
+            'status'    => 'success',
+            'data'      => $data,
+        ], 200);
+    }
+
+    public function jobProfileDetails(Request $request){
+        $data=JobProfile::find($request->profile_id);
+        return response()->json([
+            'status'    => 'success',
+            'data'      => $data,
+        ], 200);
+    }
+
 }
