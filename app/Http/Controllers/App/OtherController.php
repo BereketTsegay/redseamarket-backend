@@ -38,6 +38,7 @@ use AmrShawky\LaravelCurrency\Facade\Currency;
 use Illuminate\Support\Str;
 use App\Models\JobProfile;
 use App\Models\JobProfileCompany;
+
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -1866,7 +1867,7 @@ class OtherController extends Controller
         $user=Auth::user();
 
         $file = uniqid().'.'.$request->cv_file->getClientOriginalExtension();
-        $request->storeAs('public/document/', $file);
+        $request->cv_file->storeAs('public/document/', $file);
         $file = 'storage/document/'.$file;
 
         $doc= new JobDocument();
