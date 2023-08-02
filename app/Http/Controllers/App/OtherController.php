@@ -2239,7 +2239,7 @@ class OtherController extends Controller
     public function jobProfileList(){
 
         $user_id=Auth::user()->id;
-        $data=JobProfile::where('user_id','<>',$user_id)->get();
+        $data=JobProfile::with('User')->where('user_id','<>',$user_id)->get();
         return response()->json([
             'status'    => 'success',
             'data'      => $data,
@@ -2247,7 +2247,7 @@ class OtherController extends Controller
     }
 
     public function jobProfileDetails(Request $request){
-        $data=JobProfile::find($request->profile_id);
+        $data=JobProfile::with('User')->where('id',$request->profile_id)->first();
         return response()->json([
             'status'    => 'success',
             'data'      => $data,

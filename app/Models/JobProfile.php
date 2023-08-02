@@ -12,4 +12,8 @@ class JobProfile extends Model
     public function Company(){
         return $this->hasMany(JobProfileCompany::class, 'job_profile_id', 'id');
     }
+
+    public function User(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

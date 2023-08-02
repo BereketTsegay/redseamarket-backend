@@ -608,6 +608,7 @@ class LoginController extends Controller
                 'email'         => 'required|email|unique:users,email,'.$id.',id',
                 'phone'         => 'required|numeric',
                 'nationality'   => 'required',
+                'image'   => 'required',
             ];
 
             $validate = Validator::make($request->all(), $rules);
@@ -621,6 +622,10 @@ class LoginController extends Controller
                     'errors'    => $validate->errors(),
                 ], 200);
             }
+
+            $image = uniqid().'.'.$request->image->getClientOriginalExtension();
+            $request->image->storeAs('public/user', $image);
+            $p_image = 'storage/user/'.$image;
             
             User::where('id', Auth::user()->id)
             ->update([
@@ -628,6 +633,7 @@ class LoginController extends Controller
                 'email'             => $request->email,
                 'phone'             => $request->phone,
                 'nationality_id'    => $request->nationality,
+                'image'  =>$p_image,
             ]);
 
             return response()->json([
