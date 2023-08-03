@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use Stripe\Exception\CardException;
 use Stripe\StripeClient;
+use Stripe\Stripe;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Mail;
