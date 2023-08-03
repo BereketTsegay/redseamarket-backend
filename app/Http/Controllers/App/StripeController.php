@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Stripe\Exception\CardException;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Payment;
+use Illuminate\Support\Facades\Mail;
 
 class StripeController extends Controller
 {
@@ -51,6 +53,27 @@ class StripeController extends Controller
 
         $charge = $this->createCharge($token['id'], $amount*100);
         if (!empty($charge) && $charge['status'] == 'succeeded') {
+
+            $payment                = new Payment();
+            $payment->payment_id    = $charge['id'];
+            $payment->amount        = $request->amount;
+            $payment->ads_id        = 0;
+            $payment->name          = $request->name;
+            $payment->email         = $request->email;
+            $payment->phone         = $request->phone;
+            $payment->payment_type  = 0; // 0 for Payment through stripe
+            $payment->status        = 'Payment started';
+            $payment->save();
+
+            $details = [
+                'name'      => $request->name,
+                'amount'    => $request->amount,
+                'id'        => $charge['id'],
+                'date'      => $payment->created_at,
+            ];
+    
+            Mail::to($request->email)->send(new MailPayment($details));
+            
             return response()->json(["status" => 1,"message"=>"succeeded","payment_id"=>$charge['id']]);
 
         } else {
@@ -86,10 +109,13 @@ class StripeController extends Controller
         try {
             $charge = $this->stripe->charges->create([
                 'amount' => $amount*100,
-                'currency' => 'aed',
+                'currency' => 'usd',
                 'source' => $tokenId,
                 'description' => 'My first payment'
             ]);
+
+           
+
         } catch (Exception $e) {
             $charge['error'] = $e->getMessage();
         }
