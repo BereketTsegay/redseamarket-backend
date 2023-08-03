@@ -18,7 +18,7 @@ class StripeController extends Controller
     private $stripe;
     public function __construct()
     {
-        $this->stripe = new StripeClient(env('STRIPE_SECRET_KEY'));
+        $this->stripe =  new \Stripe\StripeClient(env('STRIPE_SECRET_KEY'));
     }
 
   
