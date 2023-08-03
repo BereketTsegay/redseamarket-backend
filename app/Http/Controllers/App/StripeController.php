@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use Stripe\Exception\CardException;
 use Stripe\StripeClient;
-use Stripe\Stripe;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Mail;
@@ -19,7 +18,7 @@ class StripeController extends Controller
     private $stripe;
     public function __construct()
     {
-        $this->stripe =  Stripe::setApiKey(env('STRIPE_SECRET_KEY'));;
+        $this->stripe = new StripeClient(env('STRIPE_SECRET_KEY'));
     }
 
   
