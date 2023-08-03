@@ -1719,7 +1719,7 @@ class OtherController extends Controller
 
         else{
 
-            $category = Category::where('name', $request->category)
+            $category = Category::where('id', $request->category)
             ->first();
             return response()->json([
                 'status'    => 'success',
