@@ -11,6 +11,7 @@ use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\Payment as MailPayment;
 
 class StripeController extends Controller
 {
