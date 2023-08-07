@@ -1754,28 +1754,11 @@ class OtherController extends Controller
        $documents=[];
 
         if(count($request->payment_slip)!=0){
-            for($i=0;$i<count($request->payment_slip);$i++){
-            $file=$request->payment_slip[$i]['paymentSlip'];
-            $document_part = explode(";base64,", $request->payment_slip[$i]['paymentSlip']);
-           
-          //  $image_type_aux = explode("image/", $document_part[0]);
-            $ext=Str::afterLast($document_part[0], '/');
-          // return $document_part;
-      
+            foreach($request->payment_slip as $row){
 
-            if($ext=='pdf'){
-                $image_type_aux = explode("application/", $document_part[0]);
-            }
-            else{
-                $image_type_aux = explode("image/", $document_part[0]);
-            }
-            $image_type = $image_type_aux[1];
-            
-            $image_base64 = base64_decode($document_part[1]);
-           // return $image_base64;
-            $document = uniqid() . '.' .$image_type;
+            $document = uniqid().'.'.$row->getClientOriginalExtension();
 
-            Storage::put('public/document/'.$document, $image_base64);
+            $row->storeAs('public/document/', $document);
 
             $document = 'storage/document/'.$document;
 
