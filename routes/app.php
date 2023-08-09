@@ -3,6 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/error', function () {
+  return response()->json([
+                  'status'    => false,
+                  'message'   => 'Invalid Request'
+              ], 200);
+})->name('login');
 
 Route::group(['namespace'=>'App','prefix' => 'app'],function (){
 
