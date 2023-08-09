@@ -1754,11 +1754,11 @@ class OtherController extends Controller
        $documents=[];
 
         if(count($request->payment_slip)!=0){
-            foreach($request->payment_slip as $row){
+            for($i=0;$i<count($request->payment_slip);$i++){
 
-            $document = uniqid().'.'.$row->getClientOriginalExtension();
+            $document = uniqid().'.'.$row[$i]->getClientOriginalExtension();
 
-            $row->storeAs('public/document/', $document);
+            $row[$i]->storeAs('public/document/', $document);
 
             $document = 'storage/document/'.$document;
 
