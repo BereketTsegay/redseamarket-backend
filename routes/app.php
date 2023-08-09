@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/error', function () {
   return response()->json([
                   'status'    => false,
-                  'message'   => 'Invalid Request'
+                  'message'   => 'Unauthenticated'
               ], 200);
 })->name('login');
 
