@@ -31,7 +31,6 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/customer/get/job/subsubcategory', [\App\Http\Controllers\App\DashboardController::class, 'getjobSubSubcategory']);
     
     
-    Route::post('/customer/search/ads', [\App\Http\Controllers\App\OtherController::class, 'searchAds']);
     Route::post('/customer/get/subcategory/ads', [\App\Http\Controllers\App\OtherController::class, 'getSubcategoryAds']);
     Route::post('/customer/get/property/filter', [\App\Http\Controllers\App\AdsController::class, 'getPropertyFilter']);
     Route::post('/customer/get/motor/list', [\App\Http\Controllers\App\OtherController::class, 'getMototList']);
@@ -97,7 +96,8 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/customer/uploade/payment_slip', [\App\Http\Controllers\App\OtherController::class, 'paymentDocument']);
     Route::post('/customer/get/ad-selCountry', [\App\Http\Controllers\App\AdsController::class, 'adsCountries']);
     Route::post('/customer/get/ad-cvdocuments', [\App\Http\Controllers\App\AdsController::class, 'jobRequestDocs']);
-    
+    Route::post('/customer/search/ads', [\App\Http\Controllers\App\OtherController::class, 'searchAds']);
+
     Route::post('customer/stripe/payment',[\App\Http\Controllers\App\StripeController::class,'postPaymentStripe']);
 
     Route::post('/customer/get/category/ads', [\App\Http\Controllers\App\OtherController::class, 'getCategoryAds']);
