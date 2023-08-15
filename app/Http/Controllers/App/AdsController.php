@@ -4766,26 +4766,19 @@ class AdsController extends Controller
                 $property->save();
             }
 
-            if($request->image){
+            if($request->hasFile('image')){
 
                 foreach($request->image as $row){
-
-                    $image = $row['file'];
-
-                    $image_parts = explode(";base64,", $image);
-                    $image_type_aux = explode("image/", $image_parts[0]);
-                    $image_type = $image_type_aux[1];
-                    $image_base64 = base64_decode($image_parts[1]);
-
-                    $ad_image = uniqid() . '.' .$image_type;
-
-                    Storage::put('public/ads/'.$ad_image, $image_base64);
-
-                    $ad_image = 'storage/ads/'.$ad_image;
+    
+                    $image = uniqid().'.'.$row->getClientOriginalExtension();
+                
+                    $row->storeAs('public/ads', $image);
+    
+                    $image = 'storage/ads/'.$image;
     
                     $adImage            = new AdsImage();
                     $adImage->ads_id    = $ads->id;
-                    $adImage->image     = $ad_image;
+                    $adImage->image     = $image;
                     $adImage->save();
                 }
             }
