@@ -283,7 +283,10 @@ class OtherController extends Controller
                             return $q;
                         }),
                     ]);
-
+                    $favourite = Favorite::where('ads_id', $a->id)
+                    ->where('customer_id', Auth::user()->id)
+                    ->count();
+                    $a->isFavourite=$favourite;
                     $a->country_name = $a->Country->name;
                     $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
                     $a->state_name = $a->State->name;
