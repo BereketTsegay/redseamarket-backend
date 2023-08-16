@@ -118,6 +118,7 @@ class AdsController extends Controller
                     $a->isFavourite=$favourite;
                     $a->country_name = $a->Country->name;
                     $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                    $a->mapCountry=AdsCountry::where('ads_id',$a->id)->get()->pluck('country_id');
                     $a->state_name = $a->State->name;
                     if($a->city_id != 0){
                         $a->city_name = $a->City->name;
