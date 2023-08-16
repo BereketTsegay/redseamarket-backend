@@ -867,8 +867,6 @@ class OtherController extends Controller
     public function getCategoryAds(Request $request){
         $rules = [
             'category'    => 'required',
-            // 'latitude'          => 'required',
-            // 'longitude'         => 'required',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -905,19 +903,10 @@ class OtherController extends Controller
                         ->where('ads.state_id', $city->state_id);
                     });
                 })
-                // selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                // ->having('distance', '<=', $radius)
                 ->where('ads.status', Status::ACTIVE)
                 ->where('ads.category_id', $request->category)
                 ->where('ads.delete_status', '!=', Status::DELETE);
 
-                if($latitude != 0 && $longitude != 0){
-
-                    // $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                    //     sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                    // ->having('distance', '<=', $radius);
-                }
 
                 if(isset($request->country)){
                     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
@@ -939,13 +928,7 @@ class OtherController extends Controller
                     $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
                     
                 }
-                // elseif(isset($request->priceFrom)){
-                //     $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
-                // }
-                // else{
-                //     $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
-                // }
-
+                
                 $myAds->groupBy('ads.id');
                 $myAds->orderBy('ads.id','DESC');
                 $myAds =  $myAds = $myAds->get();
@@ -1019,18 +1002,8 @@ class OtherController extends Controller
                 ->join('ads_countries','ads_countries.ads_id','ads.id')
                 ->where('ads_countries.country_id',$request->country)
                 ->where('ads.status', Status::ACTIVE)
-                // selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                //         sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                // ->having('distance', '<=', $radius)
                 ->where('ads.category_id', $request->category)
                 ->where('ads.delete_status', '!=', Status::DELETE);
-
-                if($latitude != 0 && $longitude != 0){
-
-                    $myAds->selectRaw('*,(6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * 
-                        sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-                    ->having('distance', '<=', $radius);
-                }
 
                 if(isset($request->country)){
                     $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
@@ -1038,9 +1011,6 @@ class OtherController extends Controller
                     $myAds->whereIn('ads.id', $countryAds);
                 }
 
-                if(isset($request->seller)){
-                    $myAds->where('ads.featured_flag', $request->seller);
-                }
                 if(isset($request->area)){
                    
                     $myAds->where('ads.area', $request->area);
@@ -1052,13 +1022,7 @@ class OtherController extends Controller
                     $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
                     
                 }
-                // if(isset($request->priceFrom)){
-                //     $myAds->where('ads_countries.price', '>=', $request->priceFrom)->where('ads_countries.country_id',$request->country);
-                // }
-                // if(isset($request->priceTo)){
-                //     $myAds->where('ads_countries.price', '<=', $request->priceTo)->where('ads_countries.country_id',$request->country);
-                // }
-              
+                            
                 $myAds->orderBy('ads.id','DESC');
                 $myAds = $myAds->get();
                     return $myAds->map(function($a){
