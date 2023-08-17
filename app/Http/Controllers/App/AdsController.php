@@ -4677,10 +4677,10 @@ class AdsController extends Controller
                 AdsCountry::where('ads_id',$request->id)->delete();
 
                 foreach($request->adsCountry as $country){
-                    $currency=CurrencyCode::where('country_id',$country['id'])->first();
+                    $currency=CurrencyCode::where('country_id',$country)->first();
                     $ads_countryMap=new AdsCountry();
                     $ads_countryMap->ads_id=$ads->id;
-                    $ads_countryMap->country_id=$country['id'];
+                    $ads_countryMap->country_id=$country;
                     $ads_countryMap->price=$request->price*$currency->value;
                     $ads_countryMap->save();
                 }
