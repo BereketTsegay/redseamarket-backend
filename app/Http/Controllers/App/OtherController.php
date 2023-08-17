@@ -1789,7 +1789,7 @@ class OtherController extends Controller
         return response()->json([
             'status'    => 'success',
             'code'      => '200',
-            'privacy'   => $privacy,
+            'privacy'   => $privacy->policy,
         ], 200);
     }
 
