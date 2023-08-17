@@ -1784,8 +1784,7 @@ class OtherController extends Controller
 
     public function privacyPolicy(){
 
-        $privacy = PrivacyPolicy::orderBy('created_at')
-        ->get();
+        $privacy = PrivacyPolicy::first();
 
         return response()->json([
             'status'    => 'success',
