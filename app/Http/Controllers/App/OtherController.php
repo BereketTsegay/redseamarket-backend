@@ -1022,8 +1022,17 @@ class OtherController extends Controller
                     $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
                     
                 }
-                            
-                $myAds->orderBy('ads.id','DESC');
+
+                if($request->sort){
+                    if($request->sort='high-to-low'){
+                        $myAds->orderBy('ads_countries.price','DESC');
+                    }
+                    else{
+                        $myAds->orderBy('ads_countries.price','ASC');
+                    }
+                }else{
+                    $myAds->orderBy('ads.id','DESC');
+                }
                 $myAds = $myAds->get();
                     return $myAds->map(function($a){
 
