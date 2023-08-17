@@ -291,7 +291,7 @@
                                 
                             </div>
                         </div>
-                        @if($ad->status == 0)
+                        @if($ad->status == 0 || $ad->status == 5)
                             <form action="{{ route('ad.accept', $ad->id) }}" method="POST">@csrf
                                 <button type="submit" class="btn btn-primary my-4">Accept</button>
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Reject</button>
