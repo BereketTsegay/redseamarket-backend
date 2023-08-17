@@ -1025,10 +1025,10 @@ class OtherController extends Controller
 
                 if($request->sort){
                     if($request->sort='high-to-low'){
-                        $myAds->orderBy('price','DESC');
+                        $myAds->orderBy('ads.price','DESC');
                     }
-                    else{
-                        $myAds->orderBy('price','ASC');
+                    if($request->sort='low-to-high'){
+                        $myAds->orderBy('ads.price','ASC');
                     }
                 }else{
                     $myAds->orderBy('ads.id','DESC');
