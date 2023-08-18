@@ -903,6 +903,14 @@ class OtherController extends Controller
                     $myAds->whereIn('ads.id', $countryAds);
                 }
 
+                if(isset($request->state_id)){
+                   
+                    $myAds->where('ads.state_id', $request->state_id);
+                }
+                if(isset($request->city)){
+                   
+                    $myAds->where('ads.city_id', $request->city);
+                }
                 if(isset($request->area)){
                    
                     $myAds->where('ads.area', $request->area);
