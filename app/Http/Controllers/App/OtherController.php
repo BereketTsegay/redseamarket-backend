@@ -896,13 +896,8 @@ class OtherController extends Controller
                 $myAds = Ads::select('ads.*')
                 ->join('ads_countries','ads_countries.ads_id','ads.id')
                 ->where('ads_countries.country_id',$request->country)
-                ->where(function($a) use($request, $city){
-                    $a->orwhere('ads.city_id', $request->city)
-                    ->orwhere(function($a) use($city){
-                        $a->where('ads.city_id', 0)
-                        ->where('ads.state_id', $city->state_id);
-                    });
-                })
+                ->where('ads.city_id', $request->city)
+                ->where('ads.state_id', $request->state_id)
                 ->where('ads.status', Status::ACTIVE)
                 ->where('ads.category_id', $request->category)
                 ->where('ads.delete_status', '!=', Status::DELETE);
