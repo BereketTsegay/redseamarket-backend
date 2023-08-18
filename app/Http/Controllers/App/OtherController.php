@@ -890,14 +890,10 @@ class OtherController extends Controller
 
             if($request->city){
 
-                $city = City::where('id', $request->city)
-                ->first();
-            
+                
                 $myAds = Ads::select('ads.*')
                 ->join('ads_countries','ads_countries.ads_id','ads.id')
                 ->where('ads_countries.country_id',$request->country)
-                ->where('ads.city_id', $request->city)
-                ->where('ads.state_id', $request->state_id)
                 ->where('ads.status', Status::ACTIVE)
                 ->where('ads.category_id', $request->category)
                 ->where('ads.delete_status', '!=', Status::DELETE);
@@ -925,6 +921,8 @@ class OtherController extends Controller
                 }
                 
                 $myAds->groupBy('ads.id');
+                $myAds->where('ads.city_id', $request->city);
+                $myAds->where('ads.state_id', $request->state_id);
                 $myAds->orderBy('ads.id','DESC');
                 $myAds =  $myAds = $myAds->get();
                   return $myAds->map(function($a){
