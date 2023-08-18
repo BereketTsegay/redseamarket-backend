@@ -31,7 +31,7 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="Name">Category Name Arabic</label>
-                                        <input type="text" name="arabic_name" value="{{ $category->arabic_name }}" class="slug form-control @error('category_name') is-invalid @enderror" placeholder="Category Name" autocomplete="off">
+                                        <input type="text" name="arabic_name" value="{{ $category->arabic_name }}" class="slug form-control @error('arabic_name') is-invalid @enderror" placeholder="Category Name" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('arabic_name')
                                                 {{ $message }}
