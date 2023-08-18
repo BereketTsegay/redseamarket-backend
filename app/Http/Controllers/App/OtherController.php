@@ -998,12 +998,12 @@ class OtherController extends Controller
                 
            
 
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => 'Showing result ',
-                    'code'      => 200,
-                    'ads'       => $myAds,
-                ], 200);
+                // return response()->json([
+                //     'status'    => 'success',
+                //     'message'   => 'Showing result ',
+                //     'code'      => 200,
+                //     'ads'       => $myAds,
+                // ], 200);
             
         }
         catch (\Exception $e) {
