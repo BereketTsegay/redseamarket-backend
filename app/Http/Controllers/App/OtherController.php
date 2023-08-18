@@ -881,7 +881,7 @@ class OtherController extends Controller
             ], 200);
         }
 
-        // try{
+        try{
 
             $latitude = $request->latitude;
             $longitude = $request->longitude;
@@ -1007,15 +1007,15 @@ class OtherController extends Controller
                     'ads'       => $myAds,
                 ], 200);
             
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             
     
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function getSubcategoryAds(Request $request){
