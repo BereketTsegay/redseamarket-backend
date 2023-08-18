@@ -888,108 +888,7 @@ class OtherController extends Controller
 
             $radius = 100; // Km
 
-            if($request->city){
-
-                
-                $myAds = Ads::select('ads.*')
-                ->join('ads_countries','ads_countries.ads_id','ads.id')
-                ->where('ads_countries.country_id',$request->country)
-                ->where('ads.status', Status::ACTIVE)
-                // ->where('ads.category_id',$request->category)
-                ->where('ads.delete_status', '!=', Status::DELETE);
-
-
-                if(isset($request->country)){
-                    $countryAds=AdsCountry::where('country_id',$request->country)->get()->pluck('ads_id');
-
-                    $myAds->whereIn('ads.id', $countryAds);
-                }
-               
-                if(isset($request->seller)){
-                    $myAds->where('ads.featured_flag', $request->seller);
-                }
-                if(isset($request->area)){
-                   
-                    $myAds->where('ads.area', $request->area);
-                }
-                if(isset($request->subArea)){
-                    $myAds->where('ads.sub_area', $request->subArea);
-                }
-                if($request->priceFrom && $request->priceTo){
-                    $myAds->whereBetween('ads_countries.price', [$request->priceFrom,  $request->priceTo]);
-                    
-                }
-                
-                $myAds->groupBy('ads.id');
-                $myAds->where('ads.city_id', $request->city);
-                $myAds->where('ads.state_id', $request->state_id);
-                $myAds->orderBy('ads.id','DESC');
-                $myAds =  $myAds = $myAds->get();
-                  return $myAds->map(function($a){
-
-                        $a->image = array_filter([
-                            $a->Image->map(function($q) use($a){
-                                $q->image;
-                                unset($q->ads_id, $q->img_flag);
-                                return $q;
-                            }),
-                        ]);
-
-                        if($a->category_id == 1){
-                            $a->MotoreValue;
-                            $a->make = $a->MotoreValue->Make->name;
-                            $a->model = $a->MotoreValue->Model->name;
-                            $a->MotorFeatures;
-        
-                            unset($a->MotoreValue->Make, $a->MotoreValue->Model);
-                        }
-                        elseif($a->category_id == 2){
-                            $a->PropertyRend;
-                        }
-                        elseif($a->category_id == 3){
-                            $a->PropertySale;
-                        }
-                        $favourite = Favorite::where('ads_id', $a->id)
-                        ->where('customer_id', Auth::user()->id)
-                        ->count();
-                        $a->isFavourite=$favourite;
-                        $a->country_name = $a->Country->name;
-                        $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
-                        $a->state_name = $a->State->name;
-                        $a->created_on = date('d-M-Y', strtotime($a->created_at));
-                        $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
-
-                        if($a->city_id != 0){
-                            $a->city_name = $a->City->name;
-                        }
-                        else{
-                            $a->city_name = $a->State->name;
-                        }
-                        $a->CustomValue->map(function($c){
-                            
-                            if($c->Field->description_area_flag == 0){
-                                $c->position = 'top';
-                                $c->name = $c->Field->name;
-                            }
-                            elseif($c->Field->description_area_flag == 1){
-                                $c->position = 'details_page';
-                                $c->name = $c->Field->name;
-                            }
-                            else{
-                                $c->position = 'none';
-                                $c->name = $c->Field->name;
-                            }
-                            unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
-                            return $c;
-                        });
-
-                        unset($a->status, $a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
-                        return $a;
-                    });
-                
-
-            }
-            else{
+            
 
                 $myAds = Ads::select('ads.*')
                 ->join('ads_countries','ads_countries.ads_id','ads.id')
@@ -1091,7 +990,7 @@ class OtherController extends Controller
                         return $a;
                     });
                 
-            }
+           
 
                 return response()->json([
                     'status'    => 'success',
