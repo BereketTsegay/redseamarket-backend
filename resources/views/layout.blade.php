@@ -106,9 +106,10 @@
 
         @php
             
-            $adsCount = \App\Models\Ads::where('status', \App\Common\Status::REQUEST)
+            $adsCount = \App\Models\Ads::where('status',1)
             ->count();
-
+            $adsreqCount = \App\Models\Ads::where('status', 0)
+            ->count();
             $adsInaciveCount = \App\Models\Ads::where('status', \App\Common\Status::INACTIVE)
             ->count();
 
@@ -227,8 +228,8 @@
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link {{ request()->is('ad_list*') ? 'active' : '' }}" href="{{ route('ads.index') }}">Ads</a>
                                         <a class="nav-link {{ request()->is('ad_request*') ? 'active' : '' }}" href="{{ route('ad_request.index') }}">Ad Request
-                                            @if ($adsCount != 0)
-                                                <div class="badge badge-primary">{{$adsCount}}</div>
+                                            @if ($adsreqCount != 0)
+                                                <div class="badge badge-primary">{{$adsreqCount}}</div>
                                             @endif
                                         </a>
                                         <a class="nav-link {{ request()->is('ad_inactive*') ? 'active' : '' }}" href="{{ route('ads.inactive') }}">Inactive Ad
