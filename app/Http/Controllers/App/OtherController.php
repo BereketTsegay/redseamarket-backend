@@ -895,7 +895,7 @@ class OtherController extends Controller
                 ->join('ads_countries','ads_countries.ads_id','ads.id')
                 ->where('ads_countries.country_id',$request->country)
                 ->where('ads.status', Status::ACTIVE)
-                ->where('ads.category_id', $request->category)
+                // ->where('ads.category_id',$request->category)
                 ->where('ads.delete_status', '!=', Status::DELETE);
 
 
