@@ -888,8 +888,6 @@ class OtherController extends Controller
 
             $radius = 100; // Km
 
-            
-
                 $myAds = Ads::select('ads.*')
                 ->join('ads_countries','ads_countries.ads_id','ads.id')
                 ->where('ads_countries.country_id',$request->country)
