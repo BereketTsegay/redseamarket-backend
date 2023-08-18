@@ -29,6 +29,7 @@ use App\Models\AdsCountry;
 use App\Models\JobDocument;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdsReject;
+use App\Mail\AdsExpiry;
 
 class AdsController extends Controller
 {
@@ -1369,5 +1370,31 @@ class AdsController extends Controller
         // $img->save(public_path('tempfile/'.$fileName));
 
         // return $img;
+    }
+
+    public function expireCheck(){
+        $expireAds=Ads::where('delete_status', '!=', Status::DELETE)->where('status', Status::ACTIVE)->get();
+
+        foreach($expireAds as $expiread){
+
+            $date = $expiread->start_at;
+            
+           $diff = now()->diffInDays(Carbon::parse($date));
+           $catExp=0;
+           if($expiread->Category->expire_days!=null){
+            $catExp=$expiread->Category->expire_days;
+           }
+           if($diff>$expiread->Category->expire_days){
+            $expiread->status=Status::INACTIVE;
+            $expiread->update();
+           }
+           if($catExp-$diff==5){
+            
+            Mail::to($expiread->User->email)->send(new AdsExpiry);
+
+           }
+        }
+
+        return 1;
     }
 }
