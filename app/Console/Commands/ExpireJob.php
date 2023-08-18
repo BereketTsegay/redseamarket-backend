@@ -39,6 +39,7 @@ class ExpireJob extends Command
     public function handle()
     {
         new AdExpireJob();
+        $this->info('Daily Update has been send successfully');
 
        // \Log::info("Cron is working fine!");
      
