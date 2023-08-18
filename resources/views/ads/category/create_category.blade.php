@@ -29,6 +29,15 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="form-group my-2">
+                                        <label for="Name">Category Name Arabic</label>
+                                        <input type="text" name="arabic_name" value="{{ old('arabic_name') }}" class="slug form-control @error('category_name') is-invalid @enderror" placeholder="Category Name" autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            @error('arabic_name')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
                                     {{-- <div class="form-group my-2">
                                         <label for="Name">Icon Class</label>
                                         <select name="icon_class" id="" class="form-control @error('icon_class') is-invalid @enderror" autocomplete="off">
@@ -139,7 +148,7 @@
                                         </div>
                                     </div> --}}
                                     <div class="form-group my-2">
-                                        <label for="SortOrder">Value($)</label>
+                                        <label for="SortOrder">Ad payment amount($)</label>
                                         <input type="text" name="value" value="{{ old('value') }}" class="form-control @error('value') is-invalid @enderror" placeholder="Value" autocomplete="off">
                                         <div class="invalid-feedback">
                                             @error('value')
