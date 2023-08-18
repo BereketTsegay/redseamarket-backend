@@ -669,8 +669,8 @@ class AdsController extends Controller
                 'errors'    => $validate->errors(),
             ], 200);
         }
-//
-//        try{
+
+       try{
 
             $category_field = CategoryField::where('delete_status', '!=', Status::DELETE)
             ->where('category_id', $request->category)
@@ -728,15 +728,15 @@ class AdsController extends Controller
                     'category_field'    => $category_field,
                 ],
             ], 200);
-//        }
-//        catch (\Exception $e) {
-//            
-//
-//            return response()->json([
-//                'status'    => 'error',
-//                'message'   => 'Something went wrong',
-//            ], 301);
-//        }
+       }
+       catch (\Exception $e) {
+           
+
+           return response()->json([
+               'status'    => 'error',
+               'message'   => 'Something went wrong',
+           ], 301);
+       }
     }
 
     public function getMasterDependency(Request $request){

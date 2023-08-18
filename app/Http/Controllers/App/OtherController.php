@@ -934,7 +934,7 @@ class OtherController extends Controller
                     $myAds->orderBy('ads.id','DESC');
                 }
                 $myAds = $myAds->get();
-                    return $myAds->map(function($a){
+                     $myAds->map(function($a){
 
                         $a->image = array_filter([
                             $a->Image->map(function($q) use($a){
@@ -998,12 +998,12 @@ class OtherController extends Controller
                 
            
 
-                // return response()->json([
-                //     'status'    => 'success',
-                //     'message'   => 'Showing result ',
-                //     'code'      => 200,
-                //     'ads'       => $myAds,
-                // ], 200);
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Showing result ',
+                    'code'      => 200,
+                    'ads'       => $myAds,
+                ], 200);
             
         }
         catch (\Exception $e) {
