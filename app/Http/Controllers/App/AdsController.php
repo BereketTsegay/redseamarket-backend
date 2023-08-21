@@ -140,7 +140,7 @@ class AdsController extends Controller
                             $c->position = 'none';
                             $c->name = $c->Field->name;
                         }
-                        unset($c->Field, $c->ads_id, $c->option_id, $c->field_id);
+                        unset($c->Field, $c->ads_id, $c->option_id);
                         return $c;
                     });
     
