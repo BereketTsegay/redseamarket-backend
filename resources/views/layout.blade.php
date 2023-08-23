@@ -173,7 +173,7 @@
                                 </a>
 
                             @endif
-@if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_MASTERS))
+@if (Auth::user()->type == \App\Common\Usertype::ADMIN || Auth::user()->UserRole->TaskRole->contains('task_id', \App\Common\Task::MANAGE_MASTER))
 
 <a class="nav-link collapsed {{ request()->is('mst*') ? 'active' : '' }} {{ request()->is('*custom_field*') ? 'active' : '' }} {{ request()->is('countries*') ? 'active' : '' }} {{ request()->is('country_currency*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMst" aria-expanded="false" aria-controls="collapseAds">
     <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
