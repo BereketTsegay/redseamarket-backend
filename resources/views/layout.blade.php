@@ -531,6 +531,7 @@
                 data: {_token: _token},
                 method: 'post',
                 success:function(){
+                    $('#notification_counts').text('0');
 
                     $('#notifications').html(`<li class="dropdown-item"><span class="notification_counts">0</span> Notifications</li>
                         <li class="dropdown-item"><button onclick="readNotification();" class="btn btn-secondary">Clear All</button></li>
