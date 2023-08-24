@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Common\Status;
 use App\Models\AppBanner;
+use App\Models\Country;
 
 class AppBannerController extends Controller
 {
@@ -12,9 +13,9 @@ class AppBannerController extends Controller
 
         $banner = AppBanner::orderBy('created_at', 'desc')
         ->get();
-
+        $countries=Country::where('status',1)->get();
        
-        return view('other.app_banner.index', compact('banner'));
+        return view('other.app_banner.index', compact('banner','countries'));
     }
 
     public function store(Request $request){
@@ -22,6 +23,7 @@ class AppBannerController extends Controller
         $request->validate([
             'title'      => 'required',
             'image'     => 'required',
+            'country'  => 'required',
         ]);
 
         if($request->hasFile('image')){
@@ -43,6 +45,7 @@ class AppBannerController extends Controller
         $banner->title       = $request->title;
         $banner->file      = $image;
         $banner->status     = $status;
+        $banner->country_id = $request->country;
         $banner->save();
 
         session()->flash('success', 'Banner has been stored');

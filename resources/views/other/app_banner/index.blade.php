@@ -45,7 +45,7 @@
                                             </button>
                                             <div class="dropdown-menu text-center">
                                                 <a href="{{ route('appbanner.view', $row->id) }}"><button class="btn btn-primary my-2">View</button></a>
-                                                <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->title}}','{{$row->status}}')" data-toggle="modal" data-target="#editBannerModal">Edit</button>
+                                                <button class="btn btn-secondary my-2" onclick="editBanner({{$row->id}}, '{{$row->title}}','{{$row->status}}','{{$row->country_id}}')" data-toggle="modal" data-target="#editBannerModal">Edit</button>
                                                 {{-- <button type="button" onclick="bannerDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteBannerModal">Delete</button>
                                                 <form id="delete_Banner_form{{$row->id}}" action="{{ route('banner.delete', $row->id) }}" method="POST">
                                                     @csrf
@@ -109,6 +109,18 @@
                         @endif
                         </div>
                         <div class="form-group my-2">
+                            <label for="Type">Country</label>
+                            <Select name="country" class="form-control">
+                                <option value="">Select Country</option>
+                                @foreach ($countries as $row1)
+                                    <option value="{{ $row1->id }}">{{ $row1->name }}</option>
+                                @endforeach
+                            </Select>
+                            @if($errors->has('country'))
+                                <div class="error">{{ $errors->first('country') }}</div>
+                            @endif
+                        </div>
+                        <div class="form-group my-2">
                             <label for="Status">Status</label>
                             <input type="checkbox" checked name="status" id="">
                         </div>
@@ -144,6 +156,13 @@
                         <div class="form-group my-2">
                             <label for="Image">Image</label>
                             <input type="file" name="image" class="form-control" id="Image">
+                        </div>
+                        <div class="form-group my-2 selitem">
+                            <label for="Type">Country</label>
+                            <Select name="country" id="editPosition" class="form-control">
+                                <option value="">Select Country</option>
+                                
+                            </Select>
                         </div>
                         <div class="form-group my-2" id="editStatus">
                             <label for="Status">Status</label>
@@ -187,6 +206,34 @@
                 editStatus = `<label for="Status">Status</label>
                             <input type="checkbox" name="status">`;
             }
+
+            let country = [];
+            $.ajax({
+                url: '/api/customer/get/country',
+                method: 'post',
+                success:function(data){
+                    
+                    if(data.status == 'success'){
+                        country = data.country;
+                    }
+                    
+                    for(let i = 0; i < country.length; i++){
+                        
+                        if(country[i].id == id){
+                            option += `<option selected value="${country[i].id}">${country[i].name}</option>`;
+                        }
+                        else{
+                            option += `<option value="${country[i].id}">${country[i].name}</option>`;
+                        }
+                    }
+                    $('#editPosition').html(option);
+
+                    $(".selitem").find('#editPosition').val(countryid)
+
+
+                }
+            })
+            
                      
             $('#editStatus').html(editStatus);
         }
