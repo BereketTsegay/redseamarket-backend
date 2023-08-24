@@ -219,7 +219,7 @@
                     
                     for(let i = 0; i < country.length; i++){
                         
-                        if(country[i].id == id){
+                        if(country[i].id == countryid){
                             option += `<option selected value="${country[i].id}">${country[i].name}</option>`;
                         }
                         else{
