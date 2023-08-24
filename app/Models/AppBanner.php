@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AppBanner extends Model
 {
     use HasFactory;
-
     
     public function Country(){
         return $this->hasOne(Country::class, 'id', 'country_id');
