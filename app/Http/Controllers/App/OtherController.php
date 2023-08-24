@@ -38,6 +38,7 @@ use AmrShawky\LaravelCurrency\Facade\Currency;
 use Illuminate\Support\Str;
 use App\Models\JobProfile;
 use App\Models\JobProfileCompany;
+use App\Models\SearchHistory;
 
 class OtherController extends Controller
 {
@@ -243,6 +244,16 @@ class OtherController extends Controller
         $search_key = $request->search_key ?? null;
         $country=$request->country ?? 1;
         try{
+
+            if($search_key){
+                $search=new SearchHistory();
+                $search->user_id=Auth::user()->id;
+                $search->search_key= $search_key;
+                $search->save();
+
+            }
+
+
             $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
 
             $myAds = Ads::select('ads.*')
@@ -337,6 +348,7 @@ class OtherController extends Controller
                 });
             });
 
+            
             return response()->json([
                 'status'    => 'success',
                 'message'   => 'Showing result for '. $request->search_key,
@@ -2017,6 +2029,17 @@ class OtherController extends Controller
 
     public function jobProfileDetails(Request $request){
         $data=JobProfile::with('User')->where('id',$request->profile_id)->first();
+        return response()->json([
+            'status'    => 'success',
+            'data'      => $data,
+        ], 200);
+    }
+
+    public function searchAlert(){
+        $data=SearchHistory::where('user_id',Auth::user()->id)->latest()->take(5);
+         foreach($data as $row){
+            $data->ads_count=0;
+         }
         return response()->json([
             'status'    => 'success',
             'data'      => $data,

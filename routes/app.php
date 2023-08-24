@@ -97,6 +97,7 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::post('/customer/get/ad-selCountry', [\App\Http\Controllers\App\AdsController::class, 'adsCountries']);
     Route::post('/customer/get/ad-cvdocuments', [\App\Http\Controllers\App\AdsController::class, 'jobRequestDocs']);
     Route::post('/customer/search/ads', [\App\Http\Controllers\App\OtherController::class, 'searchAds']);
+    Route::post('/customer/search/alert', [\App\Http\Controllers\App\OtherController::class, 'searchAlert']);
 
     Route::post('customer/stripe/payment',[\App\Http\Controllers\App\StripeController::class,'postPaymentStripe']);
 
