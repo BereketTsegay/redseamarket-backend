@@ -2036,7 +2036,7 @@ class OtherController extends Controller
     }
 
     public function searchAlert(){
-        $data=SearchHistory::where('user_id',Auth::user()->id)->latest()->take(5);
+        $data=SearchHistory::where('user_id',Auth::user()->id)->orderBy('id','DESC')->take(5);
          foreach($data as $row){
             $data->ads_count=0;
          }
