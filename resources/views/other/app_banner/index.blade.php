@@ -192,7 +192,7 @@
             $('#delete_Banner_form'+ids).submit();
         }
 
-        editBanner = (id, name, status) => {
+        editBanner = (id, name, status,countryid) => {
             let option = '';
             let editStatus = '';
             $('#editId').val(id);
