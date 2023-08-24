@@ -93,7 +93,7 @@ class AppBannerController extends Controller
 
         $data->title=$request->title;
         $data->status=$status;
-
+        $banner->country_id = $request->country;
         $data->update();
        
 
