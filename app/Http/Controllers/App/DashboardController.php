@@ -149,7 +149,7 @@ class DashboardController extends Controller
                 ->where('status', Status::ACTIVE)
                 ->orderBy('sort_order')->get();
 
-               $banners=AppBanner::where('status',1)->get();
+               $banners=AppBanner::where('status',1)->where('country_id',$request->country)->first();
            
 
             return response()->json([

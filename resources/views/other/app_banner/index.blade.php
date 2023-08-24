@@ -197,7 +197,7 @@
             let editStatus = '';
             $('#editId').val(id);
             $('#editName').val(name);
-            console.log(countryid);
+            // console.log(countryid);
             if(status == 1){
                 editStatus = `<label for="Status">Status</label>
                             <input type="checkbox" checked name="status">`;
