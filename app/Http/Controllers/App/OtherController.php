@@ -2035,11 +2035,20 @@ class OtherController extends Controller
         ], 200);
     }
 
-    public function searchAlert(){
-        $data=SearchHistory::where('user_id',Auth::user()->id)->orderBy('id','DESC')->get()->take(5);
-         foreach($data as $row){
-            $data->ads_count=0;
-         }
+    public function searchAlert(Request $request){
+        $country=$request->country ?? 1;
+
+        $data=SearchHistory::where('user_id',Auth::user()->id)->orderBy('id','DESC')->get()->take(5)
+        ->map(function($a){
+
+            $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
+
+            $myAds = Ads::select('ads.*')
+            ->join('ads_countries','ads_countries.ads_id','ads.id')
+            ->where('ads.status', Status::ACTIVE)
+            ->whereIn('ads.id', $countryAds)->get()->count();
+            $a->ads_count=$myAds;
+        });
         return response()->json([
             'status'    => 'success',
             'data'      => $data,
