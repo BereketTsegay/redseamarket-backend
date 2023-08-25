@@ -2047,7 +2047,7 @@ class OtherController extends Controller
             ->join('ads_countries','ads_countries.ads_id','ads.id')
             ->where('ads.status', Status::ACTIVE)
             ->where('ads.title', 'like', '%'.$a->search_key.'%')
-            ->whereIn('ads.id', $countryAds)
+            // ->whereIn('ads.id', $countryAds)
             ->get()->count();
             $a->ads_count=$myAds;
         });
