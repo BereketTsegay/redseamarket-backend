@@ -2043,10 +2043,11 @@ class OtherController extends Controller
 
             $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
 
-            // $myAds = Ads::select('ads.*')
-            // ->join('ads_countries','ads_countries.ads_id','ads.id')
-            // ->where('ads.status', Status::ACTIVE)
-            // ->whereIn('ads.id', $countryAds)->get()->count();
+            $myAds = Ads::select('ads.*')
+            ->join('ads_countries','ads_countries.ads_id','ads.id')
+            ->where('ads.status', Status::ACTIVE)
+            ->where('ads.title', 'like', '%'.$a->search_key.'%')
+            ->get()->count();
             $a->ads_count=0;
         });
         return response()->json([
