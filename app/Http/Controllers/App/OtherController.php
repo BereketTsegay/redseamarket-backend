@@ -2049,7 +2049,7 @@ class OtherController extends Controller
             ->where('ads.title', 'like', '%'.$a->search_key.'%')
             ->whereIn('ads.id', $countryAds)
             ->get()->count();
-            $a->ads_count=0;
+            $a->ads_count=$myAds;
         });
         return response()->json([
             'status'    => 'success',
