@@ -2039,16 +2039,16 @@ class OtherController extends Controller
         $country=$request->country ?? 1;
 
         $data=SearchHistory::where('user_id',Auth::user()->id)->orderBy('id','DESC')->get()->take(5);
-        // ->map(function($a,$country){
+        $data->map(function($a,$country){
 
-        //     $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
+            $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
 
-        //     $myAds = Ads::select('ads.*')
-        //     ->join('ads_countries','ads_countries.ads_id','ads.id')
-        //     ->where('ads.status', Status::ACTIVE)
-        //     ->whereIn('ads.id', $countryAds)->get()->count();
-        //     $a->ads_count=$myAds;
-        // });
+            // $myAds = Ads::select('ads.*')
+            // ->join('ads_countries','ads_countries.ads_id','ads.id')
+            // ->where('ads.status', Status::ACTIVE)
+            // ->whereIn('ads.id', $countryAds)->get()->count();
+            $a->ads_count=0;
+        });
         return response()->json([
             'status'    => 'success',
             'data'      => $data,
