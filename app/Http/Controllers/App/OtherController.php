@@ -2039,7 +2039,7 @@ class OtherController extends Controller
         $country=$request->country ?? 1;
 
         $data=SearchHistory::where('user_id',Auth::user()->id)->orderBy('id','DESC')->get()->take(5)
-        ->map(function($a){
+        ->map(function($a,$country){
 
             $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
 
