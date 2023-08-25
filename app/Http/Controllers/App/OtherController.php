@@ -2039,8 +2039,8 @@ class OtherController extends Controller
         $country=$request->country ?? 1;
 
         $data=SearchHistory::where('user_id',Auth::user()->id)->orderBy('id','DESC')->get('search_key')->take(5);
-        $data->unique('search_key');
-        $data->map(function($a,$country){
+        $dataunique= $data->unique('search_key');
+        $dataunique->map(function($a,$country){
 
             $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
 
@@ -2050,8 +2050,6 @@ class OtherController extends Controller
             ->count();
             $a->ads_count=$myAds;
         });
-        $data->groupBy('search_key');
-
         return response()->json([
             'status'    => 'success',
             'data'      => $data,
