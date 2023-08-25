@@ -2038,7 +2038,7 @@ class OtherController extends Controller
     public function searchAlert(Request $request){
         $country=$request->country ?? 1;
 
-        $data=SearchHistory::where('user_id',Auth::user()->id)->groupBy('search_key')->orderBy('id','DESC')->get()->take(5);
+        $data=SearchHistory::where('user_id',Auth::user()->id)->groupBy('search_key')->get()->take(5);
         $data->map(function($a,$country){
 
             $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
