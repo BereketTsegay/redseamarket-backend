@@ -2038,7 +2038,7 @@ class OtherController extends Controller
     public function searchAlert(Request $request){
         $country=$request->country ?? 1;
 
-        $data=SearchHistory::where('user_id',Auth::user()->id)->get();
+        $data=SearchHistory::where('user_id',Auth::user()->id)->orderBy('id','DESC')->get()->take(5);
         $data->map(function($a,$country){
 
             $countryAds=AdsCountry::where('country_id',$country)->get()->pluck('ads_id');
@@ -2049,6 +2049,8 @@ class OtherController extends Controller
             ->get()->count();
             $a->ads_count=$myAds;
         });
+        $data->groupBy('search_key');
+        
         return response()->json([
             'status'    => 'success',
             'data'      => $data,
