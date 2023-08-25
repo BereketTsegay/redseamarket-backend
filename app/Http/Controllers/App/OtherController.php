@@ -2052,7 +2052,7 @@ class OtherController extends Controller
         });
         return response()->json([
             'status'    => 'success',
-            'data'      => $dataunique,
+            'data'      => $dataunique->values(),
         ], 200);
     }
 
