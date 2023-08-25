@@ -2046,7 +2046,7 @@ class OtherController extends Controller
             $myAds = Ads::where('status', Status::ACTIVE)
             ->where('title', 'like', '%'.$a->search_key.'%')
             // ->whereIn('id', $countryAds)
-            ->get()->count();
+            ->count();
             $a->ads_count=$myAds;
         });
         $data->groupBy('search_key');
