@@ -63,7 +63,7 @@ class AdsController extends Controller
             $ad=Ads::find($request->ads_id);
             $country_ad=AdsCountry::where('ads_id',$request->ads_id)->where('country_id',$request->country_id)->first();
             if($ad->user_id==Auth::user()->id){
-
+                 return 1;
                 $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
                 $lastpay = 0;
                 
@@ -171,6 +171,8 @@ class AdsController extends Controller
                 
             }
             else if($country_ad){
+                return 2;
+
                 $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
                 $lastpay = 0;
                 
