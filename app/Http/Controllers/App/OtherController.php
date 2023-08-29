@@ -2070,8 +2070,8 @@ class OtherController extends Controller
 
     function trans_ar(Request $request){
 
-          $tr = new GoogleTranslate();
-          $ar= $tr->setSource('en')->setTarget('ar')->translate($request->text);
+        $tr = new GoogleTranslate('en');
+        $ar= $tr->setSource('en')->setTarget('ar')->translate($request->text);
 
           return response()->json([
             'status'    => 'success',
