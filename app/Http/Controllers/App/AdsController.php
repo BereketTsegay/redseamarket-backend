@@ -170,7 +170,7 @@ class AdsController extends Controller
 
                 
             }
-            else if($country_ad){
+            elseif($country_ad){
                 return 2;
 
                 $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
@@ -280,6 +280,7 @@ class AdsController extends Controller
             }
 
             else{
+                return 0;
                 return response()->json([
                     'status'    => 'error',
                     'message'   => 'No Ad Set to this country',
