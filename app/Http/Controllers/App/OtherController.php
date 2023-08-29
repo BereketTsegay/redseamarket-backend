@@ -2069,8 +2069,8 @@ class OtherController extends Controller
     }
 
     function trans_ar(Request $request){
-        $str=$request->text;
-        return $str;
+        
+        return $request;
         $tr = new GoogleTranslate('en');
         $ar= $tr->setSource('en')->setTarget('ar')->translate(`$request->text`);
 
