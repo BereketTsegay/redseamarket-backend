@@ -42,9 +42,6 @@ class DashboardController extends Controller
             
 
             
-            
-                
-
                 $category = Category::where('delete_status', '!=', Status::DELETE)
                 ->where('status', Status::ACTIVE)
                 ->where('display_flag', Status::ACTIVE)
