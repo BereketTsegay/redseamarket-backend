@@ -40,6 +40,8 @@ use App\Models\JobProfile;
 use App\Models\JobProfileCompany;
 use App\Models\SearchHistory;
 use App\Models\jobProfileView;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -2065,5 +2067,17 @@ class OtherController extends Controller
             'data'      => $dataunique->values(),
         ], 200);
     }
+
+    function trans_ar(Request $request){
+
+          $tr = new GoogleTranslate('en');
+          $ar= $tr->setSource('en')->setTarget('ar')->translate($request->text);
+
+          return response()->json([
+            'status'    => 'success',
+            'data'      => $ar,
+        ], 200);
+        
+        }
 
 }

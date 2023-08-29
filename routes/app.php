@@ -75,7 +75,9 @@ Route::group(['namespace'=>'App','prefix' => 'app'],function (){
     Route::get('/category/list', [\App\Http\Controllers\App\OtherController::class, 'allCategories']);
     Route::get('/featured', [\App\Http\Controllers\App\AdsController::class, 'featured']);
 
-
+      /// ar transaction
+      Route::get('/ar/text', [\App\Http\Controllers\App\OtherController::class, 'trans_ar']);
+      
 });
 
 
