@@ -39,7 +39,7 @@ use Illuminate\Support\Str;
 use App\Models\JobProfile;
 use App\Models\JobProfileCompany;
 use App\Models\SearchHistory;
-
+use App\Models\jobProfileView;
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -1856,9 +1856,12 @@ class OtherController extends Controller
     public function jobProfile(Request $request){
        $user_id=Auth::user()->id;
        $data= JobProfile::with('Company')->where('user_id',$user_id)->latest()->first();
+       $View=jobProfileView::where('profile_id',$data->id)->count();
+
        return response()->json([
         'status'    => 'success',
         'data'   => $data,
+        'profile_view'=>$View,
     ], 200);
 
     }
@@ -2029,6 +2032,13 @@ class OtherController extends Controller
 
     public function jobProfileDetails(Request $request){
         $data=JobProfile::with('User')->where('id',$request->profile_id)->first();
+         $existView=jobProfileView::where('user_id',Auth::user()->id)->where('profile_id',$request->profile_id)->first();
+         if($existView==null){
+            $profile_view=new jobProfileView();
+            $profile_view->user_id=Auth::user()->id;
+            $profile_view->profile_id=$request->profile_id;
+            $profile_view->save();
+         }
         return response()->json([
             'status'    => 'success',
             'data'      => $data,
