@@ -62,7 +62,115 @@ class AdsController extends Controller
         try{
             $ad=Ads::find($request->ads_id);
             $country_ad=AdsCountry::where('ads_id',$request->ads_id)->where('country_id',$request->country_id)->first();
-            if($country_ad || $ad->user_id==Auth::user()->id){
+            if($ad->user_id==Auth::user()->id){
+
+                $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
+                $lastpay = 0;
+                
+                if($lastpayment){
+                    $lastpay = 1;
+                }
+
+                $ads = Ads::where('id', $request->ads_id)
+                ->with('Category')->get()
+                ->map(function($a,$lastpayment){
+    
+                    if($a->category_id == 1){
+                        $a->MotoreValue;
+                        if($a->MotoreValue){
+                            $a->make = $a->MotoreValue->Make ? $a->MotoreValue->Make->name : '';
+                            $a->model = $a->MotoreValue->Model ? $a->MotoreValue->Model->name : '';
+                            $a->variant = $a->MotoreValue->Variant ? $a->MotoreValue->Variant->name : '';
+    
+                            unset($a->make, $a->model, $a->variant);
+                        }
+                        $a->MotorFeatures;
+    
+                    }
+                   
+                    elseif($a->category_id == 2){
+                        $a->PropertyRend;
+                    }
+                    elseif($a->category_id ==3){
+                        $a->PropertySale;
+                    }
+                    $a->image = array_filter([
+                        $a->Image->map(function($q) use($a){
+                            $q->image;
+                            unset($q->ads_id, $q->img_flag);
+                            return $q;
+                        }),
+                    ]);
+                    
+                    $a->created_on = date('d-M-Y', strtotime($a->created_at));
+                    $a->updated_on = date('d-M-Y', strtotime($a->updated_at));
+    
+                    $a->Payment;
+                    $favourite = Favorite::where('ads_id', $a->id)
+                    ->where('customer_id', Auth::user()->id)
+                    ->count();
+
+                    $document=JobDocument::where('ads_id',$a->id)->where('user_id',Auth::user()->id)->first();
+                    if($document){
+                        $a->isApply=1;
+                    }else{
+                        $a->isApply=0;
+                    }
+
+                    $a->isFavourite=$favourite;
+                    $a->country_name = $a->Country->name;
+                    $a->currency = $a->Country->Currency ? $a->Country->Currency->currency_code : '';
+                    $a->mapCountry=AdsCountry::where('ads_id',$a->id)->get('country_id');
+                    $a->state_name = $a->State->name;
+                    if($a->city_id != 0){
+                        $a->city_name = $a->City->name;
+                    }
+                    else{
+                        $a->city_name = $a->State->name;
+                    }
+                    $a->CustomValue->map(function($c){
+                        
+                        if($c->Field->description_area_flag == 0){
+                            $c->position = 'top';
+                            $c->name = $c->Field->name;
+                        }
+                        elseif($c->Field->description_area_flag == 1){
+                            $c->position = 'details_page';
+                            $c->name = $c->Field->name;
+                        }
+                        else{
+                            $c->position = 'none';
+                            $c->name = $c->Field->name;
+                        }
+                        unset($c->Field, $c->ads_id, $c->option_id);
+                        return $c;
+                    });
+    
+                    if($a->sellerinformation_id == 0){
+                        $a->seller = 'admin';
+                    }
+                    else{
+                        $a->seller = 'user';
+                    }
+    
+                    $a->SellerInformation;
+    
+                    unset($a->reject_reason_id, $a->delete_status, $a->Country, $a->State, $a->City);
+                    return $a;
+                });
+                
+                
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Ad details',
+                    'code'      => 200,
+                    'ads'       => $ads,
+                    'lastpay'   => $lastpay
+                ], 200);
+
+                
+            }
+            else if($country_ad){
                 $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
                 $lastpay = 0;
                 
