@@ -59,7 +59,7 @@ class AdsController extends Controller
             ], 200);
         }
 
-        try{
+        // try{
             $ad=Ads::find($request->ads_id);
             $country_ad=AdsCountry::where('ads_id',$request->ads_id)->where('country_id',$request->country_id)->first();
             if($ad->customer_id==Auth::user()->id || $country_ad){
@@ -168,15 +168,15 @@ class AdsController extends Controller
             }
            
 
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
             
 
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function adStore(Request $request){
