@@ -60,6 +60,7 @@ class AdsController extends Controller
         }
 
         try{
+            $ad=Ads::find($request->ads_id);
             $country_ad=AdsCountry::where('ads_id',$request->ads_id)->where('country_id',$request->country_id)->first();
             if($country_ad){
                 $lastpayment=Payment::where('ads_id',$request->ads_id)->where('parent','!=',0)->where('status','Payment pending')->latest()->first();
