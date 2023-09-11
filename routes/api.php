@@ -103,6 +103,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/customer/uploade/payment_slip', [\App\Http\Controllers\Api\OtherController::class, 'paymentDocument']);
     Route::post('/customer/get/ad-selCountry', [\App\Http\Controllers\Api\AdsController::class, 'adsCountries']);
     Route::post('/customer/get/ad-cvdocuments', [\App\Http\Controllers\Api\AdsController::class, 'jobRequestDocs']);
+    Route::post('/customer/myad/view', [\App\Http\Controllers\Api\AdsController::class, 'myAdView']);
 
     Route::post('/customer/logout', [\App\Http\Controllers\Api\LoginController::class, 'logout']);
     Route::post('/customer/ads/remove_image', [\App\Http\Controllers\Api\AdsController::class, 'removeImage']);
