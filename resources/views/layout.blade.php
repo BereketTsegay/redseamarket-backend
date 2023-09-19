@@ -14,8 +14,10 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> --}}
-        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>        @stack('style')
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>    
+            @stack('style')
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+ 
         <style>
             /* Center the loader */
 #loader {
@@ -186,6 +188,8 @@
         <a class="nav-link {{ request()->is('model_mst*') ? 'active' : '' }}" href="{{ route('model_mst.index') }}">Model</a>
         <a class="nav-link {{ request()->is('varient_mst*') ? 'active' : '' }}" href="{{ route('varient_mst.index') }}">Variant</a>
         <a class="nav-link {{ request()->is('countries*') ? 'active' : '' }}" href="{{ route('countries.index') }}">Country</a>
+        <a class="nav-link {{ request()->is('states*') ? 'active' : '' }}" href="{{ route('states.index') }}">State</a>
+        <a class="nav-link {{ request()->is('cities*') ? 'active' : '' }}" href="{{ route('cities.index') }}">City</a>
         <a class="nav-link {{ request()->is('country_currency*') ? 'active' : '' }}" href="{{ route('country_currency.index') }}">Currency</a>
     </nav>
 </div>
@@ -379,10 +383,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
 
+    <script src="//cdn.gaic.com/cdn/ui-bootstrap/0.58.0/js/lib/ckeditor/ckeditor.js"></script>
+    <script src="//cdn.gaic.com/cdn/ui-bootstrap/0.58.0/js/lib/jquery.min.js"></script>
+    <script src="//cdn.gaic.com/cdn/ui-bootstrap/0.58.0/js/lib/angular.min.js"></script>
+    <script src="//cdn.gaic.com/cdn/ui-bootstrap/0.58.0/js/gaig-ui-bootstrap.js"></script>
     
     <script>
         $(document).ready(function(){
             $("#loader-container").fadeOut();
+
+            CKEDITOR.replace('editor1');
+
         })
     </script>
     <script>

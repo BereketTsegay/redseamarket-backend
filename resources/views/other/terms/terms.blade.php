@@ -5,7 +5,7 @@
     <main>
         <div class="container-fluid px-4">
             
-            <a href="#" data-toggle="modal" data-target="#createBannerModal"><button type="button" class="btn btn-primary float-end">Create Terms & Conditions</button></a>
+            {{-- <a href="#" data-toggle="modal" data-target="#createBannerModal"><button type="button" class="btn btn-primary float-end">Create Terms & Conditions</button></a> --}}
             
             <h2 class="mt-4">Terms & Condition</h2>
             <ol class="breadcrumb mb-4">
@@ -19,7 +19,19 @@
                     Terms & Conditions
                 </div>
                 <div class="card-body">
-                    <table id="datatablesSimple" class="table table-striped table-bordered">
+
+                    <form action="{{ route('terms.update') }}" method="POST" enctype="multipart/form-data" id="editPrivacyForm">
+                        @csrf
+                        <input type="hidden" name="id" id="" value="{{ $terms->id }}">
+                    <div class="form-group">
+                        <label for="Privacy & Policy">Terms & Conditions</label>
+                        <textarea id="editor1" type="text" name="terms" class="form-control" rows="10" id="Privacy_&_Policy" >{{ $terms->terms }}</textarea>
+                       <br>
+                        <button type="submit" class="btn btn-primary">Update</button>
+
+                    </div>
+                    </form>
+                    {{-- <table id="datatablesSimple" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -52,7 +64,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table> --}}
                 </div>
             </div>
         </div>

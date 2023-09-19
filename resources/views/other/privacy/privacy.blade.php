@@ -5,7 +5,7 @@
     <main>
         <div class="container-fluid px-4">
             
-            <a href="#" data-toggle="modal" data-target="#createBannerModal"><button type="button" class="btn btn-primary float-end">Create Privacy & Policy</button></a>
+            {{-- <a href="#" data-toggle="modal" data-target="#createBannerModal"><button type="button" class="btn btn-primary float-end">Create Privacy & Policy</button></a> --}}
             
             <h2 class="mt-4">Privacy & Policy</h2>
             <ol class="breadcrumb mb-4">
@@ -19,7 +19,19 @@
                     Privacy & Policy
                 </div>
                 <div class="card-body">
-                    <table id="datatablesSimple" class="table table-striped table-bordered">
+                    <form action="{{ route('privacy.update') }}" method="POST" enctype="multipart/form-data" id="editPrivacyForm">
+                        @csrf
+                        <input type="hidden" name="id" id="" value="{{ $privacy->id }}">
+                    <div class="form-group">
+                        <label for="Privacy & Policy">Privacy & Policy</label>
+                        <textarea id="editor1" type="text" name="privacy" class="form-control" rows="10" id="Privacy_&_Policy" >{{ $privacy->policy }}</textarea>
+                       <br>
+                        <button type="submit" class="btn btn-primary">Update</button>
+
+                    </div>
+                    </form>
+
+                    {{-- <table id="datatablesSimple" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -52,7 +64,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table> --}}
                 </div>
             </div>
         </div>
@@ -99,7 +111,7 @@
                         </div>
                         <div class="form-group my-2">
                             <label for="Privacy & Policy">Privacy & Policy</label>
-                            <textarea type="text" name="privacy" class="form-control" id="Privacy_&_Policy" placeholder="Privacy & Policy"></textarea>
+                            <textarea id="editor1" type="text" name="privacy" class="form-control" id="Privacy_&_Policy" placeholder="Privacy & Policy"></textarea>
                         </div>
                     </div>
                 </div>

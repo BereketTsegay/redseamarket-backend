@@ -9,7 +9,7 @@ class PrivacyPolicyController extends Controller
 {
     public function index(){
 
-        $privacy = PrivacyPolicy::get();
+        $privacy = PrivacyPolicy::first();
 
         return view('other.privacy.privacy', compact('privacy'));
     }
@@ -31,15 +31,13 @@ class PrivacyPolicyController extends Controller
     }
 
     public function update(Request $request){
-       
+      // return $request;
         $request->validate([
-            'title'     => 'required',
             'privacy'   => 'required',
         ]);
 
         PrivacyPolicy::where('id', $request->id)
         ->update([
-            'title'     => $request->title,
             'policy'    => $request->privacy,
         ]);
 

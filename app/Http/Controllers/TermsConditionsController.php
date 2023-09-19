@@ -9,7 +9,7 @@ class TermsConditionsController extends Controller
 {
     public function index(){
 
-        $terms = TermsConditions::get();
+        $terms = TermsConditions::first();
 
         return view('other.terms.terms', compact('terms'));
     }
@@ -33,13 +33,11 @@ class TermsConditionsController extends Controller
     public function update(Request $request){
        
         $request->validate([
-            'title'     => 'required',
             'terms'     => 'required',
         ]);
 
         TermsConditions::where('id', $request->id)
         ->update([
-            'title'     => $request->title,
             'terms'     => $request->terms,
         ]);
 

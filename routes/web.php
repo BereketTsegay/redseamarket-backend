@@ -124,6 +124,22 @@ Route::group(['middleware' => ['revalidate']], function () {
          Route::post('/countries/delete/{id}', [App\Http\Controllers\ConntryController::class, 'CountryDelete'])->name('countries.delete');
 
 
+        //state
+        Route::get('/states', [App\Http\Controllers\CityStateController::class, 'stateIndex'])->name('states.index');
+        Route::get('/states/create', [App\Http\Controllers\CityStateController::class, 'stateCreate'])->name('states.create');
+        Route::post('/states/store', [App\Http\Controllers\CityStateController::class, 'stateStore'])->name('states.store');
+        Route::get('/states/edit/{id}', [App\Http\Controllers\CityStateController::class, 'stateEdit'])->name('states.edit');
+        Route::post('/states/update/{id}', [App\Http\Controllers\CityStateController::class, 'stateUpdate'])->name('states.update');
+        Route::post('/states/delete/{id}', [App\Http\Controllers\CityStateController::class, 'stateDelete'])->name('states.delete');
+
+        //city
+        Route::get('/cities', [App\Http\Controllers\CityStateController::class, 'cityIndex'])->name('cities.index');
+        Route::get('/cities/create', [App\Http\Controllers\CityStateController::class, 'cityCreate'])->name('cities.create');
+        Route::post('/cities/store', [App\Http\Controllers\CityStateController::class, 'cityStore'])->name('cities.store');
+        Route::get('/cities/edit/{id}', [App\Http\Controllers\CityStateController::class, 'cityEdit'])->name('cities.edit');
+        Route::post('/cities/update/{id}', [App\Http\Controllers\CityStateController::class, 'cityUpdate'])->name('cities.update');
+        Route::post('/cities/delete/{id}', [App\Http\Controllers\CityStateController::class, 'cityDelete'])->name('cities.delete');
+
          // Conunty Currency
          Route::get('/country_currency', [App\Http\Controllers\ConntryController::class, 'CurrencyIndex'])->name('country_currency.index');
          Route::get('/country_currency/create', [App\Http\Controllers\ConntryController::class, 'CurrencyCreate'])->name('country_currency.create');

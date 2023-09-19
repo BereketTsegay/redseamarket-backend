@@ -5,7 +5,7 @@
     <main>
         <div class="container-fluid px-4">
             
-            <a href="{{ route('countries.create') }}"><button type="button" class="btn btn-primary float-end">Create Currency</button></a>
+            <a href="{{ route('states.create') }}"><button type="button" class="btn btn-primary float-end">Create State</button></a>
             
             <h2 class="mt-4">State</h2>
             <ol class="breadcrumb mb-4">
@@ -16,7 +16,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    Currency
+                    State
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple" class="table table-striped table-bordered">
@@ -29,13 +29,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach ($datas as $row)
+                            @foreach ($sates as $row)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $row->name }}</td>
-                                    <td>{{ $row->code }}</td>
-                                    <td>{{ $row->phonecode }}</td>
-
+                                    <td>@if($row->Country){{ $row->Country->name }}@endif</td>
+                                   
                                     <td>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,10 +42,10 @@
                                             </button>
                                             <div class="dropdown-menu text-center">
 
-                                                    <a href="{{ route('countries.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
+                                                    <a href="{{ route('states.edit', $row->id) }}"><button class="btn btn-secondary my-2">Edit</button></a>
                                                    
                                                     <button type="button" onclick="itemDelete({{$row->id}})" class="btn btn-danger" data-toggle="modal" data-target="#deleteItemModal">Delete</button>
-                                                    <form id="delete_item_form{{$row->id}}" action="{{ route('countries.delete', $row->id) }}" method="POST">
+                                                    <form id="delete_item_form{{$row->id}}" action="{{ route('states.delete', $row->id) }}" method="POST">
                                                       @csrf
                                                     </form>
                                                   
@@ -54,36 +53,37 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach --}}
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </main> 
+    <div class="modal fade" id="deleteItemModal" tabindex="-1" role="dialog" aria-labelledby="deleteMakeMasterModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+              {{-- <h5 class="modal-title" id="deleteMakeMasterModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span> --}}
+              {{-- </button> --}}
+                </div>
+                <div class="modal-body">
+                    Do you want to delete?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" onclick="deteteState()" class="btn btn-primary">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('script')
     
-<div class="modal fade" id="deleteItemModal" tabindex="-1" role="dialog" aria-labelledby="deleteMakeMasterModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-          {{-- <h5 class="modal-title" id="deleteMakeMasterModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span> --}}
-          {{-- </button> --}}
-            </div>
-            <div class="modal-body">
-                Do you want to delete?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" onclick="deteteCurrency()" class="btn btn-primary">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
   <script>
         
@@ -93,7 +93,7 @@
             ids = id
         }
 
-        deteteCurrency = () => {
+        deteteState = () => {
             
             $('#delete_item_form'+ids).submit();
         }
