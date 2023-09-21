@@ -36,7 +36,8 @@ use App\Models\JobDocument;
 use App\Models\Enquiry as adEnq;
 use AmrShawky\LaravelCurrency\Facade\Currency;
 use Illuminate\Support\Str;
-
+use App\Models\JobProfile;
+use App\Models\JobProfileCompany;
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -2028,4 +2029,15 @@ class OtherController extends Controller
         'data'   => $ads_enquiry,
     ], 200);
     }
+
+    public function jobProfile(Request $request){
+        $user_id=Auth::user()->id;
+        $data= JobProfile::with('Company')->where('user_id',$user_id)->latest()->first();
+ 
+        return response()->json([
+         'status'    => 'success',
+         'data'   => $data,
+     ], 200);
+ 
+     }
 }

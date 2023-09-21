@@ -111,5 +111,7 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/uploade/cv_document', [\App\Http\Controllers\Api\OtherController::class, 'cvDocument']);
     Route::post('/check/user/apply_document', [\App\Http\Controllers\Api\OtherController::class, 'checkDocument']);
 
+    Route::post('/get/jobprofile', [\App\Http\Controllers\Api\OtherController::class, 'jobProfile']);
+
 });
 
