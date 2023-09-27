@@ -112,6 +112,9 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/check/user/apply_document', [\App\Http\Controllers\Api\OtherController::class, 'checkDocument']);
 
     Route::post('/get/jobprofile', [\App\Http\Controllers\Api\OtherController::class, 'jobProfile']);
-
+    Route::post('/save/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfileSave']);
+    Route::post('/update/jobprofile', [\App\Http\Controllers\App\OtherController::class, 'jobProfileUpdate']);
+    Route::post('/get/jobprofile/list', [\App\Http\Controllers\App\OtherController::class, 'jobProfileList']);
+    Route::post('/get/jobprofile/detail', [\App\Http\Controllers\App\OtherController::class, 'jobProfileDetails']);
 });
 
