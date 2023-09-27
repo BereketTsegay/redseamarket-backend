@@ -2124,8 +2124,8 @@ class OtherController extends Controller
    
        public function jobProfileUpdate(Request $request){
    
-       dd($request->all());
-        //    try{
+      // dd($request->all());
+           try{
                $rules = [
                    'title'   => 'required',
                    'education'      => 'required',
@@ -2167,17 +2167,7 @@ class OtherController extends Controller
 
                 $file = 'storage/cv/'.$file;
                 $data->cv_file=$file;
-                // $document_part = explode(";base64,", $request->cv_file);
-                // $doc_type_aux = explode("application/", $document_part[0]);
-                // $doc_type = $doc_type_aux[1];
-                // $doc_base64 = base64_decode($document_part[1]);
-    
-                // $document = uniqid() . '.' .$doc_type;
-    
-                // Storage::put('public/cv/'.$document, $doc_base64);
-    
-                // $document = 'storage/cv/'.$document;
-               // $data->cv_file=$document;
+              
                }
                $data->overview=$request->overview;
                $data->country_id=$request->country_id;
@@ -2198,15 +2188,15 @@ class OtherController extends Controller
                    'status'    => 'success',
                ], 200);
    
-        //   }
-        //    catch (\Exception $e) {
+          }
+           catch (\Exception $e) {
                
        
-        //        return response()->json([
-        //            'status'    => 'error',
-        //            'message'   => 'Something went wrong',
-        //        ], 301);
-        //    }
+               return response()->json([
+                   'status'    => 'error',
+                   'message'   => 'Something went wrong',
+               ], 301);
+           }
            
        }
    
