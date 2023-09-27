@@ -173,7 +173,7 @@ class AdsController extends Controller
            
 
             else{
-                return 0;
+               // return 0;
                 return response()->json([
                     'status'    => 'error',
                     'message'   => 'No Ad Set to this country',
