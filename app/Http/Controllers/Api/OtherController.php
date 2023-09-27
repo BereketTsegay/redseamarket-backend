@@ -2124,7 +2124,7 @@ class OtherController extends Controller
    
        public function jobProfileUpdate(Request $request){
    
-           try{
+        //    try{
                $rules = [
                    'title'   => 'required',
                    'education'      => 'required',
@@ -2205,15 +2205,15 @@ class OtherController extends Controller
                    'status'    => 'success',
                ], 200);
    
-          }
-           catch (\Exception $e) {
+        //   }
+        //    catch (\Exception $e) {
                
        
-               return response()->json([
-                   'status'    => 'error',
-                   'message'   => 'Something went wrong',
-               ], 301);
-           }
+        //        return response()->json([
+        //            'status'    => 'error',
+        //            'message'   => 'Something went wrong',
+        //        ], 301);
+        //    }
            
        }
    
