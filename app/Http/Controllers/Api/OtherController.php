@@ -2124,7 +2124,7 @@ class OtherController extends Controller
    
        public function jobProfileUpdate(Request $request){
    
-      // dd($request->all());
+       dd($request->all());
         //    try{
                $rules = [
                    'title'   => 'required',
