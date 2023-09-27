@@ -2124,7 +2124,7 @@ class OtherController extends Controller
    
        public function jobProfileUpdate(Request $request){
    
-       dd($request->all());
+      // dd($request->all());
         //    try{
                $rules = [
                    'title'   => 'required',
@@ -2160,17 +2160,23 @@ class OtherController extends Controller
                $data->language=$request->language;
                $data->skils=$request->skils;
                if($request->cv_file){
-                $document_part = explode(";base64,", $request->cv_file);
-                $doc_type_aux = explode("application/", $document_part[0]);
-                $doc_type = $doc_type_aux[1];
-                $doc_base64 = base64_decode($document_part[1]);
+                $file = uniqid().'.'.$request->cv_file->getClientOriginalExtension();
+                    
+                $request->cv_file->storeAs('public/cv', $file);
+
+                $file = 'storage/cv/'.$file;
+                $data->cv_file=$file;
+                // $document_part = explode(";base64,", $request->cv_file);
+                // $doc_type_aux = explode("application/", $document_part[0]);
+                // $doc_type = $doc_type_aux[1];
+                // $doc_base64 = base64_decode($document_part[1]);
     
-                $document = uniqid() . '.' .$doc_type;
+                // $document = uniqid() . '.' .$doc_type;
     
-                Storage::put('public/cv/'.$document, $doc_base64);
+                // Storage::put('public/cv/'.$document, $doc_base64);
     
-                $document = 'storage/cv/'.$document;
-                $data->cv_file=$document;
+                // $document = 'storage/cv/'.$document;
+               // $data->cv_file=$document;
                }
                $data->overview=$request->overview;
                $data->country_id=$request->country_id;
