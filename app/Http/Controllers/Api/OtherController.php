@@ -2159,12 +2159,31 @@ class OtherController extends Controller
                $data->language=$request->language;
                $data->skils=$request->skils;
                if($request->cv_file){
-                   $file = uniqid().'.'.$request->cv_file->getClientOriginalExtension();
+                //    $file = uniqid().'.'.$request->cv_file->getClientOriginalExtension();
                        
-                   $request->cv_file->storeAs('public/cv', $file);
+                //    $request->cv_file->storeAs('public/cv', $file);
    
-                   $file = 'storage/cv/'.$file;
-                   $data->cv_file=$file;
+                //    $file = 'storage/cv/'.$file;
+                //    $data->cv_file=$file;
+                    $document_part = explode(";base64,", $request->cv_file);
+                    $ext=Str::afterLast($document_part[0], '/');
+
+                    
+                    if($ext=='image'){
+                        $image_type_aux = explode("image/", $document_part[0]);
+                    }
+                    else{
+                        $image_type_aux = explode("application/", $document_part[0]);
+                    }
+                    $image_type = $image_type_aux[1];
+                    
+                    $image_base64 = base64_decode($document_part[1]);
+                // return $image_base64;
+                    $document = uniqid() . '.' .$image_type;
+
+                    Storage::put('public/cv/'.$document, $image_base64);
+
+                    $document = 'storage/cv/'.$document;
                }
                $data->overview=$request->overview;
                $data->country_id=$request->country_id;
