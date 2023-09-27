@@ -2172,7 +2172,7 @@ class OtherController extends Controller
                     if($ext=='image'){
                         $image_type_aux = explode("image/", $document_part[0]);
                     }
-                    else{
+                    if($ext=='pdf'){
                         $image_type_aux = explode("application/", $document_part[0]);
                     }
                     $image_type = $image_type_aux[1];
@@ -2183,7 +2183,8 @@ class OtherController extends Controller
 
                     Storage::put('public/cv/'.$document, $image_base64);
 
-                    $document = 'storage/cv/'.$document;
+                    $file = 'storage/cv/'.$document;
+                    $data->cv_file=$file;
                }
                $data->overview=$request->overview;
                $data->country_id=$request->country_id;
