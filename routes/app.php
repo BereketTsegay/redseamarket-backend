@@ -7,7 +7,7 @@ Route::get('/error', function () {
   return response()->json([
                   'status'    => false,
                   'message'   => 'Unauthenticated'
-              ], 200);
+              ], 401);
 })->name('login');
 
 Route::group(['namespace'=>'App','prefix' => 'app'],function (){
