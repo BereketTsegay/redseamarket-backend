@@ -2167,14 +2167,8 @@ class OtherController extends Controller
                 //    $data->cv_file=$file;
                     $document_part = explode(";base64,", $request->cv_file);
                     $ext=Str::afterLast($document_part[0], '/');
-
-                    
-                    if($ext=='image'){
-                        $image_type_aux = explode("image/", $document_part[0]);
-                    }
-                    if($ext=='pdf'){
-                        $image_type_aux = explode("application/", $document_part[0]);
-                    }
+                    $image_type_aux = explode("application/", $document_part[0]);
+                   
                     $image_type = $image_type_aux[1];
                     
                     $image_base64 = base64_decode($document_part[1]);
