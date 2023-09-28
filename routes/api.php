@@ -117,6 +117,8 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/get/jobprofile/list', [\App\Http\Controllers\Api\OtherController::class, 'jobProfileList']);
     Route::post('/get/jobprofile/detail', [\App\Http\Controllers\Api\OtherController::class, 'jobProfileDetails']);
     Route::post('/company/delete', [\App\Http\Controllers\Api\OtherController::class, 'deleteCompany']);
+    Route::post('/company/store', [\App\Http\Controllers\Api\OtherController::class, 'addCompany']);
+
 
 });
 

@@ -2224,6 +2224,21 @@ class OtherController extends Controller
            ], 200);
        }
 
+       public function addCompany(Request $request){
+
+               $company=new JobProfileCompany();
+               $company->job_profile_id=$request->jobprofileid;
+               $company->from_date=$request->from_date;
+               $company->to_date=$request->to_date;
+               $company->company=$request->company;
+               $company->save();
+
+               return response()->json([
+                'status'    => 'success',
+            ], 200);
+
+       }
+
        public function deleteCompany(Request $request){
         JobProfileCompany::where('id',$request->c_id)->delete();
         return response()->json([
