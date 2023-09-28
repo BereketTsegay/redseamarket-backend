@@ -2060,7 +2060,6 @@ class OtherController extends Controller
                    'country_id'     => 'required',
                    'state_id'     => 'required',
                    'city_id'     => 'required',
-                   'company'     => 'required',
    
                ];
    
@@ -2223,5 +2222,12 @@ class OtherController extends Controller
                'status'    => 'success',
                'data'      => $data,
            ], 200);
+       }
+
+       public function deleteCompany(Request $request){
+        JobProfileCompany::where('id',$request->c_id)->delete();
+        return response()->json([
+            'status'    => 'success'
+        ], 200);
        }
 }
