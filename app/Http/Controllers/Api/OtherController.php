@@ -2205,7 +2205,7 @@ class OtherController extends Controller
            $data=JobProfile::with('User')->where('user_id','<>',$user_id)->paginate(15);
            return response()->json([
                'status'    => 'success',
-               'data'      => $data,
+               'profiles'      => $data,
            ], 200);
        }
    
