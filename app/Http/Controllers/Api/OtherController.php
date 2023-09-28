@@ -2202,7 +2202,7 @@ class OtherController extends Controller
        public function jobProfileList(){
    
            $user_id=Auth::user()->id;
-           $data=JobProfile::with('User')->where('user_id','<>',$user_id)->get();
+           $data=JobProfile::with('User')->where('user_id','<>',$user_id)->paginate(15);
            return response()->json([
                'status'    => 'success',
                'data'      => $data,
