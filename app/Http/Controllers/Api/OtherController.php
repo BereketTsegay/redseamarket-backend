@@ -2219,16 +2219,16 @@ class OtherController extends Controller
                $profile_view->profile_id=$request->profile_id;
                $profile_view->save();
             }
-            $data->map(function($a){
-                $a->country_name = $a->Country->name;
-                $a->state_name = $a->State->name;
-                if($a->city_id != 0){
-                    $a->city_name = $a->City->name;
+           
+                $data->country_name = $data->Country->name;
+                $data->state_name = $data->State->name;
+                if($data->city_id != 0){
+                    $data->city_name = $data->City->name;
                 }
                 else{
-                    $a->city_name = $a->State->name;
+                    $data->city_name = $data->State->name;
                 }
-            });
+           
            return response()->json([
                'status'    => 'success',
                'data'      => $data,
