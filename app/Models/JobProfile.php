@@ -16,4 +16,16 @@ class JobProfile extends Model
     public function User(){
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function Country(){
+        return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
+
+    public function State(){
+        return $this->belongsTo(State::class, 'state_id', 'id');
+    }
+
+    public function City(){
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
 }

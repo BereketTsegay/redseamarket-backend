@@ -2212,12 +2212,23 @@ class OtherController extends Controller
        public function jobProfileDetails(Request $request){
            $data=JobProfile::with('User')->where('id',$request->profile_id)->first();
             $existView=jobProfileView::where('user_id',Auth::user()->id)->where('profile_id',$request->profile_id)->first();
+           
             if($existView==null){
                $profile_view=new jobProfileView();
                $profile_view->user_id=Auth::user()->id;
                $profile_view->profile_id=$request->profile_id;
                $profile_view->save();
             }
+            $data->map(function($a){
+                $a->country_name = $a->Country->name;
+                $a->state_name = $a->State->name;
+                if($a->city_id != 0){
+                    $a->city_name = $a->City->name;
+                }
+                else{
+                    $a->city_name = $a->State->name;
+                }
+            });
            return response()->json([
                'status'    => 'success',
                'data'      => $data,
