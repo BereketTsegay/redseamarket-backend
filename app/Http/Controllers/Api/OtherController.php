@@ -1847,7 +1847,7 @@ class OtherController extends Controller
        $data=[
         'user'=>$user->name,
         'post' => $ad->title,
-       ]
+       ];
 
        Mail::to($ad->SellerInformation->email)->send(new RequestMail($data));
 
