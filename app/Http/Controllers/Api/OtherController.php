@@ -1628,7 +1628,7 @@ class OtherController extends Controller
 
     public function getCurrency(Request $request){
 
-        try{
+        // try{
             $currency = CurrencyCode::where('country_id', $request->country)
             ->first();
 
@@ -1644,13 +1644,13 @@ class OtherController extends Controller
                 'currency'  => $currency,
                 'usdval'    => $usdval,
             ]);
-        }
-        catch(\Exception $e){
-            return response()->json([
-                'status'    => 'error',
-                'message'   => 'Something went wrong',
-            ], 301);
-        }
+        // }
+        // catch(\Exception $e){
+        //     return response()->json([
+        //         'status'    => 'error',
+        //         'message'   => 'Something went wrong',
+        //     ], 301);
+        // }
     }
 
     public function paymentStatusUpdate(Request $request){
