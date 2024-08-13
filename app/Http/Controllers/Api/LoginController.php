@@ -138,6 +138,7 @@ class LoginController extends Controller
         ->where('email_verified_flag', Status::REQUEST)
         ->first();
 
+        
         if(!$existingUser){
 
             $user                       = new User();
