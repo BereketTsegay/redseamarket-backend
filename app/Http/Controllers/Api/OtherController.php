@@ -1628,29 +1628,29 @@ class OtherController extends Controller
 
     public function getCurrency(Request $request){
 
-        // try{
+        try{
             $currency = CurrencyCode::where('country_id', $request->country)
             ->first();
 
-           $usdval= Currency::convert()
-                ->from($currency->currency_code)
-                ->to('USD')
-                ->round(5)
-                ->get();
+        //    $usdval= Currency::convert()
+        //         ->from($currency->currency_code)
+        //         ->to('USD')
+        //         ->round(5)
+        //         ->get();
 
             return response()->json([
                 'status'    => 'success',
                 'code'      => '200',
                 'currency'  => $currency,
-                'usdval'    => $usdval,
+                'usdval'    => $currency->value,
             ]);
-        // }
-        // catch(\Exception $e){
-        //     return response()->json([
-        //         'status'    => 'error',
-        //         'message'   => 'Something went wrong',
-        //     ], 301);
-        // }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Something went wrong',
+            ], 301);
+        }
     }
 
     public function paymentStatusUpdate(Request $request){
