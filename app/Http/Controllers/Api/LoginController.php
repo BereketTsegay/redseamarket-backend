@@ -81,6 +81,7 @@ class LoginController extends Controller
                 'status'    => 'success',
                 'code'      => 200,
                 'message'   => 'Welcome '. $user->name,
+                'id'        =>$user->id,
                 'user'      => $user->name,
                 'token'     => $token,
                 'wallet'    => $user->wallet,
