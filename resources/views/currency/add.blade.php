@@ -60,8 +60,8 @@
                                         </div>
 
                                         <div class="form-group my-2">
-                                            <label for="SortOrder">Currency Value(1 USD)</label>
-                                            <input type="text" name="currency_value" value=" {{ old('currency_value') }}" class="form-control @error('currency_value') is-invalid @enderror" placeholder="Currency Prifix" autocomplete="off">
+                                            <label for="SortOrder">Currency Value(1)</label>
+                                            <input type="text" name="currency_value" value=" {{ old('currency_value') }}" class="form-control @error('currency_value') is-invalid @enderror" placeholder="usd" autocomplete="off">
                                             <div class="invalid-feedback">
                                                 @error('currency_value')
                                                     {{ $message }}

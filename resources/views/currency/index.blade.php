@@ -25,7 +25,7 @@
                                 <th>#</th>
                                 <th>Currency Name</th>
                                 <th>Currency Prefix</th>
-                                <th>Currency Value($1)</th>
+                                <th>Currency Value(1)</th>
                                 <th>Country</th>
                                 <th>Action</th>
                             </tr>
@@ -36,7 +36,7 @@
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $row->currency_name }}</td>
                                     <td>{{ $row->currency_code }}</td>
-                                    <td>{{$row->value}}</td>
+                                    <td>{{$row->value}} usd</td>
                                     <td>@if($row->country){{ $row->country->name }}@endif</td>
 
                                     <td>
