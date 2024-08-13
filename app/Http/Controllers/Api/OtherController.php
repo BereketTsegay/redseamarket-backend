@@ -40,7 +40,7 @@ use App\Models\JobProfile;
 use App\Models\JobProfileCompany;
 use App\Models\SearchHistory;
 use App\Models\jobProfileView;
-
+use App\Mail\RequestMail;
 class OtherController extends Controller
 {
     public function favouriteView(){
@@ -1841,6 +1841,15 @@ class OtherController extends Controller
        $doc->document = $document;
        $doc->user_id = $user->id;
        $doc->save();
+
+       $ad=Ads::find($request->id);
+
+       $data=[
+        'user'=>$user->name,
+        'post' => $ad->title,
+       ]
+
+       Mail::to($ad->SellerInformation->email)->send(new RequestMail($data));
 
         return response()->json([
             'status'    => 'success',
