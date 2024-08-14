@@ -66,9 +66,9 @@
         </style>
     </head>
     <body class="sb-nav-fixed">
-            <div id="loader-container">
-                {{-- <div id="loader"></div> --}}
-            </div>
+            {{-- <div id="loader-container">
+                <div id="loader"></div>
+            </div> --}}
         <input type="hidden" name="" id="csrf_toke" value="{{ csrf_token() }}">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
